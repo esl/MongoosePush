@@ -5,7 +5,7 @@ defmodule MongoosePush.API.V1 do
   version "v1"
 
   plug Plug.Parsers,
-      pass: ["text/json"],
+      pass: ["application/json", "text/json"],
       json_decoder: Poison,
       parsers: [:urlencoded, :json, :multipart]
 
@@ -17,14 +17,15 @@ defmodule MongoosePush.API.V1 do
     optional  :click_action,  type: String
     optional  :tag,           type: String
     optional  :topic,         type: String
+    optional  :mode,          type: Atom, values: [:prod, :dev]
   end
 
   namespace :notification do
     route_param :device_id do
       post do
         device_id = params.device_id
-        case MongoosePush.push(device_id, params) do
-          ok ->
+        case MongoosePush.push(device_id, Map.delete(params, :device_id)) do
+          :ok ->
             conn
             |> put_status(200)
             |> json(nil)

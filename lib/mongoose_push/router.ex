@@ -3,8 +3,9 @@ defmodule MongoosePush.Router do
 
   use Maru.Router
   require Logger
+  @test false
 
-  plug Plug.Logger
+  plug Plug.Logger, log: :debug
 
   mount MongoosePush.API.V1
 
