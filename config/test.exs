@@ -24,8 +24,8 @@ config :mongoose_push, apns: [
    dev1: [
      development_endpoint: "localhost",
      production_endpoint: "localhost",
-     cert: "priv/apns/app_cert.pem",
-     key: "priv/apns/app_key.pem",
+     cert: "priv/apns/dev_cert.pem",
+     key: "priv/apns/dev_key.pem",
      mode: :dev,
      use_2197: true,
      pool_size: 1
@@ -33,8 +33,8 @@ config :mongoose_push, apns: [
    prod1: [
      development_endpoint: "localhost",
      production_endpoint: "localhost",
-     cert: "priv/apns/app_cert.pem",
-     key: "priv/apns/app_key.pem",
+     cert: "priv/apns/prod_cert.pem",
+     key: "priv/apns/prod_key.pem",
      mode: :prod,
      use_2197: true,
      pool_size: 2
@@ -42,8 +42,8 @@ config :mongoose_push, apns: [
    dev2: [
      development_endpoint: "localhost",
      production_endpoint: "localhost",
-     cert: "priv/apns/app_cert.pem",
-     key: "priv/apns/app_key.pem",
+     cert: "priv/apns/dev_cert.pem",
+     key: "priv/apns/dev_key.pem",
      mode: :dev,
      use_2197: true,
      pool_size: 3
@@ -51,8 +51,8 @@ config :mongoose_push, apns: [
    prod2: [
      development_endpoint: "localhost",
      production_endpoint: "localhost",
-     cert: "priv/apns/app_cert.pem",
-     key: "priv/apns/app_key.pem",
+     cert: "priv/apns/prod_cert.pem",
+     key: "priv/apns/prod_key.pem",
      mode: :prod,
      use_2197: true,
      pool_size: 4

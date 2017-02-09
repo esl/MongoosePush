@@ -19,6 +19,17 @@ defmodule RestV1Test do
     assert 400 = post(url, %{service: "other", body: "body", title: "title"})
   end
 
+  test "invalid method returns 405" do
+    assert 405 = get("/v1/notification/test")
+  end
+
+  test "api crash returns 500" do
+    url = "/v1/notification/f534534543"
+    with_mock MongoosePush, [push: fn(_, _) -> raise "oops" end] do
+      assert 500 = post(url, %{service: :fcm, body: "body", title: "title"})
+    end
+  end
+
   test "correct params return 200" do
     url = "/v1/notification/f534534543"
     with_mock MongoosePush, [push: fn(_, _) -> :ok end] do
@@ -53,6 +64,12 @@ defmodule RestV1Test do
                        [{"Content-Type", "application/json"}],
                        hackney: [:insecure])
      status_code
+  end
+
+  defp get(path) do
+    %Response{status_code: status_code} =
+      HTTPoison.get!("https://localhost:9090" <> path, [], hackney: [:insecure])
+    status_code
   end
 
 end

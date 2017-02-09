@@ -30,6 +30,7 @@ defmodule MongoosePush.Router do
   rescue_from Maru.Exceptions.MethodNotAllowed do
     conn
     |> put_status(405)
+    |> json(nil)
   end
 
   rescue_from :all, as: e do

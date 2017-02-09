@@ -43,7 +43,7 @@ defmodule MongoosePush do
     end
   end
 
-  defp normalize_response({:ok, _state}, :apns, device_id), do: :ok
+  defp normalize_response({:ok, _state}, :apns, _device_id), do: :ok
 
   defp prepare_notification(:fcm, request) do
     Logger.warn inspect request
