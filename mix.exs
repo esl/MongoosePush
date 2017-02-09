@@ -5,8 +5,6 @@ defmodule MongoosePush.Mixfile do
     [app: :mongoose_push,
      version: "0.1.0",
      elixir: "~> 1.4",
-     test_coverage: [tool: ExCoveralls],
-     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps()]
@@ -17,7 +15,7 @@ defmodule MongoosePush.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger],
+    [extra_applications: [:logger, :maru, :pigeon, :httpoison],
      mod: {MongoosePush.Application, []}]
   end
 
@@ -31,6 +29,12 @@ defmodule MongoosePush.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    []
+    [
+     {:pigeon, git: "https://github.com/rslota/pigeon.git", tag: "6d1e4e3"},
+     {:maru, "~> 0.11"},
+     {:poison, "~> 3.0"},
+     {:httpoison, "~> 0.10.0"},
+     {:mock, "~> 0.2.0", only: :test}
+    ]
   end
 end

@@ -1,0 +1,19 @@
+language: elixir
+elixir:
+    - 1.4.1
+otp_release:
+    - 19.2
+
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker rm -fv $(docker ps -a -q)
+  - docker run -d -p 2197:2197 mobify/apns-http2-mock-server
+  - docker run -d -p 2197:2197 roxeon/fcm-http2-mock-server
+
+env:
+    - MIX_ENV=test
+
+script: mix coveralls.travis
