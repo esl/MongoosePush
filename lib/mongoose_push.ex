@@ -8,6 +8,11 @@ defmodule MongoosePush do
   alias Pigeon.GCM
   alias Pigeon.APNS
 
+  @type request :: %{atom => atom | String.t | integer}
+  @type service :: :fcm | :apns
+  @type mode :: :dev | :prod
+
+  @spec push(String.t, request) :: :ok | {:error, term}
   def push(device_id, %{:service => service} = request) do
       mode = Map.get(request, :mode, :prod)
       [pool | _] = pools_by_mode(service, mode)
@@ -17,6 +22,7 @@ defmodule MongoosePush do
       push(service, worker, device_id, request)
   end
 
+  @spec push(service, atom | pid, String.t, request) :: :ok | {:error, term}
   def push(:fcm, worker, device_id, request) do
     msg = prepare_notification(:fcm, request)
     gcm_notification = Pigeon.GCM.Notification.new(device_id, msg)
@@ -26,6 +32,7 @@ defmodule MongoosePush do
     |> normalize_response(:fcm, device_id)
   end
 
+  @spec push(service, atom | pid, String.t, request) :: :ok | {:error, term}
   def push(:apns, worker, device_id, request) do
     raw_notification = prepare_notification(:apns, request)
 
