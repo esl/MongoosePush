@@ -1,6 +1,6 @@
 # MongoosePush
 
-[![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=initial_implementation)](https://coveralls.io/github/esl/MongoosePush?branch=initial_implementation)
+[![Build Status](https://travis-ci.org/esl/MongoosePush.svg?branch=initial_implementation)](https://travis-ci.org/esl/MongoosePush) [![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=initial_implementation)](https://coveralls.io/github/esl/MongoosePush?branch=initial_implementation)
 
 **TODO: Add description**
 
