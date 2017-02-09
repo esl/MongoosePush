@@ -1,5 +1,7 @@
 # MongoosePush
 
+[![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=initial_implementation)](https://coveralls.io/github/esl/MongoosePush?branch=initial_implementation)
+
 **TODO: Add description**
 
 ## Installation
@@ -16,4 +18,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/mongoose_push](https://hexdocs.pm/mongoose_push).
-
