@@ -45,4 +45,18 @@ defmodule MongoosePushApplicationTest do
     assert nil == Process.whereis(worker_name(:apns, :prod2, 5))
     assert nil == Process.whereis(worker_name(:fcm, :prod, 6))
   end
+
+  test "application starts and stops" do
+    ok = Application.stop(:mongoose_push)
+    ok = Application.start(:mongoose_push, :temporary)
+  end
+
+  test "workers are stoped along with the application" do
+    ok = Application.stop(:mongoose_push)
+    assert nil == Process.whereis(worker_name(:apns, :dev1, 1))
+    assert nil == Process.whereis(worker_name(:apns, :prod1, 1))
+    assert nil == Process.whereis(worker_name(:apns, :dev2, 1))
+    assert nil == Process.whereis(worker_name(:apns, :prod2, 1))
+    assert nil == Process.whereis(worker_name(:fcm, :prod, 1))
+  end
 end
