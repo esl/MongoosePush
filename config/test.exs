@@ -6,7 +6,7 @@ config :maru, MongoosePush.Router,
     ],
     https: [
         ip: {127, 0, 0, 1},
-        port: 9090,
+        port: 8443,
         keyfile: "priv/ssl/fake_key.pem",
         certfile: "priv/ssl/fake_cert.pem",
         otp_app: :mongoose_push

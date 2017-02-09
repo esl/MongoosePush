@@ -2,10 +2,25 @@ defmodule MongoosePush.Router do
   @moduledoc false
 
   use Maru.Router
+  use MaruSwagger
   require Logger
   @test false
 
   plug Plug.Logger, log: :debug
+
+  swagger at:         "/swagger.json", # (required) the mount point for the URL
+          pretty:     true,            # (optional) should JSON be pretty-printed?
+          except:     [:prod],         # (optional) the environments swagger NOT works
+          force_json: true,            # (optional) force JSON for all params instead of formData
+
+          swagger_inject: [            # (optional) this will be directly injected into the root Swagger JSON
+            basePath: "/",
+            schemes:  [ "https" ],
+            consumes: [ "application/json" ],
+            produces: [
+              "application/json",
+            ]
+          ]
 
   mount MongoosePush.API.V1
 
