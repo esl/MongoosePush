@@ -8,15 +8,15 @@ defmodule MongoosePush.Router do
 
   plug Plug.Logger, log: :debug
 
-  swagger at:         "/swagger.json", # (required) the mount point for the URL
-          pretty:     true,            # (optional) should JSON be pretty-printed?
-          except:     [:prod],         # (optional) the environments swagger NOT works
-          force_json: true,            # (optional) force JSON for all params instead of formData
+  swagger at:         "/swagger.json",
+          pretty:     true,
+          except:     [:prod],
+          force_json: true,
 
-          swagger_inject: [            # (optional) this will be directly injected into the root Swagger JSON
+          swagger_inject: [
             basePath: "/",
-            schemes:  [ "https" ],
-            consumes: [ "application/json" ],
+            schemes:  ["https"],
+            consumes: ["application/json"],
             produces: [
               "application/json",
             ]

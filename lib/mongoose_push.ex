@@ -7,7 +7,7 @@ defmodule MongoosePush do
   for both services.
 
   At this moment only those two services are supported but in future
-  MongoosePush may and probably will support even more Push Notification Services. 
+  MongoosePush may and probably will support even more Push Notification Services.
   """
 
   require Logger
