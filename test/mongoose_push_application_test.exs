@@ -11,7 +11,7 @@ defmodule MongoosePushApplicationTest do
   test "pool groups" do
     assert [:dev1, :dev2] == pools_by_mode(:apns, :dev)
     assert [:prod1, :prod2] == pools_by_mode(:apns, :prod)
-    assert [:prod] == pools_by_mode(:fcm, :prod)
+    assert [:default] == pools_by_mode(:fcm, :default)
   end
 
   test "pool size" do
@@ -19,7 +19,7 @@ defmodule MongoosePushApplicationTest do
     assert 2 == pool_size(:apns, :prod1)
     assert 3 == pool_size(:apns, :dev2)
     assert 4 == pool_size(:apns, :prod2)
-    assert 5 == pool_size(:fcm, :prod)
+    assert 5 == pool_size(:fcm, :default)
   end
 
   test "pools online" do
@@ -34,8 +34,8 @@ defmodule MongoosePushApplicationTest do
     assert Process.alive?(Process.whereis(worker_name(:apns, :dev2, 1)))
     assert Process.alive?(Process.whereis(worker_name(:apns, :dev2, 3)))
 
-    assert Process.alive?(Process.whereis(worker_name(:fcm, :prod, 1)))
-    assert Process.alive?(Process.whereis(worker_name(:fcm, :prod, 5)))
+    assert Process.alive?(Process.whereis(worker_name(:fcm, :default, 1)))
+    assert Process.alive?(Process.whereis(worker_name(:fcm, :default, 5)))
   end
 
   test "pools have corrent size" do
@@ -43,7 +43,7 @@ defmodule MongoosePushApplicationTest do
     assert nil == Process.whereis(worker_name(:apns, :prod1, 3))
     assert nil == Process.whereis(worker_name(:apns, :dev2, 4))
     assert nil == Process.whereis(worker_name(:apns, :prod2, 5))
-    assert nil == Process.whereis(worker_name(:fcm, :prod, 6))
+    assert nil == Process.whereis(worker_name(:fcm, :default, 6))
   end
 
   test "application starts and stops" do
@@ -57,7 +57,7 @@ defmodule MongoosePushApplicationTest do
     assert nil == Process.whereis(worker_name(:apns, :prod1, 1))
     assert nil == Process.whereis(worker_name(:apns, :dev2, 1))
     assert nil == Process.whereis(worker_name(:apns, :prod2, 1))
-    assert nil == Process.whereis(worker_name(:fcm, :prod, 1))
+    assert nil == Process.whereis(worker_name(:fcm, :default, 1))
     ok = Application.start(:mongoose_push, :temporary)
   end
 end

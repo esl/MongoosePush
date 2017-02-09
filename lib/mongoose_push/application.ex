@@ -38,7 +38,7 @@ defmodule MongoosePush.Application do
     config = env(service)
 
     config
-    |> Enum.group_by(&(elem(&1, 1)[:mode]), &(elem &1, 0))
+    |> Enum.group_by(&(mode(elem(&1, 1))), &(elem &1, 0))
     |> Map.get(mode)
   end
 
@@ -48,6 +48,8 @@ defmodule MongoosePush.Application do
   defp fcm_workers(nil), do: []
   defp fcm_workers(config) do
     workers = Enum.map(config, fn({pool_name, pool_config}) ->
+      pool_config = translate_worker_config(:fcm, pool_config)
+
       Enum.map(1..pool_size(:fcm, pool_name), fn(id) ->
         worker_name = worker_name(:fcm, pool_name, id)
         worker(Pigeon.GCMWorker, [worker_name, pool_config], [id: worker_name])
@@ -61,6 +63,8 @@ defmodule MongoosePush.Application do
   defp apns_workers(nil), do: []
   defp apns_workers(config) do
     workers = Enum.map(config, fn({pool_name, pool_config}) ->
+      pool_config = translate_worker_config(:apns, pool_config)
+
       Enum.map(1..pool_size(:apns, pool_name), fn(id) ->
         worker_name = worker_name(:apns, pool_name, id)
         worker_config = Pigeon.APNS.Config.config(worker_name, pool_config)
@@ -71,5 +75,50 @@ defmodule MongoosePush.Application do
     workers
     |> List.flatten
   end
+
+  defp translate_worker_config(:fcm, config) do
+    config
+    |> fix_priv_paths()
+    |> ensure_mode()
+  end
+
+  defp translate_worker_config(:apns, config) do
+    config
+    |> fix_priv_paths()
+    |> ensure_mode()
+    |> construct_apns_endpoint_options()
+  end
+
+  defp ensure_mode(config) do
+    case config[:mode] do
+      nil ->
+        Enum.into([mode: mode(config)], config)
+      _ ->
+        config
+    end
+  end
+
+  defp construct_apns_endpoint_options(config) do
+    new_key = case mode(config) do
+      :dev -> :development_endpoint
+      :prod -> :production_endpoint
+    end
+    Enum.into([{new_key, config[:endpoint]}], config)
+  end
+
+  defp fix_priv_paths(config) do
+    path_keys = [:cert, :key]
+    config
+    |> Enum.map(fn({key, value}) ->
+      case Enum.member?(path_keys, key) do
+        true ->
+          {key, Application.app_dir(:mongoose_push, value)}
+        false ->
+          {key, value}
+      end
+    end)
+  end
+
+  defp mode(config), do: config[:mode] || :prod
 
 end

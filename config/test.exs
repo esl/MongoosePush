@@ -13,17 +13,17 @@ config :maru, MongoosePush.Router,
     ]
 
 config :mongoose_push, fcm: [
-    prod: [
+    default: [
         key: "fake_app_key",
         endpoint: "localhost",
-        pool_size: 5
+        pool_size: 5,
+        mode: :prod
     ]
   ]
 
 config :mongoose_push, apns: [
    dev1: [
-     development_endpoint: "localhost",
-     production_endpoint: "localhost",
+     endpoint: "localhost",
      cert: "priv/apns/dev_cert.pem",
      key: "priv/apns/dev_key.pem",
      mode: :dev,
@@ -31,17 +31,14 @@ config :mongoose_push, apns: [
      pool_size: 1
    ],
    prod1: [
-     development_endpoint: "localhost",
-     production_endpoint: "localhost",
+     endpoint: "localhost",
      cert: "priv/apns/prod_cert.pem",
      key: "priv/apns/prod_key.pem",
-     mode: :prod,
      use_2197: true,
      pool_size: 2
    ],
    dev2: [
-     development_endpoint: "localhost",
-     production_endpoint: "localhost",
+     endpoint: "localhost",
      cert: "priv/apns/dev_cert.pem",
      key: "priv/apns/dev_key.pem",
      mode: :dev,
@@ -49,8 +46,7 @@ config :mongoose_push, apns: [
      pool_size: 3
    ],
    prod2: [
-     development_endpoint: "localhost",
-     production_endpoint: "localhost",
+     endpoint: "localhost",
      cert: "priv/apns/prod_cert.pem",
      key: "priv/apns/prod_key.pem",
      mode: :prod,

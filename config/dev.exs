@@ -13,9 +13,10 @@ config :maru, MongoosePush.Router,
     ]
 
 config :mongoose_push, fcm: [
-    prod: [
+    default: [
         key: "fake_app_key",
-        pool_size: 5
+        pool_size: 5,
+        mode: :prod
     ]
   ]
 
