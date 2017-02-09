@@ -32,7 +32,7 @@ defmodule MongoosePush.API.V1 do
           {:error, reason} ->
             conn
             |> put_status(500)
-            |> json(%{:details => IO.inspect reason})
+            |> json(%{:details => inspect reason})
         end
       end
     end

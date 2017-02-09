@@ -5,6 +5,8 @@ defmodule MongoosePush do
 
   require Logger
   import MongoosePush.Application
+  alias Pigeon.GCM
+  alias Pigeon.APNS
 
   def push(device_id, %{:service => service} = request) do
       mode = Map.get(request, :mode, :prod)
@@ -17,15 +19,19 @@ defmodule MongoosePush do
 
   def push(:fcm, worker, device_id, request) do
     msg = prepare_notification(:fcm, request)
-    Pigeon.GCM.Notification.new(device_id, msg)
-    |> Pigeon.GCM.push([name: worker])
+    gcm_notification = Pigeon.GCM.Notification.new(device_id, msg)
+
+    gcm_notification
+    |> GCM.push([name: worker])
     |> normalize_response(:fcm, device_id)
   end
 
   def push(:apns, worker, device_id, request) do
-    prepare_notification(:apns, request)
-    |> Pigeon.APNS.Notification.new(device_id, request[:topic])
-    |> Pigeon.APNS.push([name: worker])
+    raw_notification = prepare_notification(:apns, request)
+
+    raw_notification
+    |> APNS.Notification.new(device_id, request[:topic])
+    |> APNS.push([name: worker])
     |> normalize_response(:apns, device_id)
   end
 

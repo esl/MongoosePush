@@ -19,39 +19,47 @@ defmodule MongoosePush.Application do
     Supervisor.start_link(children, opts)
   end
 
-
   defp fcm_workers(nil), do: []
   defp fcm_workers(config) do
-    Enum.map(config, fn({pool_name, pool_config}) ->
+    workers = Enum.map(config, fn({pool_name, pool_config}) ->
       Enum.map(1..pool_size(:fcm, pool_name), fn(id) ->
         worker_name = worker_name(:fcm, pool_name, id)
         worker(Pigeon.GCMWorker, [worker_name, pool_config], [id: worker_name])
       end)
     end)
+
+    workers
     |> List.flatten
   end
 
   defp apns_workers(nil), do: []
   defp apns_workers(config) do
-    Enum.map(config, fn({pool_name, pool_config}) ->
+    workers = Enum.map(config, fn({pool_name, pool_config}) ->
       Enum.map(1..pool_size(:apns, pool_name), fn(id) ->
         worker_name = worker_name(:apns, pool_name, id)
         worker_config = Pigeon.APNS.Config.config(worker_name, pool_config)
         worker(Pigeon.APNSWorker, [worker_config], [id: worker_name])
       end)
     end)
+
+    workers
     |> List.flatten
   end
 
   def pool_size(type, name), do: env(type)[name][:pool_size]
   def worker_name(type, name, num), do: String.to_atom(~s"#{type}_#{name}_#{num}")
 
-  def pools_by_mode(:fcm, _mode) do
-    env(:fcm) |> Enum.map(&(elem(&1, 0)))
+  def pools_by_mode(service, mode) when is_atom(service) do
+    pools_by_mode(env(service), mode)
   end
 
-  def pools_by_mode(:apns, mode) do
-    env(:apns)
+  def pools_by_mode(config, _mode) do
+    config
+    |> Enum.map(&(elem(&1, 0)))
+  end
+
+  def pools_by_mode(config, mode) do
+    config
     |> Enum.group_by(&(elem(&1, 1)[:mode]), &(elem &1, 0))
     |> Map.get(mode)
   end
