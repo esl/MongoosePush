@@ -9,10 +9,11 @@ services:
   - docker
 
 before_install:
-  - docker run -d -p 2197:2197 mobify/apns-http2-mock-server
-  - docker run -d -p 443:443 roxeon/fcm-http2-mock-server
+  - tools/travis-setup.sh
 
 env:
-    - MIX_ENV=test
+    - PRESET=exunit MIX_ENV=test
+    - PRESET=credo MIX_ENV=test
+    - PRESET=dialyzer MIX=test
 
-script: mix coveralls.travis
+script: tools/travis-test.sh

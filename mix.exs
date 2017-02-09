@@ -38,7 +38,7 @@ defmodule MongoosePush.Mixfile do
      {:httpoison, "~> 0.10.0"},
      {:mock, "~> 0.2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
-     {:dialyxir, "~> 0.4", only: [:dev], runtime: false},
+     {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]}
     ]
   end

@@ -49,16 +49,16 @@ defmodule MongoosePush.Application do
   def pool_size(type, name), do: env(type)[name][:pool_size]
   def worker_name(type, name, num), do: String.to_atom(~s"#{type}_#{name}_#{num}")
 
-  def pools_by_mode(service, mode) when is_atom(service) do
-    pools_by_mode(env(service), mode)
-  end
+  def pools_by_mode(:fcm = service, _mode) do
+    config = env(service)
 
-  def pools_by_mode(config, _mode) do
     config
     |> Enum.map(&(elem(&1, 0)))
   end
 
-  def pools_by_mode(config, mode) do
+  def pools_by_mode(:apns = service, mode) do
+    config = env(service)
+    
     config
     |> Enum.group_by(&(elem(&1, 1)[:mode]), &(elem &1, 0))
     |> Map.get(mode)

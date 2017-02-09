@@ -11,14 +11,21 @@ compile:
 	mix compile
 
 certs: priv/ssl/fake_cert.pem priv/ssl/fake_server.pem priv/ssl/fake_dh_server.pem \
-       priv/apns/app_cert.pem
+       priv/apns/dev_cert.pem priv/apns/prod_cert.pem
 
-priv/apns/app_cert.pem:
+priv/apns/prod_cert.pem:
 	@mkdir -p $(@D)
 	openssl req \
     	-x509 -nodes -days 365 \
-    	-subj '/C=PL/ST=ML/L=Krakow/CN=mongoose-push-apns' \
-    	-newkey rsa:2048 -keyout priv/apns/app_key.pem -out priv/apns/app_cert.pem
+    	-subj '/C=PL/ST=ML/L=Krakow/CN=mongoose-push-apns-prod' \
+    	-newkey rsa:2048 -keyout priv/apns/prod_key.pem -out priv/apns/prod_cert.pem
+
+priv/apns/dev_cert.pem:
+	@mkdir -p $(@D)
+	openssl req \
+			-x509 -nodes -days 365 \
+			-subj '/C=PL/ST=ML/L=Krakow/CN=mongoose-push-apns-dev' \
+			-newkey rsa:2048 -keyout priv/apns/dev_key.pem -out priv/apns/dev_cert.pem
 
 priv/ssl/fake_cert.pem:
 	@mkdir -p $(@D)
