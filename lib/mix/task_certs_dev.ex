@@ -11,23 +11,24 @@ defmodule Mix.Tasks.Certs.Dev do
   `mobify/apns-http2-mock-server`).
   """
 
+  @spec run(term) :: :ok
   def run(_) do
     maybe_gen_dev_apns()
     maybe_gen_prod_apns()
     maybe_gen_https()
   end
 
-  defp maybe_gen_dev_apns() do
+  defp maybe_gen_dev_apns do
     maybe_gen_cert("priv/apns/dev_cert.pem", "priv/apns/dev_key.pem",
                    "mongoose-push-apns-dev")
   end
 
-  defp maybe_gen_prod_apns() do
+  defp maybe_gen_prod_apns do
     maybe_gen_cert("priv/apns/prod_cert.pem", "priv/apns/prod_key.pem",
                    "mongoose-push-apns-prod")
   end
 
-  defp maybe_gen_https() do
+  defp maybe_gen_https do
     maybe_gen_cert("priv/ssl/fake_cert.pem", "priv/ssl/fake_key.pem",
                    "mongoose-push")
   end
@@ -36,6 +37,7 @@ defmodule Mix.Tasks.Certs.Dev do
     unless File.exists?(cert_file) and File.exists?(key_file) do
       gen_cert(cert_file, key_file, common_name)
     end
+    :ok
   end
 
   defp gen_cert(cert_file, key_file, common_name) do
@@ -44,8 +46,8 @@ defmodule Mix.Tasks.Certs.Dev do
 
     :ok = File.mkdir_p(cert_dir)
     :ok = File.mkdir_p(key_dir)
-    
-    System.cmd("openssl", [
+
+    {_, 0} = System.cmd("openssl", [
       "req", "-x509", "-nodes", "-days", "365", "-subj",
       "/C=PL/ST=ML/L=Krakow/CN=" <> common_name, "-newkey", "rsa:2048",
       "-keyout", key_file, "-out", cert_file
