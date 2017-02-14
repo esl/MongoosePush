@@ -23,7 +23,7 @@ Soon :)
 
 Build step is really easy. Just type in root of the repository:
 ```bash
-MIX_ENV=prod mix do deps.get, compile, release
+MIX_ENV=prod mix do certs.dev, deps.get, compile, release
 ```
 
 After this step you may try to run the service via:
