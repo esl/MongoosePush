@@ -1,7 +1,4 @@
 defmodule Mix.Tasks.Certs.Dev do
-  use Mix.Task
-
-  @shortdoc "Generate fake certs (placeholders) for HTTPS endpoint and APNS"
   @moduledoc """
   Generate fake certs (placeholders) for `HTTPS` endpoint and `APNS` service.
 
@@ -10,6 +7,9 @@ defmodule Mix.Tasks.Certs.Dev do
   only with mock APNS service (like one provided by docker
   `mobify/apns-http2-mock-server`).
   """
+  @shortdoc "Generate fake certs (placeholders) for HTTPS endpoint and APNS"
+
+  use Mix.Task
 
   @spec run(term) :: :ok
   def run(_) do

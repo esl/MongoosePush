@@ -16,7 +16,7 @@ Soon :)
 
 #### Perquisites
 
-* Elixir (http://elixir-lang.org/install.html)
+* Elixir 1.4+ (http://elixir-lang.org/install.html)
 * Rebar3 (just enter ```mix local.rebar```)
 
 #### Build and run
@@ -35,7 +35,7 @@ Yeah, I know... It crashed. Running this service is fast and simple but unfortun
 
 ## Configuration
 
-The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on with `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for you development. Anyway, lets take a look on `config/prod.exs`, part by part.  
+The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Anyway, lets take a look on `config/prod.exs`, part by part.  
 
 ### REST API configuration
 
@@ -69,7 +69,7 @@ config :mongoose_push, fcm: [
   ]
 ```
 
-The first level keyword list is a pool definition. You may have several named pools of different sizes and with different configurations. Currently the only reason you may want to do this is that, the `REST` client may switch between them by specifying matching `:mode` in their push request.
+Here we can see definition of a pool. Each pool has a name and its configuration. You may have several named pools of different sizes and with different configurations. Currently the only reason you may want to do this is that, the `REST` client may switch between them by specifying matching `:mode` in their push request.
 
 Each `FCM` pool may be configured by setting the following fields:
 * **key** (*required*) - you `FCM` Application Key for using Googles API
