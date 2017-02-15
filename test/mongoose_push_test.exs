@@ -90,20 +90,17 @@ defmodule MongoosePushTest do
     # Default should be mode: :prod
     with_mock MongoosePush.Application, [:passthrough], [] do
       assert :ok = push("androidtestdeviceid65", notification)
-      assert called(MongoosePush.Application.worker_name(:_, :prod1, :_)) or
-             called(MongoosePush.Application.worker_name(:_, :prod2, :_))
+      assert called(MongoosePush.Application.select_worker(:_, :prod))
     end
 
     with_mock MongoosePush.Application, [:passthrough], [] do
       assert :ok = push("androidtestdeviceid65", dev_notification)
-      assert called(MongoosePush.Application.worker_name(:_, :dev1, :_)) or
-             called(MongoosePush.Application.worker_name(:_, :dev2, :_))
+      assert called(MongoosePush.Application.select_worker(:_, :dev))
     end
 
     with_mock MongoosePush.Application, [:passthrough], [] do
       assert :ok = push("androidtestdeviceid65", prod_notification)
-      assert called(MongoosePush.Application.worker_name(:_, :prod1, :_)) or
-             called(MongoosePush.Application.worker_name(:_, :prod2, :_))
+      assert called(MongoosePush.Application.select_worker(:_, :prod))
     end
   end
 

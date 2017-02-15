@@ -42,6 +42,11 @@ defmodule MongoosePush.Application do
     |> Map.get(mode)
   end
 
+  def select_worker(service, mode) do
+    [pool | _] = pools_by_mode(service, mode)
+    worker_name(service, pool, Enum.random(1..pool_size(service, pool)))
+  end
+
   @spec env(atom) :: term
   def env(var), do: Application.get_env(:mongoose_push, var)
 
