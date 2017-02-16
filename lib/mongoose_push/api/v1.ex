@@ -29,10 +29,14 @@ defmodule MongoosePush.API.V1 do
             conn
             |> put_status(200)
             |> json(nil)
-          {:error, reason} ->
+          {:error, reason} when is_atom(reason) ->
             conn
             |> put_status(500)
-            |> json(%{:details => inspect reason})
+            |> json(%{:details => reason})
+          {:error, _reason} ->
+            conn
+            |> put_status(500)
+            |> json(nil)
         end
       end
     end

@@ -11,7 +11,7 @@ defmodule MongoosePush do
   """
 
   require Logger
-  alias MongoosePush.Application
+  alias MongoosePush.Pools
 
   @typedoc "Available keys in `request` map"
   @type req_key :: :service | :body | :title | :bagde | :mode | :tag |
@@ -39,14 +39,10 @@ defmodule MongoosePush do
   @spec push(String.t, request) :: :ok | {:error, term}
   def push(device_id, %{:service => service} = request) do
       mode = Map.get(request, :mode, :prod)
-      worker = Application.select_worker(service, mode)
-      module = service_module(service)
+      worker = Pools.select_worker(service, mode)
+      module = MongoosePush.Application.services()[service]
 
-      module.prepare_notification(device_id, request)
-      |> module.push(device_id, worker)
+      notification = module.prepare_notification(device_id, request)
+      module.push(notification, device_id, worker)
   end
-
-  defp service_module(:fcm), do: MongoosePush.Service.FCM
-  defp service_module(:apns), do: MongoosePush.Service.APNS
-
 end

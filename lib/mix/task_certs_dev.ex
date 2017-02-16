@@ -34,10 +34,11 @@ defmodule Mix.Tasks.Certs.Dev do
   end
 
   defp maybe_gen_cert(cert_file, key_file, common_name) do
-    unless File.exists?(cert_file) and File.exists?(key_file) do
+    if File.exists?(cert_file) and File.exists?(key_file) do
+      :ok
+    else
       gen_cert(cert_file, key_file, common_name)
     end
-    :ok
   end
 
   defp gen_cert(cert_file, key_file, common_name) do
@@ -52,5 +53,7 @@ defmodule Mix.Tasks.Certs.Dev do
       "/C=PL/ST=ML/L=Krakow/CN=" <> common_name, "-newkey", "rsa:2048",
       "-keyout", key_file, "-out", cert_file
     ])
+
+    :ok
   end
 end

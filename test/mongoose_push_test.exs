@@ -71,13 +71,6 @@ defmodule MongoosePushTest do
     assert {:error, _} = push("androidtestdeviceid65", notification)
   end
 
-  defp reset(service) do
-    {:ok, conn} = get_connection(service)
-    Kadabra.post(conn, "/reset", "")
-    get_response()
-    :ok
-  end
-
   test "push to apns allows choosing mode" do
     notification =
       %{:service => :apns,
@@ -88,19 +81,19 @@ defmodule MongoosePushTest do
     prod_notification = Map.put(notification, :mode, :prod)
 
     # Default should be mode: :prod
-    with_mock MongoosePush.Application, [:passthrough], [] do
+    with_mock MongoosePush.Pools, [:passthrough], [] do
       assert :ok = push("androidtestdeviceid65", notification)
-      assert called(MongoosePush.Application.select_worker(:_, :prod))
+      assert called(MongoosePush.Pools.select_worker(:_, :prod))
     end
 
-    with_mock MongoosePush.Application, [:passthrough], [] do
+    with_mock MongoosePush.Pools, [:passthrough], [] do
       assert :ok = push("androidtestdeviceid65", dev_notification)
-      assert called(MongoosePush.Application.select_worker(:_, :dev))
+      assert called(MongoosePush.Pools.select_worker(:_, :dev))
     end
 
-    with_mock MongoosePush.Application, [:passthrough], [] do
+    with_mock MongoosePush.Pools, [:passthrough], [] do
       assert :ok = push("androidtestdeviceid65", prod_notification)
-      assert called(MongoosePush.Application.select_worker(:_, :prod))
+      assert called(MongoosePush.Pools.select_worker(:_, :prod))
     end
   end
 

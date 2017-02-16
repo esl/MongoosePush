@@ -5,9 +5,12 @@ defmodule MongoosePush.Service.APNS do
 
   @behaviour MongoosePush.Service
   alias Pigeon.APNS
+  alias Pigeon.APNS.Config
+  alias Pigeon.APNS.Notification
   alias MongoosePush.Service
+  alias MongoosePush.Pools
 
-  @spec prepare_notification(string, MongoosePush.request) ::
+  @spec prepare_notification(String.t(), MongoosePush.request) ::
     Service.notification
   def prepare_notification(device_id, request) do
     %{
@@ -19,10 +22,11 @@ defmodule MongoosePush.Service.APNS do
       "category" => request[:click_action]
     }
     |>
-    APNS.Notification.new(device_id, request[:topic])
+    Notification.new(device_id, request[:topic])
   end
 
-  @spec push(Service.notification, string, atom) :: :ok | {:error, term}
+  @spec push(Service.notification(), String.t(), atom()) ::
+    :ok | {:error, term}
   def push(notification, _device_id, worker) do
     case APNS.push(notification, [name: worker]) do
       {:ok, _state} ->
@@ -30,6 +34,27 @@ defmodule MongoosePush.Service.APNS do
       {:error, reason, _state} ->
         {:error, reason}
     end
+  end
+
+  @spec workers({atom, Keyword.t()} | nil) :: list(Supervisor.Spec.spec())
+  def workers(nil), do: []
+  def workers({pool_name, pool_config}) do
+    pool_size = pool_config[:pool_size]
+    pool_config = construct_apns_endpoint_options(pool_config)
+    Enum.map(1..pool_size, fn(id) ->
+        worker_name = Pools.worker_name(:apns, pool_name, id)
+        worker_config = Config.config(worker_name, pool_config)
+        Supervisor.Spec.worker(Pigeon.APNSWorker,
+                               [worker_config], [id: worker_name])
+    end)
+  end
+
+  defp construct_apns_endpoint_options(config) do
+    new_key = case config[:mode] do
+      :dev -> :development_endpoint
+      :prod -> :production_endpoint
+    end
+    Enum.into([{new_key, config[:endpoint]}], config)
   end
 
 end

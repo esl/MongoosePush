@@ -1,25 +1,23 @@
 defmodule MongoosePushApplicationTest do
   use ExUnit.Case
   import MongoosePush.Application
+  import MongoosePush.Pools
   doctest MongoosePush.Application
 
-  test "worker name" do
-    assert :apns_name1_1 == worker_name(:apns, :name1, 1)
-    assert :fcm_name2_12 == worker_name(:fcm, :name2, 12)
-  end
+  setup do
+    # Validate config/text.exs that is need for this test suite
+    apns_pools = Keyword.keys(Application.get_env(:mongoose_push, :apns))
+    4 = length(apns_pools)
+    true = Enum.member?(apns_pools, :prod1)
+    true = Enum.member?(apns_pools, :prod2)
+    true = Enum.member?(apns_pools, :dev1)
+    true = Enum.member?(apns_pools, :dev2)
 
-  test "pool groups" do
-    assert [:dev1, :dev2] == pools_by_mode(:apns, :dev)
-    assert [:prod1, :prod2] == pools_by_mode(:apns, :prod)
-    assert [:default] == pools_by_mode(:fcm, :default)
-  end
+    fcm_pools = Keyword.keys(Application.get_env(:mongoose_push, :fcm))
+    1 = length(fcm_pools)
+    true = Enum.member?(fcm_pools, :default)
 
-  test "pool size" do
-    assert 1 == pool_size(:apns, :dev1)
-    assert 2 == pool_size(:apns, :prod1)
-    assert 3 == pool_size(:apns, :dev2)
-    assert 4 == pool_size(:apns, :prod2)
-    assert 5 == pool_size(:fcm, :default)
+    :ok
   end
 
   test "pools online" do
@@ -47,17 +45,17 @@ defmodule MongoosePushApplicationTest do
   end
 
   test "application starts and stops" do
-    ok = Application.stop(:mongoose_push)
-    ok = Application.start(:mongoose_push, :temporary)
+    :ok = Application.stop(:mongoose_push)
+    :ok = Application.start(:mongoose_push, :temporary)
   end
 
   test "workers are stoped along with the application" do
-    ok = Application.stop(:mongoose_push)
+    :ok = Application.stop(:mongoose_push)
     assert nil == Process.whereis(worker_name(:apns, :dev1, 1))
     assert nil == Process.whereis(worker_name(:apns, :prod1, 1))
     assert nil == Process.whereis(worker_name(:apns, :dev2, 1))
     assert nil == Process.whereis(worker_name(:apns, :prod2, 1))
     assert nil == Process.whereis(worker_name(:fcm, :default, 1))
-    ok = Application.start(:mongoose_push, :temporary)
+    :ok = Application.start(:mongoose_push, :temporary)
   end
 end
