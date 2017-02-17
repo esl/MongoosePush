@@ -1,6 +1,6 @@
 # MongoosePush
 
-[![Build Status](https://travis-ci.org/esl/MongoosePush.svg?branch=initial_implementation)](https://travis-ci.org/esl/MongoosePush) [![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=initial_implementation)](https://coveralls.io/github/esl/MongoosePush?branch=initial_implementation)
+[![Build Status](https://travis-ci.org/esl/MongoosePush.svg?branch=master)](https://travis-ci.org/esl/MongoosePush) [![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=initial_implementation)](https://coveralls.io/github/esl/MongoosePush?branch=master)
 
 **MongoosePush** is simple (seriously) **REST** service written in **Elixir** providing ability to **send push
 notification** to `FCM` (Firebase Cloud Messaging) and/or
@@ -23,7 +23,7 @@ Soon :)
 
 Build step is really easy. Just type in root of the repository:
 ```bash
-MIX_ENV=prod mix do certs.dev, deps.get, compile, release
+MIX_ENV=prod mix do deps.get, compile, certs.dev, release
 ```
 
 After this step you may try to run the service via:

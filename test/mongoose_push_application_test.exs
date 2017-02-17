@@ -7,15 +7,10 @@ defmodule MongoosePushApplicationTest do
   setup do
     # Validate config/text.exs that is need for this test suite
     apns_pools = Keyword.keys(Application.get_env(:mongoose_push, :apns))
-    4 = length(apns_pools)
-    true = Enum.member?(apns_pools, :prod1)
-    true = Enum.member?(apns_pools, :prod2)
-    true = Enum.member?(apns_pools, :dev1)
-    true = Enum.member?(apns_pools, :dev2)
+    [:dev1, :dev2, :prod1, :prod2] = Enum.sort(apns_pools)
 
     fcm_pools = Keyword.keys(Application.get_env(:mongoose_push, :fcm))
-    1 = length(fcm_pools)
-    true = Enum.member?(fcm_pools, :default)
+    [:default] = fcm_pools
 
     :ok
   end
