@@ -1,0 +1,19 @@
+language: elixir
+elixir:
+    - 1.4.1
+otp_release:
+    - 19.2
+
+sudo: required
+services:
+  - docker
+
+before_script:
+  - tools/travis-setup.sh
+
+env:
+    - PRESET=exunit MIX_ENV=test
+    - PRESET=credo MIX_ENV=test
+    - PRESET=dialyzer MIX=test
+
+script: tools/travis-test.sh
