@@ -11,6 +11,10 @@ services:
 branches:
   - master
 
+cache:
+  directories:
+      - .dialyzer
+
 before_script:
   - tools/travis-setup.sh
 
