@@ -9,38 +9,19 @@ defmodule MongoosePush.Mixfile do
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       deps: deps(),
-
-      # Docs
-      name: "MongoosePush",
-      source_url: "https://github.com/esl/MongoosePush",
-      homepage_url: "https://github.com/esl/MongoosePush",
-      docs: [main: "MongoosePush", # The main page in the docs
-          extras: ["README.md"]],
-
-      # Test Coverage
-      test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html":  :test]
+      docs: docs(),
+      dialyzer: dialyzer(),
+      test_coverage: test_coverage(),
+      preferred_cli_env: preferred_cli_env()
     ]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
     [extra_applications: [:logger],
      mod: {MongoosePush.Application, []}]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:my_dep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:my_dep, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
   defp deps do
     [
      {:pigeon, git: "https://github.com/rslota/pigeon.git", tag: "6d1e4e3"},
@@ -56,5 +37,28 @@ defmodule MongoosePush.Mixfile do
      {:credo, "~> 0.5", only: [:dev, :test]},
      {:ex_doc, "~> 0.14", only: :dev}
     ]
+  end
+
+  defp docs do
+    [name: "MongoosePush",
+     source_url: "https://github.com/esl/MongoosePush",
+     homepage_url: "https://github.com/esl/MongoosePush",
+     docs: [main: "MongoosePush", # The main page in the docs
+          extras: ["README.md"]]]
+  end
+
+  defp dialyzer do
+    [plt_core_path: ".dialyzer/",
+     flags: ["-Wunmatched_returns", "-Werror_handling",
+             "-Wrace_conditions", "-Wunderspecs"]]
+  end
+
+  defp test_coverage do
+    [tool: ExCoveralls]
+  end
+
+  defp preferred_cli_env do
+    ["coveralls": :test, "coveralls.detail": :test,
+     "coveralls.travis": :test, "coveralls.html": :test]
   end
 end
