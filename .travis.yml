@@ -8,6 +8,9 @@ sudo: required
 services:
   - docker
 
+branch:
+  - master
+
 before_script:
   - tools/travis-setup.sh
 
