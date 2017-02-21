@@ -31,6 +31,7 @@ defmodule MongoosePush.Mixfile do
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.0"},
      {:confex, "~> 1.4", override: true},
+     {:mix_docker, "~> 0.3"},
      # Below only :dev / :test deps
      {:mock, "~> 0.2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
