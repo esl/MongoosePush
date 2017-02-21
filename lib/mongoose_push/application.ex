@@ -20,7 +20,12 @@ defmodule MongoosePush.Application do
 
   @spec pools_config(MongoosePush.service) :: term
   def pools_config(service) do
-    pools_config = Application.get_env(:mongoose_push, service)
+    enabled_opt = String.to_atom(~s"#{service}_enabled")
+    pools_config =
+      case Confex.get(:mongoose_push, enabled_opt, true) do
+        false ->  []
+        true  ->  Confex.get_map(:mongoose_push, service)
+      end
 
     Enum.map(pools_config, fn({pool_name, pool_config}) ->
       normalized_pool_config =
