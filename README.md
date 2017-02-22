@@ -10,6 +10,30 @@ notification** to `FCM` (Firebase Cloud Messaging) and/or
 
 ### Docker
 
+#### Running from DockerHub
+
+We provide already builded MongoosePush images. If you just want to use it, then all you need is `docker`, `FCM` app token and/or `APNS` app certificates.
+In case of certificates you need setup the following directory structure:
+* priv/
+    * ssl/
+      * rest_cert.pem - The REST endpoint certificate
+      * rest_key.pem - private key for the REST endpoint certificate
+    * apns/
+      * prod_cert.pem - Production APNS app certificate
+      * prod_key.pem - Production APNS app certificate's private key
+      * dev_cert.pem - Development APNS app certificate
+      * dev_jey.pem - Development APNS app certificate's private key
+
+Assuming that your `FCM` app token is "MY_FCM_SECRET_TOKEN" and you have the `priv` directory with all ceriticates in current directory, then you may start MongoosePush with the following command:
+
+```bash
+docker run -v `pwd`/priv:/opt/app/priv \
+  -e PUSH_FCM_APP_KEY="MY_FCM_SECRET_TOKEN" \
+  -e PUSH_HTTPS_CERTFILE="ssl/rest_cert.pem" \
+  -e PUSH_HTTPS_KEYFILE="ssl/rest_key.pem" \
+  -it --rm mongooseim/mongoose_push:latest
+```
+
 #### Building
 
 Building docker is really easy, just type:
@@ -25,7 +49,7 @@ docker run -it --rm mongoose_push:release foreground
 ```
 
 Docker image that you have just builded, exposes the port `8443` for the REST API of
-MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and `REST` API certificates.
+MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and REST API certificates.
 
 #### Configuring
 

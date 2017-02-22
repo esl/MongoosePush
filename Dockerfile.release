@@ -10,8 +10,13 @@ ENV PUSH_HTTPS_PORT=8443 MIX_ENV=prod REPLACE_OS_VARS=true SHELL=/bin/sh
 ADD mongoose_push.tar.gz ./
 RUN chown -R default ./releases
 
+# Move priv dir
+RUN mv $(find lib -name mongoose_push-*)/priv .
+RUN ln -s $(pwd)/priv $(find lib -name mongoose_push-*)/priv
+
 USER default
 
-VOLUME /opt/app
+VOLUME /opt/app/priv
 
+CMD ["foreground"]
 ENTRYPOINT ["/opt/app/bin/mongoose_push"]
