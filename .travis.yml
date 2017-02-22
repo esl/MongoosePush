@@ -23,3 +23,6 @@ env:
     - PRESET=dialyzer MIX=test
 
 script: tools/travis-test.sh
+
+after_success:
+  - tools/travis-docker.sh

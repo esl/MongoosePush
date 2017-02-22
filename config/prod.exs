@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :mix_docker, image: "rslota/mongoose_push"
+config :mix_docker, image: "mongoose_push"
 
 config :maru, MongoosePush.Router,
     versioning: [
