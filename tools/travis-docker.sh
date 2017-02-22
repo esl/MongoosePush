@@ -4,9 +4,10 @@ set -e
 # Skip this step for jobs that don't run exunit
 test "${PRESET}" == "exunit" || exit 0
 
-MIX_ENV=prod mix do docker.build, docker.release
+MIX_ENV=prod mix docker.build
+MIX_ENV=prod mix docker.release
 
-DOCKERHUB_TAG=`echo "${TRAVIS_BRANCH}" | sed s,/,-,g`
+DOCKERHUB_TAG="${TRAVIS_BRANCH//\//-}"
 
 if [ "${TRAVIS_PULL_REQUEST}" != 'false' ]; then
     DOCKERHUB_TAG="PR-${TRAVIS_PULL_REQUEST}"
