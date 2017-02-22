@@ -10,7 +10,45 @@ notification** to `FCM` (Firebase Cloud Messaging) and/or
 
 ### Docker
 
-Soon :)
+#### Building
+
+Building docker is really easy, just type:
+
+```bash
+MIX_ENV=prod mix do docker.build, docker.release
+```
+
+As a result of this command you get access to `mongoose_push:release` docker image. You may run it by typing:
+
+```bash
+docker run -it --rm mongoose_push:release foreground
+```
+
+Docker image that you have just builded, exposes the port `8443` for the REST API of
+MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and `REST` API certificates.
+
+#### Configuring
+
+The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via system environmental variables. Below theres a full list of the variables you may set while running docker (via `docker -e` switch), but if theres something you feel, you need to change other then that, then you need to prepare your own `config/prod.exs` before image build.
+
+Environmental variables to configure production release:
+
+* `PUSH_HTTPS_PORT` - The port of the MongoosePush REST endpoint. Please not that docker exposes only `8443` port, so changing this setting is not recommended
+* `PUSH_HTTPS_KEYFILE` - Path to PEM keyfile used for REST endpoint
+* `PUSH_HTTPS_CERTFILE` - Path to PEM certfile used for REST endpoint
+* `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Enabled by default
+* `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
+* `PUSH_FCM_APP_KEY` - App key token to use with `FCM` service
+* `PUSH_FCM_POOL_SIZE` - Connection pool size for `FCM` service
+* `PUSH_APNS_DEV_CERT` - Path Apple's development certfile used to communicate with `APNS`
+* `PUSH_APNS_DEV_KEY` - Path Apple's development keyfile used to communicate with `APNS`
+* `PUSH_APNS_DEV_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in development mode. Disabled by default
+* `PUSH_APNS_DEV_POOL_SIZE` - Connection pool size for `APNS` service in development mode
+* `PUSH_APNS_PROD_CERT` - Path Apple's production certfile used to communicate with `APNS`
+* `PUSH_APNS_PROD_KEY` - Path Apple's production keyfile used to communicate with `APNS`
+* `PUSH_APNS_PROD_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in production mode. Disabled by default
+* `PUSH_APNS_PROD_POOL_SIZE` - Connection pool size for `APNS` service in production mode
+
 
 ### Local build
 
@@ -35,7 +73,7 @@ Yeah, I know... It crashed. Running this service is fast and simple but unfortun
 
 ## Configuration
 
-The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Anyway, lets take a look on `config/prod.exs`, part by part.  
+The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Anyway, lets take a look on `config/dev.exs`, part by part.  
 
 ### REST API configuration
 

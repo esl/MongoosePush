@@ -5,11 +5,13 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 EXPOSE 8443
-ENV HTTPS_PORT=8443 MIX_ENV=prod REPLACE_OS_VARS=true SHELL=/bin/sh
+ENV PUSH_HTTPS_PORT=8443 MIX_ENV=prod REPLACE_OS_VARS=true SHELL=/bin/sh
 
 ADD mongoose_push.tar.gz ./
 RUN chown -R default ./releases
 
 USER default
+
+VOLUME /opt/app
 
 ENTRYPOINT ["/opt/app/bin/mongoose_push"]
