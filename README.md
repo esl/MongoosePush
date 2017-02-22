@@ -32,18 +32,29 @@ MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole Mongo
 The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via system environmental variables. Below theres a full list of the variables you may set while running docker (via `docker -e` switch), but if theres something you feel, you need to change other then that, then you need to prepare your own `config/prod.exs` before image build.
 
 Environmental variables to configure production release:
-
+##### Settings for REST endpoint:
 * `PUSH_HTTPS_PORT` - The port of the MongoosePush REST endpoint. Please not that docker exposes only `8443` port, so changing this setting is not recommended
 * `PUSH_HTTPS_KEYFILE` - Path to PEM keyfile used for REST endpoint
 * `PUSH_HTTPS_CERTFILE` - Path to PEM certfile used for REST endpoint
+
+##### General settings:
 * `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Enabled by default
 * `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
+
+##### Settings for FCM service:
+* `PUSH_FCM_ENDPOINT` - Hostname of `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
 * `PUSH_FCM_APP_KEY` - App key token to use with `FCM` service
 * `PUSH_FCM_POOL_SIZE` - Connection pool size for `FCM` service
+
+##### Settings for development APNS service:
+* `PUSH_APNS_DEV_ENDPOINT` - Hostname of `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
 * `PUSH_APNS_DEV_CERT` - Path Apple's development certfile used to communicate with `APNS`
 * `PUSH_APNS_DEV_KEY` - Path Apple's development keyfile used to communicate with `APNS`
 * `PUSH_APNS_DEV_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in development mode. Disabled by default
 * `PUSH_APNS_DEV_POOL_SIZE` - Connection pool size for `APNS` service in development mode
+
+##### Settings for production APNS service:
+* `PUSH_APNS_PROD_ENDPOINT` - Hostname of `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
 * `PUSH_APNS_PROD_CERT` - Path Apple's production certfile used to communicate with `APNS`
 * `PUSH_APNS_PROD_KEY` - Path Apple's production keyfile used to communicate with `APNS`
 * `PUSH_APNS_PROD_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in production mode. Disabled by default
