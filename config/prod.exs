@@ -7,13 +7,15 @@ config :maru, MongoosePush.Router,
         using: :path
     ],
     https: [
-        ip: {127, 0, 0, 1},
-        port:     {:system, :integer, "PUSH_HTTPS_PORT",     8443},
-        keyfile:  {:system, :string,  "PUSH_HTTPS_KEYFILE",  "priv/ssl/fake_key.pem"},
-        certfile: {:system, :string,  "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
+        bind_addr:  {:system, :string,  "PUSH_HTTPS_BIND_ADDR", "127.0.0.1"},
+        port:       {:system, :integer, "PUSH_HTTPS_PORT",      8443},
+        keyfile:    {:system, :string,  "PUSH_HTTPS_KEYFILE",   "priv/ssl/fake_key.pem"},
+        certfile:   {:system, :string,  "PUSH_HTTPS_CERTFILE",  "priv/ssl/fake_cert.pem"},
         otp_app: :mongoose_push
     ]
 
+config :mongoose_push, loglevel:
+  {:system, :atom, "PUSH_LOGLEVEL", :info}
 config :mongoose_push, fcm_enabled:
   {:system, :boolean, "PUSH_FCM_ENABLED", true}
 

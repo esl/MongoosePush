@@ -57,11 +57,13 @@ The docker image of MongoosePush contains common, basic configuration that is ge
 
 Environmental variables to configure production release:
 ##### Settings for REST endpoint:
+* `PUSH_HTTPS_BIND_ADDR` - Bind IP address of the REST endpoint. Default value in prod release is "127.0.0.1", but docker overrides this with "0.0.0.0"
 * `PUSH_HTTPS_PORT` - The port of the MongoosePush REST endpoint. Please not that docker exposes only `8443` port, so changing this setting is not recommended
 * `PUSH_HTTPS_KEYFILE` - Path to PEM keyfile used for REST endpoint
 * `PUSH_HTTPS_CERTFILE` - Path to PEM certfile used for REST endpoint
 
 ##### General settings:
+* `PUSH_LOGLEVEL` - `debug`/`info`/`warn`/`error` - Log level of the application. `info` is the default one
 * `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Enabled by default
 * `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
 

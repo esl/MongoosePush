@@ -5,7 +5,7 @@ config :maru, MongoosePush.Router,
         using: :path
     ],
     https: [
-        ip: {127, 0, 0, 1},
+        bind_addr: "0.0.0.0",
         port: 8443,
         keyfile: "priv/ssl/fake_key.pem",
         certfile: "priv/ssl/fake_cert.pem",

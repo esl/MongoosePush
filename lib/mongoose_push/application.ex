@@ -9,6 +9,8 @@ defmodule MongoosePush.Application do
   @spec start(atom, list(term)) :: {:ok, pid}
   def start(_type, _args) do
     # Define workers and child supervisors to be supervised
+    loglevel = Confex.get(:mongoose_push, :loglevel, :info)
+    Logger.configure(level: loglevel)
 
     children = List.flatten(workers())
 
