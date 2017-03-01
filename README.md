@@ -61,6 +61,7 @@ Environmental variables to configure production release:
 * `PUSH_HTTPS_PORT` - The port of the MongoosePush REST endpoint. Please not that docker exposes only `8443` port, so changing this setting is not recommended
 * `PUSH_HTTPS_KEYFILE` - Path to PEM keyfile used for REST endpoint
 * `PUSH_HTTPS_CERTFILE` - Path to PEM certfile used for REST endpoint
+* `PUSH_HTTPS_ACCEPTORS` - Number of TCP acceptors to start
 
 ##### General settings:
 * `PUSH_LOGLEVEL` - `debug`/`info`/`warn`/`error` - Log level of the application. `info` is the default one
