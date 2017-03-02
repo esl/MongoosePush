@@ -12,6 +12,7 @@ defmodule MongoosePush do
 
   require Logger
   alias MongoosePush.Pools
+  use Elixometer
 
   @typedoc "Available keys in `request` map"
   @type req_key :: :service | :body | :title | :bagde | :mode | :tag |
@@ -36,6 +37,7 @@ defmodule MongoosePush do
   worker pool (with `:mode` set to either `:prod` or `:dev`).
   Default value to `:mode` is `:prod`.
   """
+  @timed(key: :auto)
   @spec push(String.t, request) :: :ok | {:error, term}
   def push(device_id, %{:service => service} = request) do
       mode = Map.get(request, :mode, :prod)
@@ -43,6 +45,13 @@ defmodule MongoosePush do
       module = MongoosePush.Application.services()[service]
 
       notification = module.prepare_notification(device_id, request)
-      module.push(notification, device_id, worker)
+      push_result = module.push(notification, device_id, worker)
+
+      push_result
+      |> MongoosePush.Metrics.update(~s"push.#{service}.#{mode}")
+  end
+
+  defp function_name do
+
   end
 end
