@@ -32,6 +32,16 @@ defmodule MongoosePush.Mixfile do
      {:distillery, "~> 1.0"},
      {:confex, "~> 1.4", override: true},
      {:mix_docker, "~> 0.3"},
+
+     # Just overrides to make elixometer compile...
+     {:setup, github: "uwiger/setup", tag: "1.8.0", override: true, manager: :rebar},
+     {:edown, github: "uwiger/edown", tag: "0.8", override: true},
+     {:lager, ">= 3.2.1", override: true},
+     {:exometer_core, github: "PSPDFKit-labs/exometer_core", override: true},
+     {:exometer, github: "PSPDFKit-labs/exometer"},
+     {:elixometer, github: "pinterest/elixometer"},
+
+
      # Below only :dev / :test deps
      {:chatterbox, github: "rslota/chatterbox", tag: "20f0096", override: true},
      {:mock, "~> 0.2.0", only: :test},

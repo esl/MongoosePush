@@ -25,10 +25,10 @@ defmodule MongoosePush.Service.APNS do
     Notification.new(device_id, request[:topic])
   end
 
-  @spec push(Service.notification(), String.t(), atom()) ::
+  @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
     :ok | {:error, term}
-  def push(notification, _device_id, worker) do
-    case APNS.push(notification, [name: worker]) do
+  def push(notification, _device_id, worker, opts \\ []) do
+    case APNS.push(notification, Keyword.merge([name: worker], opts)) do
       {:ok, _state} ->
         :ok
       {:error, reason, _state} ->

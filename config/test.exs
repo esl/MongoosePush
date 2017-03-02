@@ -1,5 +1,7 @@
 use Mix.Config
 
+config :mongoose_push, loglevel: :debug
+
 config :maru, MongoosePush.Router,
     versioning: [
         using: :path
