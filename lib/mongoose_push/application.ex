@@ -32,7 +32,7 @@ defmodule MongoosePush.Application do
     Enum.map(pools_config, fn({pool_name, pool_config}) ->
       normalized_pool_config =
         pool_config
-        |> fix_priv_paths()
+        |> fix_priv_paths(service)
         |> ensure_mode()
 
       {pool_name, normalized_pool_config}
@@ -62,8 +62,14 @@ defmodule MongoosePush.Application do
     end
   end
 
-  defp fix_priv_paths(config) do
-    path_keys = [:cert, :key]
+  defp fix_priv_paths(config, service) do
+    path_keys =
+      case service do
+        :apns ->
+          [:cert, :key]
+        :fcm ->
+          []
+      end
     config
     |> Enum.map(fn({key, value}) ->
       case Enum.member?(path_keys, key) do

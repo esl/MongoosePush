@@ -45,13 +45,18 @@ defmodule MongoosePush do
       module = MongoosePush.Application.services()[service]
 
       notification = module.prepare_notification(device_id, request)
-      push_result = module.push(notification, device_id, worker)
+      opts = [timeout: 60_000]
+      push_result = module.push(notification, device_id, worker, opts)
 
       push_result
       |> MongoosePush.Metrics.update(~s"push.#{service}.#{mode}")
+      |> maybe_log
   end
 
-  defp function_name do
-
+  defp maybe_log(:ok = r), do: r
+  defp maybe_log({:error, reason} = r) do
+    Logger.warn ~s"Unable to complete push request due to #{reason}"
+    r
   end
+
 end

@@ -18,14 +18,14 @@ defmodule MongoosePush.Mixfile do
 
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger],
+    [extra_applications: [:logger, :chatterbox],
      mod: {MongoosePush.Application, []}]
   end
 
   defp deps do
     [
     #  {:lager, github: "erlang-lager/lager", tag: "3.3.0", override: true},
-     {:pigeon, git: "https://github.com/rslota/pigeon.git", tag: "6d1e4e3"},
+     {:pigeon, git: "https://github.com/rslota/pigeon.git", tag: "7d430e5"},
      {:maru, git: "https://github.com/elixir-maru/maru.git", tag: "7a24d1a3", override: true},
      {:poison, "~> 3.0"},
      {:httpoison, "~> 0.10.0"},
@@ -33,8 +33,13 @@ defmodule MongoosePush.Mixfile do
      {:distillery, "~> 1.0"},
      {:confex, "~> 1.4", override: true},
      {:mix_docker, "~> 0.3"},
-     {:elixometer, github: "pinterest/elixometer"},
-     {:exometer, github: "rslota/exometer"},
+
+     # Just overrides to make elixometer compile...
+     {:edown, github: "uwiger/edown", tag: "0.8.1", override: true},
+     {:lager, ">= 3.2.1", override: true},
+     {:meck, "~> 0.8.2", override: true},
+     {:elixometer, github: "rslota/elixometer"},
+
      # Below only :dev / :test deps
      {:mock, "~> 0.2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
