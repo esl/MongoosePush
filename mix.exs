@@ -38,7 +38,6 @@ defmodule MongoosePush.Mixfile do
      {:setup, github: "uwiger/setup", tag: "1.8.0", override: true, manager: :rebar},
      {:edown, github: "uwiger/edown", tag: "0.8", override: true},
      {:lager, ">= 3.2.1", override: true},
-     {:meck, "~> 0.8.2", override: true},
      {:exometer_core, github: "PSPDFKit-labs/exometer_core", override: true},
      {:exometer, github: "PSPDFKit-labs/exometer"},
      {:elixometer, github: "pinterest/elixometer"},

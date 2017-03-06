@@ -37,7 +37,7 @@ defmodule MongoosePush do
   worker pool (with `:mode` set to either `:prod` or `:dev`).
   Default value to `:mode` is `:prod`.
   """
-  # @timed(key: :auto)
+  @timed(key: :auto)
   @spec push(String.t, request) :: :ok | {:error, term}
   def push(device_id, %{:service => service} = request) do
       mode = Map.get(request, :mode, :prod)
