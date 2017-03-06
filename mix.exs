@@ -24,11 +24,10 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-    #  {:lager, github: "erlang-lager/lager", tag: "3.3.0", override: true},
      {:pigeon, github: "rslota/pigeon", tag: "f026c19"},
      {:maru, github: "elixir-maru/maru", tag: "7a24d1a3", override: true},
      {:poison, "~> 3.0"},
-     {:httpoison, "~> 0.10.0"},
+     {:httpoison, "~> 0.11.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.0"},
      {:confex, "~> 1.4", override: true},
