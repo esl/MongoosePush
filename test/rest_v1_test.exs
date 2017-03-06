@@ -59,7 +59,7 @@ defmodule RestV1Test do
   end
 
   defp post(path, json) do
-     %Response{status_code: status_code} =
+     %Response{status_code: status_code} = r =
        HTTPoison.post!("https://localhost:8443" <> path, Poison.encode!(json),
                        [{"Content-Type", "application/json"}],
                        hackney: [:insecure])

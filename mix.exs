@@ -24,15 +24,26 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-     {:pigeon, git: "https://github.com/rslota/pigeon.git", tag: "6d1e4e3"},
-     {:maru, git: "https://github.com/rslota/maru.git", tag: "7c1da75", override: true},
+     {:pigeon, github: "rslota/pigeon", tag: "f026c19"},
+     {:maru, github: "elixir-maru/maru", tag: "7a24d1a3", override: true},
      {:poison, "~> 3.0"},
-     {:httpoison, "~> 0.10.0"},
+     {:httpoison, "~> 0.11.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.0"},
      {:confex, "~> 1.4", override: true},
      {:mix_docker, "~> 0.3"},
+
+     # Just overrides to make elixometer compile...
+     {:setup, github: "uwiger/setup", tag: "1.8.0", override: true, manager: :rebar},
+     {:edown, github: "uwiger/edown", tag: "0.8", override: true},
+     {:lager, ">= 3.2.1", override: true},
+     {:exometer_core, github: "PSPDFKit-labs/exometer_core", override: true},
+     {:exometer, github: "PSPDFKit-labs/exometer"},
+     {:elixometer, github: "pinterest/elixometer"},
+
+
      # Below only :dev / :test deps
+     {:chatterbox, github: "rslota/chatterbox", override: true},
      {:mock, "~> 0.2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
