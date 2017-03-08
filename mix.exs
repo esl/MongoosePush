@@ -41,7 +41,6 @@ defmodule MongoosePush.Mixfile do
      {:exometer, github: "PSPDFKit-labs/exometer"},
      {:elixometer, github: "pinterest/elixometer"},
 
-
      # Below only :dev / :test deps
      {:chatterbox, github: "rslota/chatterbox", tag: "20f0096", override: true},
      {:mock, "~> 0.2.0", only: :test},

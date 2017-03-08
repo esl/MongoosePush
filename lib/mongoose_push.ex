@@ -12,6 +12,7 @@ defmodule MongoosePush do
 
   require Logger
   alias MongoosePush.Pools
+  alias MongoosePush.Metrics
   use Elixometer
 
   @typedoc "Available keys in `request` map"
@@ -49,14 +50,14 @@ defmodule MongoosePush do
       push_result = module.push(notification, device_id, worker, opts)
 
       push_result
-      |> MongoosePush.Metrics.update(~s"push.#{service}.#{mode}")
+      |> Metrics.update(~s"push.#{service}.#{mode}")
       |> maybe_log
   end
 
-  defp maybe_log(:ok = r), do: r
-  defp maybe_log({:error, reason} = r) do
+  defp maybe_log(:ok), do: :ok
+  defp maybe_log({:error, reason} = return_value) do
     Logger.warn ~s"Unable to complete push request due to #{reason}"
-    r
+    return_value
   end
 
 end
