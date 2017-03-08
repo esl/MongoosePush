@@ -55,8 +55,13 @@ defmodule MongoosePush do
   end
 
   defp maybe_log(:ok), do: :ok
-  defp maybe_log({:error, reason} = return_value) do
+  defp maybe_log({:error, reason} = return_value) when is_atom(reason) do
     Logger.warn ~s"Unable to complete push request due to #{reason}"
+    return_value
+  end
+  defp maybe_log({:error, reason} = return_value) do
+    Logger.warn ~s"Unable to complete push request due to unknown error: " <>
+                ~s"#{inspect reason}"
     return_value
   end
 

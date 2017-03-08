@@ -18,18 +18,18 @@ defmodule MongoosePush.Metrics do
         increment(metric_prefix <> ".success", value)
       {:error, reason} when is_atom(reason) ->
         increment(metric_prefix <> ~s".error.#{reason}", value)
-        increment(metric_prefix <> ~s".error.all", value)
+        increment(metric_prefix <> ".error.all", value)
         {:error, reason}
       {:error, _reason} ->
-        increment(metric_prefix <> ~s".error.all", value)
+        increment(metric_prefix <> ".error.all", value)
         increment(metric_prefix <> ".error.unknown", value)
     end
     return_value
   end
 
   defp increment(metric, value) do
-    update_counter(metric <> ".count", value)
-    update_spiral(metric <> ".qps", value)
+    update_counter(metric, value)
+    update_spiral(metric, value)
   end
 
 end

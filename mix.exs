@@ -47,7 +47,8 @@ defmodule MongoosePush.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]},
-     {:ex_doc, "~> 0.14", only: :dev}
+     {:ex_doc, "~> 0.14", only: :dev},
+     {:quixir, "~> 0.9", only: :test}
     ]
   end
 
