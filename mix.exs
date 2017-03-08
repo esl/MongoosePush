@@ -24,15 +24,16 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-     {:pigeon, git: "https://github.com/rslota/pigeon.git", tag: "6d1e4e3"},
-     {:maru, git: "https://github.com/rslota/maru.git", tag: "7c1da75", override: true},
+     {:pigeon, github: "rslota/pigeon", tag: "087bb38"},
+     {:maru, github: "elixir-maru/maru", tag: "7a24d1a3", override: true},
      {:poison, "~> 3.0"},
-     {:httpoison, "~> 0.10.0"},
+     {:httpoison, "~> 0.11.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.0"},
      {:confex, "~> 1.4", override: true},
      {:mix_docker, "~> 0.3"},
      # Below only :dev / :test deps
+     {:chatterbox, github: "rslota/chatterbox", tag: "20f0096", override: true},
      {:mock, "~> 0.2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
