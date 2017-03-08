@@ -46,6 +46,14 @@ defmodule RestV1Test do
     end
   end
 
+  test "unknown push error returns 500" do
+    url = "/v1/notification/f534534543"
+    with_mock MongoosePush, [push: fn(_, _) -> {:error, {1, "unknown"}} end] do
+      assert 500 = post(url, %{service: :apns, body: "body", title: "title"})
+      assert 500 = post(url, %{service: :fcm, body: "body", title: "title"})
+    end
+  end
+
   test "api gets corrent request arguments" do
     url = "/v1/notification/f534534543"
     with_mock MongoosePush, [push: fn(_, _) -> :ok end] do
