@@ -218,3 +218,23 @@ The full list of options contains the following:
 * **tag** (*optional*, `FCM` specific) - notifications aggregation key
 * **badge** (*optional*, `APNS` specific) - unread notifications count
 * **topic** (*optional*, `APNS` specific) - if APNS certificate configured in `MongoosePush` allows for multiple applications, this field selects the application. Please refer to `APNS` documentation for more datails
+
+## Metrics
+
+MongoosePush supports metrics based on `elixometer`. In order to enable metrics, you need to add an `elixometer` configuration in the config file matching your release type (or simply `sys.config` when you need this on already released MongoosePush). The following example config will enable simplest reporter - TTY (already enabled in `:dev` environment):
+
+```elixir
+config :exometer_core, report: [reporters: [{:exometer_report_tty, []}]]
+config :elixometer, reporter: :exometer_report_tty,
+     env: Mix.env,
+     metric_prefix: "mongoose_push"
+```
+
+The example below on the other hand will enable `graphite` reporter (replace GRAPHITE_OPTIONS with a list of options for `graphite`):
+
+```elixir
+config :exometer_core, report: [reporters: [{:exometer_report_graphite, GRAPHITE_OPTIONS}]]
+config :elixometer, reporter: :exometer_report_graphite,
+      env: Mix.env,
+      metric_prefix: "mongoose_push"
+```
