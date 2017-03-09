@@ -1,9 +1,15 @@
 defmodule MongoosePush.Metrics do
   @moduledoc """
-  This module provides some utility functions that simplify use of
+  This module provides some utility macros that simplify use of
   Elixometer.
   """
-  use Elixometer
+
+  defmacro __using__(_opts) do
+    quote do
+      use Elixometer
+      require MongoosePush.Metrics, as: Metrics
+    end
+  end
 
   @doc """
   Updates metric (spiral) by given value. The metrics name is
@@ -11,20 +17,42 @@ defmodule MongoosePush.Metrics do
   Provided return value of `:ok` is counted as succeses, while
   `{:error, reason :: term}` as error `reason`.
   """
-  @spec update(:ok | {:error, term}, String.t, integer) :: :ok | {:error, term}
-  def update(return_value, metric_prefix, value \\ 1) do
-    case return_value do
-      :ok ->
-        update_spiral(metric_prefix <> ".success", value)
-      {:error, reason} when is_atom(reason) ->
-        update_spiral(metric_prefix <> ~s".error.#{reason}", value)
-        update_spiral(metric_prefix <> ".error.all", value)
-        {:error, reason}
-      {:error, _reason} ->
-        update_spiral(metric_prefix <> ".error.all", value)
-        update_spiral(metric_prefix <> ".error.unknown", value)
+  defmacro update(return_value, mtype, metric, value \\ 1) do
+    quote [bind_quoted: [mtype: mtype, metric: metric, value: value,
+                        return_value: return_value], unquote: true] do
+      alias MongoosePush.Metrics
+      final_metrics =
+        case return_value do
+          :ok ->
+            [Metrics.name(unquote(mtype), unquote(metric), [:success])]
+          {:error, reason} ->
+            general_metric =
+              Metrics.name(unquote(mtype), unquote(metric), [:error, :all])
+
+            main_metric =
+              case is_atom(reason) do
+                true ->
+                  Metrics.name(unquote(mtype), unquote(metric),
+                               [:error, reason])
+                false ->
+                  Metrics.name(unquote(mtype), unquote(metric),
+                               [:error, :unknown])
+              end
+            [main_metric, general_metric]
+        end
+
+      for final_metric <- final_metrics do
+        unquote(:"update_#{mtype}")(final_metric, value)
+      end
+      return_value
     end
-    return_value
+  end
+
+  defmacro name(type, prefix, suffix) do
+    quote [bind_quoted: [type: type, prefix: prefix, suffix: suffix],
+           unquote: true] do
+      unquote(List.flatten([:mongoose_push, :"#{type}s", prefix, suffix]))
+    end
   end
 
 end

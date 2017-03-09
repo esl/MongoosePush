@@ -27,8 +27,8 @@ defmodule MongoosePushMetricsTest do
     end
 
     test "'error.reason' increased by failed push with 'atom' reason" do
-      ptest [reason: atom(min: 3, max: 15)], repeat_for: 3 do
-        test_metric(:spiral, ~s"error.#{reason}", {:error, reason})
+      ptest [reason: string(min: 3, max: 15, chars: ?a..?z)], repeat_for: 3 do
+        test_metric(:spiral, ~s"error.#{reason}", {:error, :"#{reason}"})
       end
     end
 
@@ -44,7 +44,7 @@ defmodule MongoosePushMetricsTest do
     with_mock FCM,  [:passthrough], [push: fn(_, _, _, _) -> push_return end] do
     ptest [mode:    choose(from: [value(:dev), value(:prod)]),
            service: choose(from: [value(:fcm), value(:apns)])], repeat_for: 20 do
-      metric_name = ~s"mongoose_push.test.#{type}s.push.#{service}.#{mode}."
+      metric_name = ~s"mongoose_push.#{type}s.push.#{service}.#{mode}."
                     <> metric_suffix
 
       metric_value0 = metric_value(type, metric_name)

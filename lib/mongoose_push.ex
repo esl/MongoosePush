@@ -13,7 +13,7 @@ defmodule MongoosePush do
   require Logger
   alias MongoosePush.Pools
   alias MongoosePush.Metrics
-  use Elixometer
+  use Metrics
 
   @typedoc "Available keys in `request` map"
   @type req_key :: :service | :body | :title | :bagde | :mode | :tag |
@@ -50,7 +50,7 @@ defmodule MongoosePush do
       push_result = module.push(notification, device_id, worker, opts)
 
       push_result
-      |> Metrics.update(~s"push.#{service}.#{mode}")
+      |> Metrics.update(:spiral, [:push, service, mode])
       |> maybe_log
   end
 
