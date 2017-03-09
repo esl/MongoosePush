@@ -12,6 +12,8 @@ defmodule MongoosePush do
 
   require Logger
   alias MongoosePush.Pools
+  alias MongoosePush.Metrics
+  use Elixometer
 
   @typedoc "Available keys in `request` map"
   @type req_key :: :service | :body | :title | :bagde | :mode | :tag |
@@ -36,6 +38,7 @@ defmodule MongoosePush do
   worker pool (with `:mode` set to either `:prod` or `:dev`).
   Default value to `:mode` is `:prod`.
   """
+  @timed(key: :auto)
   @spec push(String.t, request) :: :ok | {:error, term}
   def push(device_id, %{:service => service} = request) do
       mode = Map.get(request, :mode, :prod)
@@ -43,6 +46,23 @@ defmodule MongoosePush do
       module = MongoosePush.Application.services()[service]
 
       notification = module.prepare_notification(device_id, request)
-      module.push(notification, device_id, worker)
+      opts = [timeout: 60_000]
+      push_result = module.push(notification, device_id, worker, opts)
+
+      push_result
+      |> Metrics.update(~s"push.#{service}.#{mode}")
+      |> maybe_log
   end
+
+  defp maybe_log(:ok), do: :ok
+  defp maybe_log({:error, reason} = return_value) when is_atom(reason) do
+    Logger.warn ~s"Unable to complete push request due to #{reason}"
+    return_value
+  end
+  defp maybe_log({:error, reason} = return_value) do
+    Logger.warn ~s"Unable to complete push request due to unknown error: " <>
+                ~s"#{inspect reason}"
+    return_value
+  end
+
 end

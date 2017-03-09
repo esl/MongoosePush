@@ -1,5 +1,12 @@
 use Mix.Config
 
+config :mongoose_push, loglevel: :debug
+
+config :elixometer, reporter: :exometer_report_tty,
+     env: Mix.env,
+     metric_prefix: "mongoose_push"
+
+
 config :maru, MongoosePush.Router,
     versioning: [
         using: :path
