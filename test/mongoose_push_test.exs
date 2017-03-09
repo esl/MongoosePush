@@ -68,7 +68,7 @@ defmodule MongoosePushTest do
     fail_tokens(:fcm, [%{device_token: "androidtestdeviceid65", status: 200,
                          reason: "InvalidRegistration"}])
 
-    assert {:error, _} = push("androidtestdeviceid65", notification)
+    assert {:error, :invalid_device_token} = push("androidtestdeviceid65", notification)
   end
 
   test "push to apns allows choosing mode" do
@@ -99,8 +99,9 @@ defmodule MongoosePushTest do
 
   defp reset(service) do
     {:ok, conn} = get_connection(service)
-    Kadabra.post(conn, "/reset", "")
-    get_response()
+    headers = headers("POST", "/reset")
+    :h2_client.send_request(conn, headers, "")
+    get_response(conn)
     :ok
   end
 
@@ -108,38 +109,46 @@ defmodule MongoosePushTest do
     {:ok, conn} = get_connection(service)
     payload = Poison.encode!(json)
 
-    headers = [
-      {":method", "POST"},
-      {":path", "/error-tokens"},
-      {"content-length", "#{byte_size(payload)}"},
-      {"content-type", "application/json"}
-    ]
-    Kadabra.request(conn, headers, payload)
-    get_response()
+    headers = headers("POST", "/error-tokens", payload)
+    :h2_client.send_request(conn, headers, payload)
+    get_response(conn)
     :ok
   end
 
   defp last_activity(service) do
     {:ok, conn} = get_connection(service)
-    Kadabra.get(conn, "/activity")
-    get_response()
+    headers = headers("GET", "/activity")
+    :h2_client.send_request(conn, headers, "")
+    get_response(conn)
     |> Poison.decode!
     |> Map.get("logs")
     |> List.last
   end
 
+  defp headers(method, path, payload \\ "") do
+    [
+      {":method", method},
+      {":authority", "localhost"},
+      {":scheme", "https"},
+      {":path", path},
+      {"content-length", "#{byte_size(payload)}"},
+      {"content-type", "application/json"}
+    ]
+  end
+
   defp get_connection(:apns) do
-    Kadabra.open('localhost', :https, [port: 2197])
+    :h2_client.start_link(:https, 'localhost', 2197, [])
   end
 
   defp get_connection(:fcm) do
-    Kadabra.open('localhost', :https, [port: 443])
+    :h2_client.start_link(:https, 'localhost', 443, [])
   end
 
-  defp get_response() do
+  defp get_response(conn) do
     receive do
-      {:end_stream, %Kadabra.Stream{body: body}} ->
-        body
+      {:END_STREAM, stream_id} ->
+        {:ok, {_headers, body}} = :h2_client.get_response(conn, stream_id)
+        Enum.join(body)
     end
   end
 end
