@@ -8,36 +8,6 @@ defmodule MongoosePushMetricsTest do
 
   alias MongoosePush.Service.APNS
   alias MongoosePush.Service.FCM
-  describe "counter metric" do
-    test "'ok' increased by successful push" do
-      test_metric(:counter, "success", :ok)
-    end
-
-    test "'error.all' increased by failed push with 'atom' reason" do
-      ptest [reason: atom(min: 3, max: 15)], repeat_for: 3 do
-        test_metric(:counter, "error.all", {:error, reason})
-      end
-    end
-
-    test "'error.all' increased by failed push with 'any' reason" do
-      ptest [reason: choose(from: [int(), bool(), string(max: 20)])], repeat_for: 3 do
-        test_metric(:counter, "error.all", {:error, reason})
-      end
-    end
-
-    test "'error.reason' increased by failed push with 'atom' reason" do
-      ptest [reason: atom(min: 3, max: 15)], repeat_for: 3 do
-        test_metric(:counter, ~s"error.#{reason}", {:error, reason})
-      end
-    end
-
-    test "'error.unknown' increased by failed push with 'any' reason" do
-      ptest [reason: choose(from: [int(), string(max: 20)])], repeat_for: 3 do
-        test_metric(:counter, ~s"error.unknown", {:error, reason})
-      end
-    end
-  end
-
 
   describe "sprial metric" do
     test "'ok' increased by successful push" do
@@ -90,14 +60,6 @@ defmodule MongoosePushMetricsTest do
     end
   end
 
-  defp metric_value(:counter, metric_name) do
-    case Elixometer.get_metric_value(metric_name) do
-      {:ok, metric} ->
-        metric[:value]
-      {:error, :not_found} ->
-        0
-    end
-  end
   defp metric_value(:spiral, metric_name) do
     IO.puts inspect Elixometer.get_metric_value(metric_name)
     case Elixometer.get_metric_value(metric_name) do
