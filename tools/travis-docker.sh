@@ -15,7 +15,7 @@ elif [ "${TRAVIS_BRANCH}" == 'master' ]; then
     DOCKERHUB_TAG="latest";
 fi
 
-TARGET_IMAGE="${DOCKERHUB_USER}/mongoose_push:${DOCKERHUB_TAG}"
+TARGET_IMAGE="${DOCKERHUB_REPOSITORY}/mongoose-push:${DOCKERHUB_TAG}"
 
 if [ "${TRAVIS_SECURE_ENV_VARS}" == 'true' ]; then
   docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
