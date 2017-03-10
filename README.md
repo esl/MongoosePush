@@ -31,7 +31,7 @@ docker run -v `pwd`/priv:/opt/app/priv \
   -e PUSH_FCM_APP_KEY="MY_FCM_SECRET_TOKEN" \
   -e PUSH_HTTPS_CERTFILE="ssl/rest_cert.pem" \
   -e PUSH_HTTPS_KEYFILE="ssl/rest_key.pem" \
-  -it --rm mongooseim/mongoose_push:latest
+  -it --rm mongooseim/mongoose-push:latest
 ```
 
 #### Building
