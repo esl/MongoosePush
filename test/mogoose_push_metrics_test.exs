@@ -21,7 +21,7 @@ defmodule MongoosePushMetricsTest do
     end
 
     test "'error.all' increased by failed push with 'any' reason" do
-      ptest [reason: choose(from: [int(), bool(), string(max: 20)])], repeat_for: 3 do
+      ptest [reason: choose(from: [int(), bool(), string(min: 3, max: 20)])], repeat_for: 3 do
         test_metric(:spiral, "error.all", {:error, reason})
       end
     end
@@ -33,7 +33,7 @@ defmodule MongoosePushMetricsTest do
     end
 
     test "'error.unknown' increased by failed push with 'any' reason" do
-      ptest [reason: choose(from: [int(), string(max: 20)])], repeat_for: 3 do
+      ptest [reason: choose(from: [int(), string(min: 3, max: 20)])], repeat_for: 3 do
         test_metric(:spiral, ~s"error.unknown", {:error, reason})
       end
     end
@@ -61,7 +61,6 @@ defmodule MongoosePushMetricsTest do
   end
 
   defp metric_value(:spiral, metric_name) do
-    IO.puts inspect Elixometer.get_metric_value(metric_name)
     case Elixometer.get_metric_value(metric_name) do
       {:ok, metric} ->
         metric[:count]
