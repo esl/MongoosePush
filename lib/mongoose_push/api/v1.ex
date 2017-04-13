@@ -17,6 +17,7 @@ defmodule MongoosePush.API.V1 do
     optional  :click_action,  type: String
     optional  :tag,           type: String
     optional  :topic,         type: String
+    optional  :data,          type: &(&1) # Use raw json value to skip all maru's validators
     optional  :mode,          type: Atom, values: [:prod, :dev]
   end
 

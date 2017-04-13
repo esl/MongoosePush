@@ -21,8 +21,7 @@ defmodule MongoosePush.Service.APNS do
       "badge" => request[:badge],
       "category" => request[:click_action]
     }
-    |>
-    Notification.new(device_id, request[:topic])
+    |> Notification.new(device_id, request[:topic], request[:data])
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::

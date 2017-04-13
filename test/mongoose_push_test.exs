@@ -20,19 +20,26 @@ defmodule MongoosePushTest do
         :title => "title value",
         :body => "body value",
         :badge => 5,
-        :click_action => "click.action"
+        :click_action => "click.action",
+        :data => %{
+          "acme1" => "apns1",
+          "acme2" => "apns2",
+          "acme3" => "apns3"
+        }
       }
 
     assert :ok == push("testdeviceid1234", notification)
 
     apns_request = last_activity(:apns)
     aps_data = apns_request["request_data"]["aps"]
+    aps_custom = Map.delete(apns_request["request_data"], "aps")
 
     assert "testdeviceid1234" == apns_request["device_token"]
     assert notification[:title] == aps_data["alert"]["title"]
     assert notification[:body] == aps_data["alert"]["body"]
     assert notification[:badge] == aps_data["badge"]
     assert notification[:click_action] == aps_data["category"]
+    assert notification[:data] == aps_custom
 
   end
 
@@ -42,18 +49,25 @@ defmodule MongoosePushTest do
         :title => "title value",
         :body => "body value",
         :click_action => "click.action",
-        :tag => "tag value"
+        :tag => "tag value",
+        :data => %{
+          "acme1" => "fcm1",
+          "acme2" => "fcm2",
+          "acme3" => "fcm3"
+        }
       }
 
     assert :ok == push("androidtestdeviceid12", notification)
     fcm_request = last_activity(:fcm)
     fcm_data = fcm_request["request_data"]["notification"]
+    fcm_custom = fcm_request["request_data"]["data"]
 
     assert "androidtestdeviceid12" == fcm_request["device_token"]
     assert notification[:title] == fcm_data["title"]
     assert notification[:body] == fcm_data["body"]
     assert notification[:click_action] == fcm_data["click_action"]
     assert notification[:tag] == fcm_data["tag"]
+    assert notification[:data] == fcm_custom
 
   end
 
