@@ -11,10 +11,16 @@ defmodule MongoosePush.Service.FCM do
 
   @spec prepare_notification(String.t(), MongoosePush.request) ::
     Service.notification
+  def prepare_notification(device_id, request = %{alert: nil}) do
+    # Setup silent notification
+    Notification.new(device_id, nil, request[:data])
+  end
   def prepare_notification(device_id, request) do
+    # Setup non-silent notification
+    alert = request.alert
     msg = [:body, :title, :click_action, :tag]
     |> Enum.reduce(%{}, fn(field, map) ->
-      Map.put(map, field, request[field])
+      Map.put(map, field, alert[field])
     end)
     Notification.new(device_id, msg, request[:data])
   end

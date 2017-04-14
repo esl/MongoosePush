@@ -16,11 +16,14 @@ defmodule MongoosePush do
   use Metrics
 
   @typedoc "Available keys in `request` map"
-  @type req_key :: :service | :body | :title | :bagde | :mode | :tag |
-                   :topic | :click_action
+  @type req_key :: :service | :mode | :alert | :data | :topic
+  @type alert_key :: :title | :body | :tag | :badge | :click_action
+  @type data_key :: atom | String.t
 
-  @typedoc "Raw push request. The keys: `:service`, `:body` and `:title` are required"
-  @type request :: %{req_key => atom | String.t | integer}
+  @typedoc "Raw push request. The keys: `:service` and at least one of `:alert` or `:body` are required"
+  @type request :: %{req_key => atom | String.t | integer | alert | data}
+  @type alert :: %{alert_key => atom | String.t | integer}
+  @type data :: %{data_key => term}
 
   @type service :: :fcm | :apns
   @type mode :: :dev | :prod
@@ -28,11 +31,15 @@ defmodule MongoosePush do
   @doc """
   Push notification defined by `request` to device with `device_id`.
   `request` has to define at least `:service` type (`:fcm` or `:apns`) and
-  both message `:title` and its `:body`.
+  at least one of `:alert` or `:data`. If `alert` is not present, the notification will be send as 'silent'.
+  Please refer to yours push notification service provider's documentation for more details on
+  silent notifications.
 
-  `:tag` is option
-  specific to FCM service, while `:topic` and `:bagde` are specific to APNS
-  (please consult their API for more informations).
+  Field `:data` may conatin any custom data that have to be delivered to the target device, while
+  field `:alert`, if present, must contain at least `:title` and `:body`. The `:alert` field may also
+  contain: `:tag` (option specific to FCM service), `:topic` and `:bagde` (specific to APNS).
+  Please consult push notification service provider's documentation for more informations on those
+  optional fields.
 
   `:mode` option is also specific to APNS but it only selects appropriate
   worker pool (with `:mode` set to either `:prod` or `:dev`).
@@ -44,6 +51,11 @@ defmodule MongoosePush do
       mode = Map.get(request, :mode, :prod)
       worker = Pools.select_worker(service, mode)
       module = MongoosePush.Application.services()[service]
+
+      request = # Just make sure both data and alert keys exist for convenience (by may be nil)
+        request
+        |> Map.put(:alert, request[:alert])
+        |> Map.put(:data, request[:data])
 
       notification = module.prepare_notification(device_id, request)
       opts = [timeout: 60_000]

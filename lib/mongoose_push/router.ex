@@ -23,6 +23,7 @@ defmodule MongoosePush.Router do
           ]
 
   mount MongoosePush.API.V1
+  mount MongoosePush.API.V2
 
   rescue_from Maru.Exceptions.NotFound do
     conn
