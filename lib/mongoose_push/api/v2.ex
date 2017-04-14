@@ -12,7 +12,9 @@ defmodule MongoosePush.API.V2 do
   params do
     requires  :service,       type: Atom, values: [:fcm, :apns]
     optional  :mode,          type: Atom, values: [:prod, :dev]
-    optional  :topic,         type: String # Only for APNS, alert/data independent
+
+    # Only for APNS, alert/data independent
+    optional  :topic,         type: String
 
     optional  :alert,         type: Map do
       requires  :body,          type: String
@@ -22,9 +24,12 @@ defmodule MongoosePush.API.V2 do
       optional  :tag,           type: String
     end
 
-    optional  :data,          type: &(&1) # Use raw json value to skip all maru's validators
-    at_least_one_of [:alert, :data] # We need to send at least one of data or alert
-                                    # but it's possible to send both
+    # Use raw json value to skip all maru's validators
+    optional  :data,          type: &(&1)
+
+    # We need to send at least one of data or alert
+    # but it's possible to send both
+    at_least_one_of [:alert, :data]
   end
 
   namespace :notification do

@@ -52,7 +52,8 @@ defmodule MongoosePush do
       worker = Pools.select_worker(service, mode)
       module = MongoosePush.Application.services()[service]
 
-      request = # Just make sure both data and alert keys exist for convenience (by may be nil)
+      # Just make sure both data and alert keys exist for convenience (by may be nil)
+      request =
         request
         |> Map.put(:alert, request[:alert])
         |> Map.put(:data, request[:data])

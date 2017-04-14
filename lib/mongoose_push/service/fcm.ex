@@ -11,7 +11,7 @@ defmodule MongoosePush.Service.FCM do
 
   @spec prepare_notification(String.t(), MongoosePush.request) ::
     Service.notification
-  def prepare_notification(device_id, request = %{alert: nil}) do
+  def prepare_notification(device_id, %{alert: nil} = request) do
     # Setup silent notification
     Notification.new(device_id, nil, request[:data])
   end
