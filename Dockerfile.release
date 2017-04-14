@@ -1,23 +1,31 @@
-FROM bitwalker/alpine-erlang:19.2.1b
+FROM phusion/baseimage
 
-RUN apk update && \
-    apk --no-cache --update add libgcc libstdc++ && \
-    rm -rf /var/cache/apk/*
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
+# required packages
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
+    bash \
+    bash-completion \
+    curl \
+    dnsutils \
+    vim && \
+    apt-get clean
 
 EXPOSE 8443
 ENV PUSH_HTTPS_BIND_ADDR=0.0.0.0 PUSH_HTTPS_PORT=8443 MIX_ENV=prod \
-    REPLACE_OS_VARS=true SHELL=/bin/sh
+    REPLACE_OS_VARS=true SHELL=/bin/bash
+
+WORKDIR /opt/app
 
 ADD mongoose_push.tar.gz ./
-RUN chown -R default ./releases
 
 # Move priv dir
 RUN mv $(find lib -name mongoose_push-*)/priv .
 RUN ln -s $(pwd)/priv $(find lib -name mongoose_push-*)/priv
 
-USER default
-
 VOLUME /opt/app/priv
 
-CMD ["foreground"]
+CMD ["console"]
 ENTRYPOINT ["/opt/app/bin/mongoose_push"]

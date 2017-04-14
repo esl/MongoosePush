@@ -18,7 +18,7 @@ defmodule MongoosePush.Mixfile do
 
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger],
+    [extra_applications: [:logger, :runtime_tools],
      mod: {MongoosePush.Application, []}]
   end
 
@@ -29,7 +29,7 @@ defmodule MongoosePush.Mixfile do
      {:poison, "~> 3.0"},
      {:httpoison, "~> 0.11.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
-     {:distillery, "~> 1.0"},
+     {:distillery, "~> 1.3"},
      {:confex, "~> 1.4", override: true},
      {:mix_docker, "~> 0.3"},
 
@@ -42,7 +42,7 @@ defmodule MongoosePush.Mixfile do
      {:elixometer, github: "pinterest/elixometer"},
 
      # Below only :dev / :test deps
-     {:chatterbox, github: "rslota/chatterbox", tag: "20f0096", override: true},
+     {:chatterbox, github: "rslota/chatterbox", tag: "75cba84", override: true},
      {:mock, "~> 0.2.0", only: :test},
      {:excoveralls, "~> 0.6", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
