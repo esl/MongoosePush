@@ -66,8 +66,20 @@ defmodule RestV1Test do
     end
   end
 
+  test "api gets raw data payload" do
+    url = "/v1/notification/f534534543"
+    with_mock MongoosePush, [push: fn(_, _) -> :ok end] do
+      args = %{
+        service: :fcm, body: "body654", title: "title345", mode: :dev,
+        data: %{"acme1" => "value1", "acme2" => "value2"}
+      }
+      assert 200 = post(url, args)
+      assert called MongoosePush.push("f534534543", args)
+    end
+  end
+
   defp post(path, json) do
-     %Response{status_code: status_code} = r =
+     %Response{status_code: status_code} =
        HTTPoison.post!("https://localhost:8443" <> path, Poison.encode!(json),
                        [{"Content-Type", "application/json"}],
                        hackney: [:insecure])

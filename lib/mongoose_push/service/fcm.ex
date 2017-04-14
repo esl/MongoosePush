@@ -16,7 +16,7 @@ defmodule MongoosePush.Service.FCM do
     |> Enum.reduce(%{}, fn(field, map) ->
       Map.put(map, field, request[field])
     end)
-    Notification.new(device_id, msg)
+    Notification.new(device_id, msg, request[:data])
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::

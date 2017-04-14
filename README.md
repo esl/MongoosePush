@@ -111,7 +111,7 @@ Yeah, I know... It crashed. Running this service is fast and simple but unfortun
 
 ## Configuration
 
-The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Anyway, lets take a look on `config/dev.exs`, part by part.  
+The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Anyway, lets take a look on `config/dev.exs`, part by part.
 
 ### REST API configuration
 
@@ -218,6 +218,7 @@ The full list of options contains the following:
 * **tag** (*optional*, `FCM` specific) - notifications aggregation key
 * **badge** (*optional*, `APNS` specific) - unread notifications count
 * **topic** (*optional*, `APNS` specific) - if APNS certificate configured in `MongoosePush` allows for multiple applications, this field selects the application. Please refer to `APNS` documentation for more datails
+* **data** (*optional*) - custom JSON structure sent to the target device. For `APNS`, all keys form this stucture are merged into highest level APS message (the one that holds 'aps' key), while for `FCM` the whole `data` json stucture is sent as FCM's `data payload` along with `notification`.  
 
 ## Metrics
 
