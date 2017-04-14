@@ -31,7 +31,7 @@
   "mix_docker": {:hex, :mix_docker, "0.4.2", "366b99bf6091155f40d408db5d8509a8760fd669442eeacdcf8444effc9f04d6", [:mix], [{:distillery, "~> 1.2", [hex: :distillery, optional: false]}]},
   "mock": {:hex, :mock, "0.2.1", "bfdba786903e77f9c18772dee472d020ceb8ef000783e737725a4c8f54ad28ec", [:mix], [{:meck, "~> 0.8.2", [hex: :meck, optional: false]}]},
   "parse_trans": {:git, "git://github.com/uwiger/parse_trans.git", "82cc00264aa1bad8fc5c0739b7541feb4a843432", [tag: "2.9"]},
-  "pigeon": {:git, "https://github.com/rslota/pigeon.git", "623e6fff8058977b556b1ec87f094504b0179bf5", [tag: "generic_h2_workers"]},
+  "pigeon": {:git, "https://github.com/rslota/pigeon.git", "78c9c10d4184c9344a73bf53578289b0b7fa1661", []},
   "plug": {:hex, :plug, "1.3.3", "d9be189924379b4e9d470caef87380d09549aea1ceafe6a0d41292c8c317c923", [:mix], [{:cowboy, "~> 1.0.1 or ~> 1.1", [hex: :cowboy, optional: true]}, {:mime, "~> 1.0", [hex: :mime, optional: false]}]},
   "pobox": {:hex, :pobox, "1.0.2", "45a5bc91e3cf20f9bc0b94494f00fcdccbc333ab2e0856972b7f0f196fc41613", [:rebar3], []},
   "poison": {:hex, :poison, "3.1.0", "d9eb636610e096f86f25d9a46f35a9facac35609a7591b3be3326e99a0484665", [:mix], []},
