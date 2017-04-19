@@ -25,3 +25,9 @@ erl_crash.dump
 # Certs
 /priv/apns
 /priv/ssl
+
+# ASN.1 DBs
+*.asn1db
+
+# Apple... something
+.DS_Store
