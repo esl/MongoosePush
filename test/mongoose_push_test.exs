@@ -17,10 +17,12 @@ defmodule MongoosePushTest do
   test "push to apns assign correct message fields" do
     notification =
       %{:service => :apns,
-        :title => "title value",
-        :body => "body value",
-        :badge => 5,
-        :click_action => "click.action",
+        :alert => %{
+          :title => "title value",
+          :body => "body value",
+          :badge => 5,
+          :click_action => "click.action"
+        },
         :data => %{
           "acme1" => "apns1",
           "acme2" => "apns2",
@@ -35,10 +37,10 @@ defmodule MongoosePushTest do
     aps_custom = Map.delete(apns_request["request_data"], "aps")
 
     assert "testdeviceid1234" == apns_request["device_token"]
-    assert notification[:title] == aps_data["alert"]["title"]
-    assert notification[:body] == aps_data["alert"]["body"]
-    assert notification[:badge] == aps_data["badge"]
-    assert notification[:click_action] == aps_data["category"]
+    assert notification.alert[:title] == aps_data["alert"]["title"]
+    assert notification.alert[:body] == aps_data["alert"]["body"]
+    assert notification.alert[:badge] == aps_data["badge"]
+    assert notification.alert[:click_action] == aps_data["category"]
     assert notification[:data] == aps_custom
 
   end
@@ -46,10 +48,12 @@ defmodule MongoosePushTest do
   test "push to fcm assign correct message fields" do
     notification =
       %{:service => :fcm,
-        :title => "title value",
-        :body => "body value",
-        :click_action => "click.action",
-        :tag => "tag value",
+        :alert => %{
+          :title => "title value",
+          :body => "body value",
+          :click_action => "click.action",
+          :tag => "tag value"
+        },
         :data => %{
           "acme1" => "fcm1",
           "acme2" => "fcm2",
@@ -63,21 +67,72 @@ defmodule MongoosePushTest do
     fcm_custom = fcm_request["request_data"]["data"]
 
     assert "androidtestdeviceid12" == fcm_request["device_token"]
-    assert notification[:title] == fcm_data["title"]
-    assert notification[:body] == fcm_data["body"]
-    assert notification[:click_action] == fcm_data["click_action"]
-    assert notification[:tag] == fcm_data["tag"]
+    assert notification.alert[:title] == fcm_data["title"]
+    assert notification.alert[:body] == fcm_data["body"]
+    assert notification.alert[:click_action] == fcm_data["click_action"]
+    assert notification.alert[:tag] == fcm_data["tag"]
     assert notification[:data] == fcm_custom
+
+  end
+
+  test "push to fcm assign correct message fields when sending silent notification" do
+    notification =
+      %{:service => :fcm,
+        :data => %{
+          "acme1" => "fcm1",
+          "acme2" => "fcm2",
+          "acme3" => "fcm3"
+        }
+      }
+
+    assert :ok == push("androidtestdeviceid12", notification)
+    fcm_request = last_activity(:fcm)
+    fcm_data = fcm_request["request_data"]["notification"]
+    fcm_custom = fcm_request["request_data"]["data"]
+
+    assert "androidtestdeviceid12" == fcm_request["device_token"]
+    assert nil == fcm_data["title"]
+    assert nil == fcm_data["body"]
+    assert nil == fcm_data["click_action"]
+    assert nil == fcm_data["tag"]
+    assert notification[:data] == fcm_custom
+
+  end
+
+  test "push to apns assign correct message fields when sending silent notification" do
+    notification =
+      %{:service => :apns,
+        :data => %{
+          "acme1" => "fcm1",
+          "acme2" => "fcm2",
+          "acme3" => "fcm3"
+        }
+      }
+
+      assert :ok == push("testdeviceid1234", notification)
+
+      apns_request = last_activity(:apns)
+      aps_data = apns_request["request_data"]["aps"]
+      aps_custom = Map.delete(apns_request["request_data"], "aps")
+
+      assert "testdeviceid1234" == apns_request["device_token"]
+      assert nil == aps_data["alert"]
+      assert nil == aps_data["badge"]
+      assert nil == aps_data["category"]
+      assert 1 == aps_data["content-available"]
+      assert notification[:data] == aps_custom
 
   end
 
   test "push to fcm with unknown token fails" do
     notification =
       %{:service => :fcm,
-        :title => "title value",
-        :body => "body value",
-        :click_action => "click.action",
-        :tag => "tag value"
+        :alert => %{
+          :title => "title value",
+          :body => "body value",
+          :click_action => "click.action",
+          :tag => "tag value"
+        }
       }
     fail_tokens(:fcm, [%{device_token: "androidtestdeviceid65", status: 200,
                          reason: "InvalidRegistration"}])
@@ -88,8 +143,10 @@ defmodule MongoosePushTest do
   test "push to apns allows choosing mode" do
     notification =
       %{:service => :apns,
-        :title => "title value",
-        :body => "body value",
+        :alert => %{
+          :title => "title value",
+          :body => "body value",
+        }
       }
     dev_notification = Map.put(notification, :mode, :dev)
     prod_notification = Map.put(notification, :mode, :prod)

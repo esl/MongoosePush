@@ -26,7 +26,13 @@ defmodule MongoosePush.API.V1 do
     route_param :device_id do
       post do
         device_id = params.device_id
-        case MongoosePush.push(device_id, Map.delete(params, :device_id)) do
+
+        notification =
+          params
+          |> Map.delete(:device_id)
+          |> transform_alert()
+
+        case MongoosePush.push(device_id, notification) do
           :ok ->
             conn
             |> put_status(200)
@@ -42,6 +48,20 @@ defmodule MongoosePush.API.V1 do
         end
       end
     end
+  end
+
+  defp transform_alert(params) do
+    alert_keys = [:body, :title, :badge, :click_action, :tag]
+
+    alert =
+      alert_keys
+      |> Enum.map(fn(key) -> {key, params[key]} end)
+      |> Enum.filter(fn({_key, value}) -> value != nil end)
+      |> Enum.into(%{})
+
+    params
+    |> Map.drop(alert_keys)
+    |> Map.put(:alert, alert)
   end
 
 end

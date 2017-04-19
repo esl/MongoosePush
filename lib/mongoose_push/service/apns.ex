@@ -12,14 +12,21 @@ defmodule MongoosePush.Service.APNS do
 
   @spec prepare_notification(String.t(), MongoosePush.request) ::
     Service.notification
+  def prepare_notification(device_id, %{alert: nil} = request) do
+    # Setup silent notification
+    %{"content-available" => 1}
+    |> Notification.new(device_id, request[:topic], request[:data])
+  end
   def prepare_notification(device_id, request) do
+    # Setup non-silent notification
+    alert = request.alert
     %{
       "alert" => %{
-        "title" => request.title,
-        "body" => request.body
+        "title" => alert.title,
+        "body" => alert.body
       },
-      "badge" => request[:badge],
-      "category" => request[:click_action]
+      "badge" => alert[:badge],
+      "category" => alert[:click_action]
     }
     |> Notification.new(device_id, request[:topic], request[:data])
   end
