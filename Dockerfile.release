@@ -27,5 +27,5 @@ RUN ln -s $(pwd)/priv $(find lib -name mongoose_push-*)/priv
 
 VOLUME /opt/app/priv
 
-CMD ["console"]
+CMD ["foreground"]
 ENTRYPOINT ["/opt/app/bin/mongoose_push"]
