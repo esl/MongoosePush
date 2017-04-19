@@ -12,7 +12,8 @@ defmodule MongoosePush.Mixfile do
       docs: docs(),
       dialyzer: dialyzer(),
       test_coverage: test_coverage(),
-      preferred_cli_env: preferred_cli_env()
+      preferred_cli_env: preferred_cli_env(),
+      compilers: compilers()
     ]
   end
 
@@ -73,5 +74,11 @@ defmodule MongoosePush.Mixfile do
   defp preferred_cli_env do
     ["coveralls": :test, "coveralls.detail": :test,
      "coveralls.travis": :test, "coveralls.html": :test]
+  end
+
+  defp compilers do
+    Mix.compilers()
+    |> List.delete(:erlang)
+    |> Enum.concat([:asn1, :erlang])
   end
 end
