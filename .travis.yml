@@ -9,7 +9,11 @@ services:
   - docker
 
 branches:
-  - master
+  only:
+    - master
+    - stable
+    - /^rel\-\d+\.\d+$/
+    - /^\d+\.\d+\.\d+([a-z0-9\-\+])*/
 
 cache:
   directories:
