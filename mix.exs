@@ -26,7 +26,7 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
      {:pigeon, github: "rslota/pigeon"},
-     {:maru, github: "elixir-maru/maru", tag: "7a24d1a3", override: true},
+     {:maru, github: "rslota/maru", tag: "fix_testing", override: true},
      {:poison, "~> 3.0"},
      {:httpoison, "~> 0.11.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
