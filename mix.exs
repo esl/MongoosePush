@@ -33,6 +33,7 @@ defmodule MongoosePush.Mixfile do
      {:distillery, "~> 1.3"},
      {:confex, "~> 1.4", override: true},
      {:mix_docker, "~> 0.3"},
+     { :uuid, "~> 1.1" },
 
      # Just overrides to make elixometer compile...
      {:setup, github: "uwiger/setup", tag: "1.8.0", override: true, manager: :rebar},

@@ -81,7 +81,8 @@ defmodule MongoosePush.Service.APNS do
       Enum.into([default_topic: default_topic], config)
     catch
       _, reason ->
-        Logger.warn(~s"Unable to extract APNS topic from the certificate due to: #{inspect reason}")
+        Logger.warn(~s"Unable to extract APNS topic from the #{config[:mode]} certificate " <>
+          "due to: #{inspect reason}")
         config
     end
   end
