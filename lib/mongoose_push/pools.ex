@@ -38,7 +38,7 @@ defmodule MongoosePush.Pools do
   @doc "Return random worker name for given service and with given `:mode` set"
   @spec select_worker(MongoosePush.service, MongoosePush.mode) :: atom
   def select_worker(service, mode) do
-    [pool | _] = pools_by_mode(service, mode)
+    [pool | _] = __MODULE__.pools_by_mode(service, mode)
     worker_name(service, pool, Enum.random(1..pool_size(service, pool)))
   end
 end

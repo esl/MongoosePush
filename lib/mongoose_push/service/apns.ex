@@ -75,14 +75,20 @@ defmodule MongoosePush.Service.APNS do
       # don't have topic list, while production certificates may not have it if they are old enough.
       # Also the whole `extract_topics!` function is based on reverse-engineered ASN.1 struct,
       # so there may be some incompability issues that we may work on based on failure logs.
-      all_topics = Certificate.extract_topics!(config[:cert])
-      default_topic = all_topics[:topic]
-      Logger.debug(~s"Successfully extracted default APNS topic: #{default_topic}")
-      Enum.into([default_topic: default_topic], config)
+      case config[:default_topic] do
+        nil ->
+          all_topics = Certificate.extract_topics!(config[:cert])
+          default_topic = all_topics[:topic]
+          Logger.debug(~s"Successfully extracted default APNS topic: #{default_topic}")
+          Enum.into([default_topic: default_topic], config)
+        default_topic ->
+          Logger.debug(~s"Using user-defined default APNS topic: #{default_topic}")
+          config
+      end
     catch
       _, reason ->
         Logger.warn(~s"Unable to extract APNS topic from the #{config[:mode]} certificate " <>
-          "due to: #{inspect reason}")
+                    "due to: #{inspect reason}")
         config
     end
   end

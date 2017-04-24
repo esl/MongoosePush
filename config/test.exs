@@ -35,14 +35,16 @@ config :mongoose_push, apns: [
      key: "priv/apns/dev_key.pem",
      mode: :dev,
      use_2197: true,
-     pool_size: 1
+     pool_size: 1,
+     default_topic: "dev_topic"
    ],
    prod1: [
      endpoint: "localhost",
      cert: "priv/apns/prod_cert.pem",
      key: "priv/apns/prod_key.pem",
      use_2197: true,
-     pool_size: 2
+     pool_size: 2,
+     default_topic: "prod1_override_topic"
    ],
    dev2: [
      endpoint: "localhost",

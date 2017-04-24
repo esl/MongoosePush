@@ -29,5 +29,8 @@ erl_crash.dump
 # ASN.1 DBs
 *.asn1db
 
+# ASN.1 compiled erlang sources
+src/APNS-Topics.erl
+
 # Apple... something
 .DS_Store

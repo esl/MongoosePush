@@ -12,7 +12,7 @@ defmodule Mix.Tasks.Compile.Asn1 do
 
   @spec run(term) :: :ok
   def run(_) do
-    File.mkdir_p!(@erl_src)
+    :ok = File.mkdir_p!(@erl_src)
     for file <- ls_r!(@asn1_src) do
       case Path.extname(file) do
         ".asn" ->
