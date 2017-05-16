@@ -42,7 +42,7 @@ defmodule MongoosePushTest do
       end
     end
 
-    test "is not set if theres no default valie in config nor certificate" do
+    test "is not set if theres no default value in config nor certificate" do
       with_mock(MongoosePush.Pools, [:passthrough], [
         pools_by_mode: fn(:apns, :dev) -> [:dev2] end
       ]) do

@@ -14,7 +14,7 @@ defmodule Mix.Tasks.Certs.Dev do
   # From: https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html
   @apns_topic_extn_id {1, 2, 840, 113635, 100, 6, 3, 6}
   # Here we use the binary extension extracted from real APNS certificate. It's much better for
-  # testing to use real extension instead of generated one since, the genertor would be based
+  # testing to use the real extension instead of a generated one since, the genertor would be based
   # on reverse-engineered structure that may not be correct. Also testing decoding on extesion
   # encoded using the same encoder is kinda pointless.
   @apns_topic_extn_value <<48, 129, 133, 12, 26, 99, 111, 109, 46, 105, 110, 97, 107, 97, 110, 101,
@@ -67,27 +67,35 @@ defmodule Mix.Tasks.Certs.Dev do
     :ok = File.mkdir_p(key_dir)
 
     ext_file = openssl_tmp_extfile(extensions)
-    req_file = cert_file <> ".csr"
 
-    # Create CSR
-    {_, 0} = System.cmd("openssl", [
-      "req", "-new", "-nodes", "-days", "365", "-subj",
-      "/C=PL/ST=ML/L=Krakow/CN=" <> common_name, "-newkey", "rsa:2048",
-      "-keyout", key_file, "-out", req_file
-    ])
 
-    # Sign CSR
-    {_, 0} = System.cmd("openssl", [
-      "x509", "-req", "-days", "365", "-in", req_file, "-signkey", key_file,
-      "-extfile", ext_file, "-out", cert_file
-    ])
+    req_file = create_csr!(common_name, key_file, cert_file)
+    :ok = sign_csr!(req_file, key_file, ext_file, cert_file)
 
     :ok = File.rm!(ext_file)
     :ok = File.rm!(req_file)
   end
 
+  defp create_csr!(common_name, key_file, cert_file) do
+    req_file = cert_file <> ".csr"
+    {_, 0} = System.cmd("openssl", [
+      "req", "-new", "-nodes", "-days", "365", "-subj",
+      "/C=PL/ST=ML/L=Krakow/CN=" <> common_name, "-newkey", "rsa:2048",
+      "-keyout", key_file, "-out", req_file
+    ])
+    req_file
+  end
+
+  defp sign_csr!(req_file, key_file, ext_file, cert_file) do
+    {_, 0} = System.cmd("openssl", [
+      "x509", "-req", "-days", "365", "-in", req_file, "-signkey", key_file,
+      "-extfile", ext_file, "-out", cert_file
+    ])
+    :ok
+  end
+
   defp openssl_tmp_extfile(extensions) do
-    ext_file = "/tmp/" <> UUID.uuid4()
+    ext_file = Path.join("/tmp", UUID.uuid4())
     File.touch(ext_file) # Make sure the file exists even if there are no extensions
     for {ext_id, ext_bin} <- extensions do
       ext_id = extn_id_to_string(ext_id)
