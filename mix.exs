@@ -12,7 +12,8 @@ defmodule MongoosePush.Mixfile do
       docs: docs(),
       dialyzer: dialyzer(),
       test_coverage: test_coverage(),
-      preferred_cli_env: preferred_cli_env()
+      preferred_cli_env: preferred_cli_env(),
+      compilers: compilers()
     ]
   end
 
@@ -25,13 +26,14 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
      {:pigeon, github: "rslota/pigeon"},
-     {:maru, github: "elixir-maru/maru", tag: "7a24d1a3", override: true},
+     {:maru, github: "rslota/maru", tag: "fix_testing", override: true},
      {:poison, "~> 3.0"},
      {:httpoison, "~> 0.11.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.3"},
      {:confex, "~> 1.4", override: true},
      {:mix_docker, "~> 0.3"},
+     { :uuid, "~> 1.1" },
 
      # Just overrides to make elixometer compile...
      {:setup, github: "uwiger/setup", tag: "1.8.0", override: true, manager: :rebar},
@@ -73,5 +75,11 @@ defmodule MongoosePush.Mixfile do
   defp preferred_cli_env do
     ["coveralls": :test, "coveralls.detail": :test,
      "coveralls.travis": :test, "coveralls.html": :test]
+  end
+
+  defp compilers do
+    Mix.compilers()
+    |> List.delete(:erlang)
+    |> Enum.concat([:asn1, :erlang])
   end
 end

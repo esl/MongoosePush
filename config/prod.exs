@@ -34,19 +34,21 @@ config :mongoose_push, fcm: [
 
 config :mongoose_push, apns: [
   dev: [
-    endpoint:    {:system, :string,  "PUSH_APNS_DEV_ENDPOINT",    nil},
-    cert:        {:system, :string,  "PUSH_APNS_DEV_CERT",        "priv/apns/dev_cert.pem"},
-    key:         {:system, :string,  "PUSH_APNS_DEV_KEY",         "priv/apns/dev_key.pem"},
-    mode:        :dev,
-    use_2197:    {:system, :boolean, "PUSH_APNS_DEV_USE_2197",    false},
-    pool_size:   {:system, :integer, "PUSH_APNS_DEV_POOL_SIZE",   5}
+    endpoint:       {:system, :string,  "PUSH_APNS_DEV_ENDPOINT",    nil},
+    cert:           {:system, :string,  "PUSH_APNS_DEV_CERT",        "priv/apns/dev_cert.pem"},
+    key:            {:system, :string,  "PUSH_APNS_DEV_KEY",         "priv/apns/dev_key.pem"},
+    mode:           :dev,
+    use_2197:       {:system, :boolean, "PUSH_APNS_DEV_USE_2197",         false},
+    pool_size:      {:system, :integer, "PUSH_APNS_DEV_POOL_SIZE",        5},
+    default_topic:  {:system, :string,  "PUSH_APNS_DEV_DEFAULT_TOPIC",    nil}
   ],
   prod: [
-    endpoint:    {:system, :string,  "PUSH_APNS_PROD_ENDPOINT",   nil},
-    cert:        {:system, :string,  "PUSH_APNS_PROD_CERT",       "priv/apns/prod_cert.pem"},
-    key:         {:system, :string,  "PUSH_APNS_PROD_KEY",        "priv/apns/prod_key.pem"},
-    mode:        :prod,
-    use_2197:    {:system, :boolean, "PUSH_APNS_PROD_USE_2197",   false},
-    pool_size:   {:system, :integer, "PUSH_APNS_PROD_POOL_SIZE",  5}
+    endpoint:       {:system, :string,  "PUSH_APNS_PROD_ENDPOINT",   nil},
+    cert:           {:system, :string,  "PUSH_APNS_PROD_CERT",       "priv/apns/prod_cert.pem"},
+    key:            {:system, :string,  "PUSH_APNS_PROD_KEY",        "priv/apns/prod_key.pem"},
+    mode:           :prod,
+    use_2197:       {:system, :boolean, "PUSH_APNS_PROD_USE_2197",        false},
+    pool_size:      {:system, :integer, "PUSH_APNS_PROD_POOL_SIZE",       5},
+    default_topic:  {:system, :string,  "PUSH_APNS_PROD_DEFAULT_TOPIC",   nil}
   ]
 ]

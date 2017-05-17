@@ -1,0 +1,12 @@
+APNS-Topics DEFINITIONS EXPLICIT TAGS ::=
+
+BEGIN
+  EXPORTS APNS-Topics;
+
+  APNS-Topic ::= CHOICE {
+    topic UTF8String,
+    subTopics SEQUENCE OF APNS-Topic
+  }
+
+  APNS-Topics ::= SEQUENCE OF APNS-Topic
+END

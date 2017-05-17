@@ -79,6 +79,7 @@ Environmental variables to configure production release:
 * `PUSH_APNS_DEV_KEY` - Path Apple's development keyfile used to communicate with `APNS`
 * `PUSH_APNS_DEV_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in development mode. Disabled by default
 * `PUSH_APNS_DEV_POOL_SIZE` - Connection pool size for `APNS` service in development mode
+* `PUSH_APNS_DEV_DEFAULT_TOPIC` - Default `APNS` topic to be set if the client app doesn't specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default). DEV certificates normally don't provide any topics, so this option can be safely left unset
 
 ##### Settings for production APNS service:
 * `PUSH_APNS_PROD_ENDPOINT` - Hostname of `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
@@ -86,7 +87,7 @@ Environmental variables to configure production release:
 * `PUSH_APNS_PROD_KEY` - Path Apple's production keyfile used to communicate with `APNS`
 * `PUSH_APNS_PROD_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in production mode. Disabled by default
 * `PUSH_APNS_PROD_POOL_SIZE` - Connection pool size for `APNS` service in production mode
-
+* `PUSH_APNS_PROD_DEFAULT_TOPIC` - Default `APNS` topic to be set if the client app doesn't specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default)
 
 ### Local build
 
