@@ -1,5 +1,4 @@
 ExUnit.start()
-Maru.Test.start()
 
 defmodule TimeHelper do
   def wait_until(fun), do: wait_until(500, fun)

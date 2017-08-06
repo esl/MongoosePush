@@ -6,7 +6,10 @@ config :elixometer, reporter: :exometer_report_tty,
      env: Mix.env,
      metric_prefix: "mongoose_push"
 
-
+# "Test mode" is not compatible with current tests
+# TODO: we could make it work but for now, it wouldn't change / helped  
+# with anything.
+config :maru, :test, false 
 config :maru, MongoosePush.Router,
     versioning: [
         using: :path
