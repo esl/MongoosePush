@@ -45,7 +45,7 @@ defmodule MongoosePush.Mixfile do
 
      # Below only :dev / :test deps
      {:chatterbox, github: "rslota/chatterbox", tag: "6f223e4b", override: true},
-     {:mock, "~> 0.2.0", only: :test},
+     {:mock, "~> 0.2.1", only: :test},
      {:excoveralls, "~> 0.7", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]},
