@@ -1,6 +1,5 @@
 defmodule MongoosePushTest do
   use ExUnit.Case
-  import MongoosePush, only: [push: 2]
   import Mock
   doctest MongoosePush
 
@@ -292,4 +291,6 @@ defmodule MongoosePushTest do
         Enum.join(body)
     end
   end
+
+  defp push(token, notification), do: MongoosePush.push(token, notification)
 end

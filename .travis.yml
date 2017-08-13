@@ -1,8 +1,4 @@
 language: elixir
-elixir:
-    - 1.4.1
-otp_release:
-    - 19.2
 
 sudo: required
 services:
@@ -22,9 +18,19 @@ cache:
 before_script:
   - tools/travis-setup.sh
 
+elixir:
+    - 1.4.5
+    - 1.5.1
+otp_release:
+    - 19.3
+    - 20.0
 env:
     - PRESET=exunit MIX_ENV=test
-    - PRESET=dialyzer MIX=test
+
+matrix:
+    include:
+        - otp_release: 20.0
+          env: PRESET=dialyzer_only
 
 script: tools/travis-test.sh
 

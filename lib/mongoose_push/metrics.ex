@@ -52,6 +52,7 @@ defmodule MongoosePush.Metrics do
     quote [bind_quoted: [type: type, prefix: prefix, suffix: suffix],
            unquote: true] do
       unquote(List.flatten([:mongoose_push, :"#{type}s", prefix, suffix]))
+      |> Enum.map(&Atom.to_string/1)
     end
   end
 
