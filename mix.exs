@@ -26,9 +26,9 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
      {:pigeon, github: "rslota/pigeon"},
-     {:maru, github: "rslota/maru", tag: "fix_testing", override: true},
+     {:maru, "~> 0.12", override: true},
      {:poison, "~> 3.0"},
-     {:httpoison, "~> 0.11.0"},
+     {:httpoison, "~> 0.12.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.3"},
      {:confex, "~> 1.4", override: true},
@@ -44,9 +44,9 @@ defmodule MongoosePush.Mixfile do
      {:elixometer, github: "pinterest/elixometer"},
 
      # Below only :dev / :test deps
-     {:chatterbox, github: "rslota/chatterbox", tag: "75cba84", override: true},
-     {:mock, "~> 0.2.0", only: :test},
-     {:excoveralls, "~> 0.6", only: :test},
+     {:chatterbox, github: "rslota/chatterbox", tag: "6f223e4b", override: true},
+     {:mock, "~> 0.2.1", only: :test},
+     {:excoveralls, "~> 0.7", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]},
      {:ex_doc, "~> 0.14", only: :dev},
