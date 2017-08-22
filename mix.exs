@@ -31,7 +31,7 @@ defmodule MongoosePush.Mixfile do
      {:httpoison, "~> 0.12.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.3"},
-     {:confex, "~> 1.4", override: true},
+     {:confex, "~> 3.2", override: true},
      {:mix_docker, "~> 0.3"},
      { :uuid, "~> 1.1" },
 
@@ -44,8 +44,11 @@ defmodule MongoosePush.Mixfile do
      {:elixometer, github: "pinterest/elixometer"},
 
      # Below only :dev / :test deps
-     {:chatterbox, github: "rslota/chatterbox", tag: "75cba84", override: true},
-     {:mock, "~> 0.2.0", only: :test},
+     {:chatterbox, github: "rslota/chatterbox", override: true},
+     {:mock, "~> 0.3.0", only: :test},
+     # Until eproxus/meck  #fcc551e3 is in a release, we need to use master version
+     # to include this commit (fixes mocking in Erlang 20.x + Elixir 1.5.x)
+     {:meck, github: "eproxus/meck", override: true},
      {:excoveralls, "~> 0.7", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]},

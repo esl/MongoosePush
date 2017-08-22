@@ -9,7 +9,7 @@ defmodule MongoosePush.Application do
   @spec start(atom, list(term)) :: {:ok, pid}
   def start(_type, _args) do
     # Logger setup
-    loglevel = Confex.get(:mongoose_push, :loglevel, :info)
+    loglevel = Confex.get_env(:mongoose_push, :loglevel, :info)
     set_loglevel(loglevel)
 
     # Define workers and child supervisors to be supervised
@@ -25,9 +25,9 @@ defmodule MongoosePush.Application do
   def pools_config(service) do
     enabled_opt = String.to_atom(~s"#{service}_enabled")
     pools_config =
-      case Confex.get(:mongoose_push, enabled_opt, true) do
+      case Confex.get_env(:mongoose_push, enabled_opt, true) do
         false ->  []
-        true  ->  Confex.get_map(:mongoose_push, service)
+        true  ->  Confex.fetch_env!(:mongoose_push, service)
       end
 
     Enum.map(pools_config, fn({pool_name, pool_config}) ->
