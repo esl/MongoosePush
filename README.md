@@ -17,12 +17,12 @@ In case of certificates you need setup the following directory structure:
 * priv/
     * ssl/
       * rest_cert.pem - The REST endpoint certificate
-      * rest_key.pem - private key for the REST endpoint certificate
+      * rest_key.pem - private key for the REST endpoint certificate (has to be unencrypted)
     * apns/
       * prod_cert.pem - Production APNS app certificate
-      * prod_key.pem - Production APNS app certificate's private key
+      * prod_key.pem - Production APNS app certificate's private key (has to be unencrypted)
       * dev_cert.pem - Development APNS app certificate
-      * dev_key.pem - Development APNS app certificate's private key
+      * dev_key.pem - Development APNS app certificate's private key (has to be unencrypted)
 
 Assuming that your `FCM` app token is "MY_FCM_SECRET_TOKEN" and you have the `priv` directory with all ceriticates in current directory, then you may start MongoosePush with the following command:
 
