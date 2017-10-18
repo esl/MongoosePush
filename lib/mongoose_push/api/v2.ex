@@ -22,7 +22,7 @@ defmodule MongoosePush.API.V2 do
       optional  :badge,         type: Integer
       optional  :click_action,  type: String
       optional  :tag,           type: String
-      optional  :sound,         type: String
+      optional  :sound,         type: String, default: "default"
     end
 
     # Use raw json value to skip all maru's validators
