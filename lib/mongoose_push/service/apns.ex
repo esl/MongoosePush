@@ -28,7 +28,8 @@ defmodule MongoosePush.Service.APNS do
         "body" => alert.body
       },
       "badge" => alert[:badge],
-      "category" => alert[:click_action]
+      "category" => alert[:click_action],
+      "sound" => alert[:sound]
     }
     |> Notification.new(device_id, request[:topic], request[:data])
   end
