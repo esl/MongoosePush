@@ -18,7 +18,7 @@ defmodule MongoosePush.Service.FCM do
   def prepare_notification(device_id, request) do
     # Setup non-silent notification
     alert = request.alert
-    msg = [:body, :title, :click_action, :tag]
+    msg = [:body, :title, :click_action, :tag, :sound]
     |> Enum.reduce(%{}, fn(field, map) ->
       Map.put(map, field, alert[field])
     end)
