@@ -18,6 +18,7 @@ defmodule MongoosePush.Service.APNS do
     # Setup silent notification
     %{"content-available" => 1}
     |> Notification.new(device_id, request[:topic], request[:data])
+    |> Notification.put_mutable_content
   end
   def prepare_notification(device_id, request) do
     # Setup non-silent notification
@@ -31,6 +32,7 @@ defmodule MongoosePush.Service.APNS do
       "category" => alert[:click_action]
     }
     |> Notification.new(device_id, request[:topic], request[:data])
+    |> Notification.put_mutable_content
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
