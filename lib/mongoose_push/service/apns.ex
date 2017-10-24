@@ -20,6 +20,8 @@ defmodule MongoosePush.Service.APNS do
     # Setup silent notification
     %{"content-available" => 1}
     |> Notification.new(device_id, request[:topic], request[:data])
+    |> Notification.put_mutable_content
+    |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
   def prepare_notification(device_id, request) do
     # Setup non-silent notification
@@ -34,6 +36,7 @@ defmodule MongoosePush.Service.APNS do
       "sound" => alert[:sound]
     }
     |> Notification.new(device_id, request[:topic], request[:data])
+    |> Notification.put_mutable_content
     |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
 
