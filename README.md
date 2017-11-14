@@ -48,7 +48,7 @@ As a result of this command you get access to `mongoose_push:release` docker ima
 docker run -it --rm mongoose_push:release foreground
 ```
 
-Docker image that you have just builded, exposes the port `8443` for the REST API of
+Docker image that you have just built, exposes the port `8443` for the REST API of
 MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and REST API certificates.
 
 #### Configuring
