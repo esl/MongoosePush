@@ -130,7 +130,7 @@ config :maru, MongoosePush.Router,
     ]
 ```
 
-This part of configuration relates only to `REST` endpoints that `MongoosePush` exposes. Here you can set bind IP adress (option: `ip`), port and paths to you `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing or you're going to get to know by reading [maru's documentation](https://maru.readme.io/docs).
+This part of configuration relates only to `REST` endpoints that `MongoosePush` exposes. Here you can set bind IP adress (option: `ip`), port and paths to your `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing or you're going to get to know by reading [maru's documentation](https://maru.readme.io/docs).
 
 You may entirely skip the `maru` config entry to disable `REST` API and just use this project as `Elixir` library.
 
