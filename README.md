@@ -53,7 +53,7 @@ MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole Mongo
 
 #### Configuring
 
-The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via system environmental variables. Below theres a full list of the variables you may set while running docker (via `docker -e` switch), but if theres something you feel, you need to change other then that, then you need to prepare your own `config/prod.exs` before image build.
+The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via system environmental variables. Below there's a full list of the variables you may set while running docker (via `docker -e` switch), but if there's something you feel, you need to change other then that, then you need to prepare your own `config/prod.exs` before image build.
 
 Environmental variables to configure production release:
 ##### Settings for REST endpoint:
