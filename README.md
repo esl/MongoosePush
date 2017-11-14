@@ -12,8 +12,8 @@ notification** to `FCM` (Firebase Cloud Messaging) and/or
 
 #### Running from DockerHub
 
-We provide already builded MongoosePush images. If you just want to use it, then all you need is `docker`, `FCM` app token and/or `APNS` app certificates.
-In case of certificates you need setup the following directory structure:
+We provide already built MongoosePush images. If you just want to use it, then all you need is `docker`, `FCM` app token and/or `APNS` app certificates.
+In case of certificates you need to setup the following directory structure:
 * priv/
     * ssl/
       * rest_cert.pem - The REST endpoint certificate
@@ -48,12 +48,12 @@ As a result of this command you get access to `mongoose_push:release` docker ima
 docker run -it --rm mongoose_push:release foreground
 ```
 
-Docker image that you have just builded, exposes the port `8443` for the REST API of
+Docker image that you have just built, exposes the port `8443` for the REST API of
 MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and REST API certificates.
 
 #### Configuring
 
-The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via system environmental variables. Below theres a full list of the variables you may set while running docker (via `docker -e` switch), but if theres something you feel, you need to change other then that, then you need to prepare your own `config/prod.exs` before image build.
+The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via system environmental variables. Below there's a full list of the variables you may set while running docker (via `docker -e` switch), but if there's something you feel, you need to change other then that, then you need to prepare your own `config/prod.exs` before image build.
 
 Environmental variables to configure production release:
 ##### Settings for REST endpoint:
@@ -130,7 +130,7 @@ config :maru, MongoosePush.Router,
     ]
 ```
 
-This part of configuration relates only to `REST` endpoints that `MongoosePush` exposes. Here you can set bind IP adress (option: `ip`), port and paths to you `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing or you're going to get to know by reading [maru's documentation](https://maru.readme.io/docs).
+This part of configuration relates only to `REST` endpoints that `MongoosePush` exposes. Here you can set bind IP adress (option: `ip`), port and paths to your `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing or you're going to get to know by reading [maru's documentation](https://maru.readme.io/docs).
 
 You may entirely skip the `maru` config entry to disable `REST` API and just use this project as `Elixir` library.
 
