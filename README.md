@@ -12,7 +12,7 @@ notification** to `FCM` (Firebase Cloud Messaging) and/or
 
 #### Running from DockerHub
 
-We provide already builded MongoosePush images. If you just want to use it, then all you need is `docker`, `FCM` app token and/or `APNS` app certificates.
+We provide already built MongoosePush images. If you just want to use it, then all you need is `docker`, `FCM` app token and/or `APNS` app certificates.
 In case of certificates you need setup the following directory structure:
 * priv/
     * ssl/
