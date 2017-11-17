@@ -189,6 +189,20 @@ Each `APNS` pool may be configured by setting the following fields:
 
 You may entirely skip the `APNS` config entry to disable `APNS` support.
 
+#### Converting APNS files
+
+If you happen to have APNS files in `pkcs12` format (.p12 or .pfx extenstion) you need to convert them to `PEM` format which is understood by MongoosePush. Belowe you can find sample `openssl` commands which may be helpful.
+
+##### Get cert from pkcs12 file
+
+    openssl pkcs12 -in YourAPNS.p12 -out YourCERT.pem -nodes -nokeys
+    
+#### Get key from pkcs12 file
+
+    openssl pkcs12 -in YourAPNS.p12 -out YourKEY.pem -nodes -nocerts
+    
+
+
 ## REST API
 
 ### Swagger
