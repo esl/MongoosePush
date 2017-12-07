@@ -31,10 +31,10 @@ script: tools/travis-test.sh
 
 matrix:
     include:
-        - otp_release: 20.0
+        - stage: test
+          otp_release: 20.0
           env: PRESET=dialyzer MIX_ENV=test
-
-script: tools/travis-test.sh
-
-after_success:
-  - tools/travis-docker.sh
+        - stage: deploy
+          elixir: 1.5.1
+          otp_release: 20.0
+          script: tools/travis-docker.sh
