@@ -27,10 +27,12 @@ otp_release:
 env:
     - PRESET=exunit MIX_ENV=test
 
+script: tools/travis-test.sh
+
 matrix:
     include:
         - otp_release: 20.0
-          env: PRESET=dialyzer_only
+          env: PRESET=dialyzer MIX_ENV=test
 
 script: tools/travis-test.sh
 
