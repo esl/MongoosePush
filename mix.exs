@@ -28,24 +28,22 @@ defmodule MongoosePush.Mixfile do
      {:pigeon, github: "rslota/pigeon"},
      {:maru, "~> 0.12", override: true},
      {:poison, "~> 3.0"},
-     {:httpoison, "~> 0.12.0"},
+     {:httpoison, "~> 0.13"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.5"},
      {:confex, "~> 3.2", override: true},
-     {:mix_docker, "~> 0.3"},
+     {:mix_docker, "~> 0.5"},
      { :uuid, "~> 1.1" },
 
      # Just overrides to make elixometer compile...
-     {:setup, github: "uwiger/setup", tag: "1.8.0", override: true, manager: :rebar},
-     {:edown, github: "uwiger/edown", tag: "0.8", override: true},
      {:lager, ">= 3.2.1", override: true},
-     {:exometer_core, github: "PSPDFKit-labs/exometer_core", override: true},
-     {:exometer, github: "PSPDFKit-labs/exometer"},
-     {:elixometer, github: "pinterest/elixometer"},
+     {:exometer_core, github: "esl/exometer_core", override: true},
+     {:exometer_report_graphite, github: "esl/exometer_report_graphite"},
+     {:elixometer, github: "esl/elixometer"},
 
      # Below only :dev / :test deps
      {:chatterbox, github: "rslota/chatterbox", override: true},
-     {:mock, "~> 0.3.0", only: :test},
+     {:mock, "~> 0.3", only: :test},
      # Until eproxus/meck  #fcc551e3 is in a release, we need to use master version
      # to include this commit (fixes mocking in Erlang 20.x + Elixir 1.5.x)
      {:meck, github: "eproxus/meck", override: true},
