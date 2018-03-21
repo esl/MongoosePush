@@ -41,6 +41,9 @@ defmodule MongoosePush do
   Please consult push notification service provider's documentation for more informations on those
   optional fields.
 
+  Field `:priority` may be used to set priority for message on both FCM and APNS. The values are
+  native for FCM and for APNS - :normal is "5" and :high is 10.
+
   `:mode` option is also specific to APNS but it only selects appropriate
   worker pool (with `:mode` set to either `:prod` or `:dev`).
   Default value to `:mode` is `:prod`.
@@ -52,7 +55,7 @@ defmodule MongoosePush do
       worker = Pools.select_worker(service, mode)
       module = MongoosePush.Application.services()[service]
 
-      # Just make sure both data and alert keys exist for convenience (by may be nil)
+      # Just make sure both data and alert keys exist for convenience (but may be nil)
       request =
         request
         |> Map.put(:alert, request[:alert])

@@ -196,11 +196,11 @@ If you happen to have APNS files in `pkcs12` format (.p12 or .pfx extenstion) yo
 ##### Get cert from pkcs12 file
 
     openssl pkcs12 -in YourAPNS.p12 -out YourCERT.pem -nodes -nokeys
-    
+
 #### Get key from pkcs12 file
 
     openssl pkcs12 -in YourAPNS.p12 -out YourKEY.pem -nodes -nocerts
-    
+
 
 
 ## REST API
@@ -219,10 +219,10 @@ As you can imagine, `{device_id}` should be replaced with device ID/Token genera
 ```json
 {
   "service": "apns",
-  "alert": 
+  "alert":
     {
       "body": "notification's text body",
-      "title": "notification's title" 
+      "title": "notification's title"
     }
 }
 ```
@@ -230,6 +230,7 @@ As you can imagine, `{device_id}` should be replaced with device ID/Token genera
 The full list of options contains the following:
 * **service** (*required*, `apns` or `fcm`) - push notifications provider to be used for this notification
 * **mode** (*optional*, `prod` (default) or `dev`) - allows for selecting named pool configured in `MongoosePush`
+* **priority** (*optional*) - Either `normal` or `high`. Those values are used without changes for FCM. For APNS however, `normal` maps to priority `5`, while `high` maps to priority `10`. Please refer to FCM / APNS documentation for more details on those values. By default `priority` is not set at all, therefore the push notification service decides which value is used by default.
 * **topic** (*optional*, `APNS` specific) - if APNS certificate configured in `MongoosePush` allows for multiple applications, this field selects the application. Please refer to `APNS` documentation for more datails
 * **data** (*optional*) - custom JSON structure sent to the target device. For `APNS`, all keys form this stucture are merged into highest level APS message (the one that holds 'aps' key), while for `FCM` the whole `data` json stucture is sent as FCM's `data payload` along with `notification`.
 * **alert** (*optional*) - JSON stucture that if provided will send non-silent notification with the following fields:
@@ -238,6 +239,7 @@ The full list of options contains the following:
   * **click_action** (*optional*) - for `FCM` its `activity` to run when notification is clicked. For `APNS` its `category` to invoke. Please refer to Android/iOS documentation for more details about this action
   * **tag** (*optional*, `FCM` specific) - notifications aggregation key
   * **badge** (*optional*, `APNS` specific) - unread notifications count
+  * **sound** (*optional*) - sound that should be play when notification arrives. Please refer to FCM / APNS documentation for more details.
 
 Please note that either **alert** and **data** has to be provided (also can be both).
 If you only specify **alert**, the request will result in classic, simple notification.
