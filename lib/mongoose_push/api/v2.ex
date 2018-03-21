@@ -12,6 +12,7 @@ defmodule MongoosePush.API.V2 do
   params do
     requires  :service,       type: Atom, values: [:fcm, :apns]
     optional  :mode,          type: Atom, values: [:prod, :dev]
+    optional  :priority,      type: Atom, values: [:normal, :high]
 
     # Only for APNS, alert/data independent
     optional  :topic,         type: String

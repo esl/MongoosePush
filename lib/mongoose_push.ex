@@ -16,7 +16,7 @@ defmodule MongoosePush do
   use Metrics
 
   @typedoc "Available keys in `request` map"
-  @type req_key :: :service | :mode | :alert | :data | :topic
+  @type req_key :: :service | :mode | :alert | :data | :topic | :priority
   @type alert_key :: :title | :body | :tag | :badge | :click_action | :sound
   @type data_key :: atom | String.t
 
