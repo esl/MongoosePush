@@ -1,9 +1,11 @@
 defmodule MongoosePushTest do
   use ExUnit.Case
+  use Quixir
   import Mock
   doctest MongoosePush
 
   @test_token "testdeviceid1234"
+  @apns_priority_mapping %{normal: "5", high: "10"}
 
   setup do
     reset(:fcm)
@@ -84,64 +86,97 @@ defmodule MongoosePushTest do
   end
 
   test "push to apns assign correct message fields" do
-    notification =
-      %{:service => :apns,
-        :alert => %{
-          :title => "title value",
-          :body => "body value",
-          :badge => 5,
-          :click_action => "click.action"
-        },
-        :data => %{
-          "acme1" => "apns1",
-          "acme2" => "apns2",
-          "acme3" => "apns3"
+    ptest [
+        device_token: string(min: 10, max: 15, chars: ?a..?z),
+        title: string(min: 3, max: 15, chars: :ascii),
+        body:  string(min: 10, max: 45, chars: :ascii),
+        badge: int(min: 1, max: 20),
+        sound: string(min: 3, max: 15, chars: :ascii),
+        click_action: string(min: 3, max: 15, chars: :ascii),
+        priority: choose(from: [value(:normal), value(:high)]),
+      ], repeat_for: 10 do
+
+      notification =
+        %{:service => :apns,
+          :priority => priority,
+          :alert => %{
+            :title => title,
+            :body => body,
+            :badge => badge,
+            :click_action => click_action,
+            :sound => sound <> ".wav"
+          },
+          :data => %{
+            "acme1" => "apns1",
+            "acme2" => "apns2",
+            "acme3" => "apns3"
+          }
         }
-      }
 
-    assert :ok == push("testdeviceid1234", notification)
+      assert :ok == push(device_token, notification)
 
-    apns_request = last_activity(:apns)
-    aps_data = apns_request["request_data"]["aps"]
-    aps_custom = Map.delete(apns_request["request_data"], "aps")
+      apns_request = last_activity(:apns)
+      aps_data = apns_request["request_data"]["aps"]
+      aps_headers = apns_request["request_headers"]
+      aps_custom = Map.delete(apns_request["request_data"], "aps")
 
-    assert "testdeviceid1234" == apns_request["device_token"]
-    assert notification.alert[:title] == aps_data["alert"]["title"]
-    assert notification.alert[:body] == aps_data["alert"]["body"]
-    assert notification.alert[:badge] == aps_data["badge"]
-    assert notification.alert[:click_action] == aps_data["category"]
-    assert notification[:data] == aps_custom
+      assert device_token == apns_request["device_token"]
+      assert @apns_priority_mapping[priority] == aps_headers["apns-priority"]
 
+      assert notification.alert[:title] == aps_data["alert"]["title"]
+      assert notification.alert[:body] == aps_data["alert"]["body"]
+      assert notification.alert[:badge] == aps_data["badge"]
+      assert notification.alert[:click_action] == aps_data["category"]
+      assert notification.alert[:sound] == aps_data["sound"]
+      assert notification[:data] == aps_custom
+
+    end
   end
 
   test "push to fcm assign correct message fields" do
-    notification =
-      %{:service => :fcm,
-        :alert => %{
-          :title => "title value",
-          :body => "body value",
-          :click_action => "click.action",
-          :tag => "tag value"
-        },
-        :data => %{
-          "acme1" => "fcm1",
-          "acme2" => "fcm2",
-          "acme3" => "fcm3"
+    ptest [
+        device_token: string(min: 10, max: 15, chars: ?a..?z),
+        title: string(min: 3, max: 15, chars: :ascii),
+        body:  string(min: 10, max: 45, chars: :ascii),
+        tag: string(min: 3, max: 15, chars: :ascii),
+        sound: string(min: 3, max: 15, chars: :ascii),
+        click_action: string(min: 3, max: 15, chars: :ascii),
+        priority: choose(from: [value(:normal), value(:high)]),
+      ], repeat_for: 10 do
+
+      notification =
+        %{:service => :fcm,
+          :priority => priority,
+          :alert => %{
+            :title => title,
+            :body => body,
+            :click_action => click_action,
+            :tag => tag,
+            :sound => sound <> ".wav"
+          },
+          :data => %{
+            "acme1" => "fcm1",
+            "acme2" => "fcm2",
+            "acme3" => "fcm3"
+          }
         }
-      }
 
-    assert :ok == push("androidtestdeviceid12", notification)
-    fcm_request = last_activity(:fcm)
-    fcm_data = fcm_request["request_data"]["notification"]
-    fcm_custom = fcm_request["request_data"]["data"]
+      IO.puts push(device_token, notification)
+      assert :ok == push(device_token, notification)
+      fcm_request = last_activity(:fcm)
+      fcm_data = fcm_request["request_data"]["notification"]
+      fcm_custom = fcm_request["request_data"]["data"]
 
-    assert "androidtestdeviceid12" == fcm_request["device_token"]
-    assert notification.alert[:title] == fcm_data["title"]
-    assert notification.alert[:body] == fcm_data["body"]
-    assert notification.alert[:click_action] == fcm_data["click_action"]
-    assert notification.alert[:tag] == fcm_data["tag"]
-    assert notification[:data] == fcm_custom
+      assert device_token == fcm_request["device_token"]
+      assert Atom.to_string(priority) == fcm_request["request_data"]["priority"]
 
+      assert notification.alert[:title] == fcm_data["title"]
+      assert notification.alert[:body] == fcm_data["body"]
+      assert notification.alert[:click_action] == fcm_data["click_action"]
+      assert notification.alert[:tag] == fcm_data["tag"]
+      assert notification.alert[:sound] == fcm_data["sound"]
+      assert notification[:data] == fcm_custom
+    end
   end
 
   test "push to fcm assign correct message fields when sending silent notification" do
