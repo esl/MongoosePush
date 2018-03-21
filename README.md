@@ -219,8 +219,11 @@ As you can imagine, `{device_id}` should be replaced with device ID/Token genera
 ```json
 {
   "service": "apns",
-  "body": "notification's text body",
-  "title": "notification's title"
+  "alert": 
+    {
+      "body": "notification's text body",
+      "title": "notification's title" 
+    }
 }
 ```
 
