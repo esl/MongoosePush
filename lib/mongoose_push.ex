@@ -17,7 +17,7 @@ defmodule MongoosePush do
 
   @typedoc "Available keys in `request` map"
   @type req_key :: :service | :mode | :alert | :data | :topic
-  @type alert_key :: :title | :body | :tag | :badge | :click_action
+  @type alert_key :: :title | :body | :tag | :badge | :click_action | :sound
   @type data_key :: atom | String.t
 
   @typedoc "Raw push request. The keys: `:service` and at least one of `:alert` or `:body` are required"
@@ -37,7 +37,7 @@ defmodule MongoosePush do
 
   Field `:data` may conatin any custom data that have to be delivered to the target device, while
   field `:alert`, if present, must contain at least `:title` and `:body`. The `:alert` field may also
-  contain: `:tag` (option specific to FCM service), `:topic` and `:bagde` (specific to APNS).
+  contain: :sound, `:tag` (option specific to FCM service), `:topic` and `:bagde` (specific to APNS).
   Please consult push notification service provider's documentation for more informations on those
   optional fields.
 
