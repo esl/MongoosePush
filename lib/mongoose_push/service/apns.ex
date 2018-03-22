@@ -12,6 +12,8 @@ defmodule MongoosePush.Service.APNS do
   alias MongoosePush.Pools
   alias MongoosePush.Service.APNS.Certificate
 
+  @priority_mapping %{normal: "5", high: "10"}
+
   @spec prepare_notification(String.t(), MongoosePush.request) ::
     Service.notification
   def prepare_notification(device_id, %{alert: nil} = request) do
@@ -28,9 +30,11 @@ defmodule MongoosePush.Service.APNS do
         "body" => alert.body
       },
       "badge" => alert[:badge],
-      "category" => alert[:click_action]
+      "category" => alert[:click_action],
+      "sound" => alert[:sound]
     }
     |> Notification.new(device_id, request[:topic], request[:data])
+    |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::

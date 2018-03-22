@@ -16,8 +16,8 @@ defmodule MongoosePush do
   use Metrics
 
   @typedoc "Available keys in `request` map"
-  @type req_key :: :service | :mode | :alert | :data | :topic
-  @type alert_key :: :title | :body | :tag | :badge | :click_action
+  @type req_key :: :service | :mode | :alert | :data | :topic | :priority
+  @type alert_key :: :title | :body | :tag | :badge | :click_action | :sound
   @type data_key :: atom | String.t
 
   @typedoc "Raw push request. The keys: `:service` and at least one of `:alert` or `:body` are required"
@@ -37,9 +37,12 @@ defmodule MongoosePush do
 
   Field `:data` may conatin any custom data that have to be delivered to the target device, while
   field `:alert`, if present, must contain at least `:title` and `:body`. The `:alert` field may also
-  contain: `:tag` (option specific to FCM service), `:topic` and `:bagde` (specific to APNS).
+  contain: :sound, `:tag` (option specific to FCM service), `:topic` and `:bagde` (specific to APNS).
   Please consult push notification service provider's documentation for more informations on those
   optional fields.
+
+  Field `:priority` may be used to set priority for message on both FCM and APNS. The values are
+  native for FCM and for APNS - :normal is "5" and :high is 10.
 
   `:mode` option is also specific to APNS but it only selects appropriate
   worker pool (with `:mode` set to either `:prod` or `:dev`).
@@ -52,7 +55,7 @@ defmodule MongoosePush do
       worker = Pools.select_worker(service, mode)
       module = MongoosePush.Application.services()[service]
 
-      # Just make sure both data and alert keys exist for convenience (by may be nil)
+      # Just make sure both data and alert keys exist for convenience (but may be nil)
       request =
         request
         |> Map.put(:alert, request[:alert])

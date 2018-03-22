@@ -9,6 +9,8 @@ defmodule MongoosePush.Service.FCM do
   alias MongoosePush.Pools
   require Logger
 
+  @priority_mapping %{normal: "normal", high: "high"}
+
   @spec prepare_notification(String.t(), MongoosePush.request) ::
     Service.notification
   def prepare_notification(device_id, %{alert: nil} = request) do
@@ -18,11 +20,13 @@ defmodule MongoosePush.Service.FCM do
   def prepare_notification(device_id, request) do
     # Setup non-silent notification
     alert = request.alert
-    msg = [:body, :title, :click_action, :tag]
+    msg = [:body, :title, :click_action, :tag, :sound]
     |> Enum.reduce(%{}, fn(field, map) ->
       Map.put(map, field, alert[field])
     end)
+
     Notification.new(device_id, msg, request[:data])
+    |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::

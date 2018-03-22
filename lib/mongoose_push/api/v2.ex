@@ -12,6 +12,7 @@ defmodule MongoosePush.API.V2 do
   params do
     requires  :service,       type: Atom, values: [:fcm, :apns]
     optional  :mode,          type: Atom, values: [:prod, :dev]
+    optional  :priority,      type: Atom, values: [:normal, :high]
 
     # Only for APNS, alert/data independent
     optional  :topic,         type: String
@@ -22,6 +23,7 @@ defmodule MongoosePush.API.V2 do
       optional  :badge,         type: Integer
       optional  :click_action,  type: String
       optional  :tag,           type: String
+      optional  :sound,         type: String
     end
 
     # Use raw json value to skip all maru's validators
