@@ -19,34 +19,35 @@ defmodule MongoosePush.Mixfile do
 
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:logger, :runtime_tools],
+    [extra_applications: [:lager, :logger, :runtime_tools],
      mod: {MongoosePush.Application, []}]
   end
 
   defp deps do
     [
      {:pigeon, github: "rslota/pigeon"},
+     {:chatterbox, github: "rslota/chatterbox", override: true},
      {:maru, "~> 0.12", override: true},
      {:poison, "~> 3.0"},
-     {:httpoison, "~> 0.13"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.5"},
      {:confex, "~> 3.2", override: true},
      {:mix_docker, "~> 0.5"},
-     { :uuid, "~> 1.1" },
+     {:uuid, "~> 1.1"},
+     {:lager, ">= 3.2.1", override: true},
+     {:logger_lager_backend, "~> 0.1.0"},
 
      # Just overrides to make elixometer compile...
-     {:lager, ">= 3.2.1", override: true},
      {:exometer_core, github: "esl/exometer_core", override: true},
      {:exometer_report_graphite, github: "esl/exometer_report_graphite"},
      {:elixometer, github: "esl/elixometer"},
 
      # Below only :dev / :test deps
-     {:chatterbox, github: "rslota/chatterbox", override: true},
      {:mock, "~> 0.3", only: :test},
      # Until eproxus/meck  #fcc551e3 is in a release, we need to use master version
      # to include this commit (fixes mocking in Erlang 20.x + Elixir 1.5.x)
      {:meck, github: "eproxus/meck", override: true},
+     {:httpoison, "~> 0.13"},
      {:excoveralls, "~> 0.7", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]},
