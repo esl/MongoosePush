@@ -16,6 +16,7 @@ defmodule MongoosePush.Service.FCM do
   def prepare_notification(device_id, %{alert: nil} = request) do
     # Setup silent notification
     Notification.new(device_id, nil, request[:data])
+    |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
   def prepare_notification(device_id, request) do
     # Setup non-silent notification

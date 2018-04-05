@@ -10,24 +10,25 @@ defmodule MongoosePush.API.V2 do
       parsers: [:urlencoded, :json, :multipart]
 
   params do
-    requires  :service,       type: Atom, values: [:fcm, :apns]
-    optional  :mode,          type: Atom, values: [:prod, :dev]
-    optional  :priority,      type: Atom, values: [:normal, :high]
+    requires  :service,         type: Atom, values: [:fcm, :apns]
+    optional  :mode,            type: Atom, values: [:prod, :dev]
+    optional  :priority,        type: Atom, values: [:normal, :high]
+    optional  :mutable_content, type: Boolean, default: false
 
     # Only for APNS, alert/data independent
-    optional  :topic,         type: String
+    optional  :topic,           type: String
 
-    optional  :alert,         type: Map do
-      requires  :body,          type: String
-      requires  :title,         type: String
-      optional  :badge,         type: Integer
-      optional  :click_action,  type: String
-      optional  :tag,           type: String
-      optional  :sound,         type: String
+    optional  :alert,           type: Map do
+      requires  :body,            type: String
+      requires  :title,           type: String
+      optional  :badge,           type: Integer
+      optional  :click_action,    type: String
+      optional  :tag,             type: String
+      optional  :sound,           type: String
     end
 
     # Use raw json value to skip all maru's validators
-    optional  :data,          type: &(&1)
+    optional  :data,            type: &(&1)
 
     # We need to send at least one of data or alert
     # but it's possible to send both

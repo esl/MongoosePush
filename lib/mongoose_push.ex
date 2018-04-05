@@ -47,6 +47,9 @@ defmodule MongoosePush do
   `:mode` option is also specific to APNS but it only selects appropriate
   worker pool (with `:mode` set to either `:prod` or `:dev`).
   Default value to `:mode` is `:prod`.
+
+  Field `:mutable_content` (specific to APNS) can be set to `true` (by default `false`) to enable
+  this feature (please consult APNS documentation for more information).
   """
   @timed(key: :auto)
   @spec push(String.t, request) :: :ok | {:error, term}
