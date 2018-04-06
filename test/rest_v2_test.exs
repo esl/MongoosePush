@@ -58,7 +58,7 @@ defmodule RestV2Test do
   test "api gets corrent request arguments" do
     with_mock MongoosePush, [push: fn(_, _) -> :ok end] do
       args = %{
-        service: :fcm, mode: :dev, topic: "apns topic", priority: :high,
+        service: :fcm, mode: :dev, topic: "apns topic", priority: :high, mutable_content: false,
         alert: %{
           body: "body654", title: "title345",
           badge: 10, tag: "tag123", click_action: "on.click", sound: "sound.wav"
@@ -72,7 +72,7 @@ defmodule RestV2Test do
   test "api gets raw data payload" do
     with_mock MongoosePush, [push: fn(_, _) -> :ok end] do
       args = %{
-        service: :fcm, mode: :dev, priority: :normal,
+        service: :fcm, mode: :dev, priority: :normal, mutable_content: true,
         alert: %{body: "body654", title: "title345"},
         data: %{"acme1" => "value1", "acme2" => "value2"}
       }

@@ -94,11 +94,13 @@ defmodule MongoosePushTest do
         sound: string(min: 3, max: 15, chars: :ascii),
         click_action: string(min: 3, max: 15, chars: :ascii),
         priority: choose(from: [value(:normal), value(:high)]),
+        mutable_content: bool(),
       ], repeat_for: 10 do
 
       notification =
         %{:service => :apns,
           :priority => priority,
+          :mutable_content => mutable_content,
           :alert => %{
             :title => title,
             :body => body,
@@ -129,6 +131,10 @@ defmodule MongoosePushTest do
       assert notification.alert[:click_action] == aps_data["category"]
       assert notification.alert[:sound] == aps_data["sound"]
       assert notification[:data] == aps_custom
+
+      if mutable_content do
+        assert 1 == aps_data["mutable-content"]
+      end
 
     end
   end
