@@ -1,4 +1,4 @@
-FROM phusion/baseimage
+FROM phusion/baseimage:0.10.1
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8

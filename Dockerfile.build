@@ -1,4 +1,4 @@
-FROM phusion/baseimage
+FROM elixir:1.6
 
 ENV HOME=/opt/app/ TERM=xterm
 ENV LANG en_US.UTF-8
@@ -13,10 +13,6 @@ RUN apt-get update && apt-get install -y \
     g++ \
     make \
     wget && \
-    wget http://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
-    dpkg -i erlang-solutions_1.0_all.deb && \
-    apt-get update && \
-    apt-get install -y esl-erlang=1:20.* elixir=1.5.* && \
     apt-get clean
 
 

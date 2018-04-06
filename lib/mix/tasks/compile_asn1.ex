@@ -14,10 +14,18 @@ defmodule Mix.Tasks.Compile.Asn1 do
   def run(_) do
     :ok = File.mkdir_p!(@erl_src)
     to_compile = Path.join(@asn1_src, "**/*.asn")
-    for file <- Path.wildcard(to_compile) do
-      asn = Path.basename(file)
-      :asn1ct.compile(to_charlist(asn),
-                      [:noobj, i: to_charlist(@asn1_src), outdir: to_charlist(@erl_src)])
+    result =
+      for file <- Path.wildcard(to_compile) do
+        asn = Path.basename(file)
+        :asn1ct.compile(to_charlist(asn),
+                        [:noobj, i: to_charlist(@asn1_src), outdir: to_charlist(@erl_src)])
+      end
+
+    case Enum.filter(result, &(&1 != :ok)) do 
+      [] ->
+        :ok
+      Errors ->
+        {:error, Errors}
     end
   end
 

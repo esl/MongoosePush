@@ -32,7 +32,7 @@ script: tools/travis-test.sh
 matrix:
     include:
         - stage: test
-          otp_release: 20.0
+          otp_release: 20.3
           env: PRESET=dialyzer MIX_ENV=test
         - stage: deploy
           elixir: 1.5
