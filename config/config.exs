@@ -21,9 +21,13 @@ use Mix.Config
 #     config :logger, level: :info
 #
 
+config :logger,
+  backends: [LoggerLagerBackend],
+  handle_otp_reports: false
+
 import_config "#{Mix.env}.exs"
 
 # Globally disable maru's "test mode". If we don't disable it explicitly
 # it will crash a release.
-# For test environment: for now it's not compatible. 
+# For test environment: for now it's not compatible.
 config :maru, :test, false

@@ -58,6 +58,7 @@ defmodule MongoosePush.Service.APNS do
     pool_config =
       pool_config
       |> construct_apns_endpoint_options()
+      |> announce_subject()
       |> maybe_setup_default_apns_topic()
 
     Enum.map(1..pool_size, fn(id) ->
@@ -76,6 +77,19 @@ defmodule MongoosePush.Service.APNS do
     Enum.into([{new_key, config[:endpoint]}], config)
   end
 
+  defp announce_subject(config) do
+    try do
+      subject = Certificate.extract_subject!(config[:cert])
+      Logger.info(~s"Using APNS certificate '#{subject}' for '#{config[:mode]}' connection pool")
+    catch
+      _, reason ->
+        Logger.warn(~s"Unable to extract APNS certificate's subject from the #{config[:mode]} " <>
+                      "certificate due to: #{inspect reason}")
+    end
+
+    config
+  end
+
   defp maybe_setup_default_apns_topic(config) do
     try do
       # There are loooots of things that may went wrong with this. Notably, dev certificates
@@ -86,10 +100,10 @@ defmodule MongoosePush.Service.APNS do
         nil ->
           all_topics = Certificate.extract_topics!(config[:cert])
           default_topic = all_topics[:topic]
-          Logger.debug(~s"Successfully extracted default APNS topic: #{default_topic}")
+          Logger.info(~s"Successfully extracted default APNS topic: #{default_topic}")
           Enum.into([default_topic: default_topic], config)
         default_topic ->
-          Logger.debug(~s"Using user-defined default APNS topic: #{default_topic}")
+          Logger.info(~s"Using user-defined default APNS topic: #{default_topic}")
           config
       end
     catch

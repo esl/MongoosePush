@@ -21,7 +21,7 @@ defmodule Mix.Tasks.Compile.Asn1 do
                         [:noobj, i: to_charlist(@asn1_src), outdir: to_charlist(@erl_src)])
       end
 
-    case Enum.filter(result, &(&1 != :ok)) do 
+    case Enum.filter(result, &(&1 != :ok)) do
       [] ->
         :ok
       Errors ->

@@ -25,6 +25,7 @@
   "idna": {:hex, :idna, "5.1.0", "d72b4effeb324ad5da3cab1767cb16b17939004e789d8c0ad5b70f3cea20c89a", [:rebar3], [{:unicode_util_compat, "0.3.1", [hex: :unicode_util_compat, repo: "hexpm", optional: false]}], "hexpm"},
   "jsx": {:hex, :jsx, "2.8.3", "a05252d381885240744d955fbe3cf810504eb2567164824e19303ea59eef62cf", [:mix, :rebar3], [], "hexpm"},
   "lager": {:hex, :lager, "3.5.2", "614a8c8f67bf99b69eb264ea22121ad25511c055aaec09b086773d5108c6767f", [:rebar3], [{:goldrush, "0.1.9", [hex: :goldrush, repo: "hexpm", optional: false]}], "hexpm"},
+  "logger_lager_backend": {:hex, :logger_lager_backend, "0.1.0", "4858d5ac26a3a6085274933bf8b3061973cadac4adbe8e0181933e8cece78abb", [:mix], [{:lager, "~> 3.2", [hex: :lager, repo: "hexpm", optional: false]}], "hexpm"},
   "maru": {:hex, :maru, "0.12.5", "86c7a74b405fc08f71c386206b26969152d999e9c2589391850bb3b633d2c0ca", [:mix], [{:cowboy, "~> 1.1", [hex: :cowboy, repo: "hexpm", optional: false]}, {:plug, "~> 1.4", [hex: :plug, repo: "hexpm", optional: false]}, {:poison, "~> 3.0", [hex: :poison, repo: "hexpm", optional: false]}], "hexpm"},
   "maru_swagger": {:git, "https://github.com/elixir-maru/maru_swagger.git", "35401d91ccb48e07c884d6540326530af5691f14", []},
   "meck": {:git, "https://github.com/eproxus/meck.git", "7b78e29cba837cdec88bfca5c6c3b75baf40d66f", []},
