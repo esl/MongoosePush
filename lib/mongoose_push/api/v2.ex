@@ -39,20 +39,15 @@ defmodule MongoosePush.API.V2 do
     route_param :device_id do
       post do
         device_id = params.device_id
-        case MongoosePush.push(device_id, Map.delete(params, :device_id)) do
-          :ok ->
-            conn
-            |> put_status(200)
-            |> json(nil)
-          {:error, reason} when is_atom(reason) ->
-            conn
-            |> put_status(500)
-            |> json(%{:details => reason})
-          {:error, _reason} ->
-            conn
-            |> put_status(500)
-            |> json(nil)
-        end
+
+        {status, payload} =
+          device_id
+          |> MongoosePush.push(Map.delete(params, :device_id))
+          |> MongoosePush.API.Errors.to_status
+
+        conn
+          |> put_status(status)
+          |> json(payload)
       end
     end
   end
