@@ -23,7 +23,7 @@ elixir:
     - 1.6
 otp_release:
     - 19.3
-    - 20.0
+    - 20.3
 env:
     - PRESET=exunit MIX_ENV=test
 
@@ -35,6 +35,6 @@ matrix:
           otp_release: 20.3
           env: PRESET=dialyzer MIX_ENV=test
         - stage: deploy
-          elixir: 1.5
-          otp_release: 20.0
+          elixir: 1.6
+          otp_release: 20.3
           script: tools/travis-docker.sh
