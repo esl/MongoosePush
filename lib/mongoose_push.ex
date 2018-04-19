@@ -66,10 +66,11 @@ defmodule MongoosePush do
 
       notification = module.prepare_notification(device_id, request)
       opts = [timeout: 60_000]
-      push_result = module.push(notification, device_id, worker, opts)
+      {time, push_result} = :timer.tc(module, :push, [notification, device_id, worker, opts])
 
       push_result
       |> Metrics.update(:spiral, [:push, service, mode])
+      |> Metrics.update(:timer, [:push, service, mode], time)
       |> maybe_log
   end
 
