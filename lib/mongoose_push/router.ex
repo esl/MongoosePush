@@ -15,7 +15,7 @@ defmodule MongoosePush.Router do
 
           swagger_inject: [
             basePath: "/",
-            schemes:  ["https"],
+            schemes:  ["https", "h2"],
             consumes: ["application/json"],
             produces: [
               "application/json",

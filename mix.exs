@@ -5,7 +5,7 @@ defmodule MongoosePush.Mixfile do
     [
       app: :mongoose_push,
       version: "0.10.0",
-      elixir: "~> 1.4",
+      elixir: "~> 1.5",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
       deps: deps(),
@@ -25,9 +25,13 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-     {:pigeon, github: "rslota/pigeon"},
+     {:pigeon, github: "rslota/pigeon", ref: "f85b74e"},
      {:chatterbox, github: "rslota/chatterbox", override: true},
-     {:maru, "~> 0.12", override: true},
+
+     {:maru,  github: "rslota/maru", ref: "54fc038", override: true},
+     {:cowboy,  "~> 2.3", override: true},
+     {:jason, "~> 1.0"}, # This should be included by cowboy, but it's not for some reason
+
      {:poison, "~> 3.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
      {:distillery, "~> 1.5"},
