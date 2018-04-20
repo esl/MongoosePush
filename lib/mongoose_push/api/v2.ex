@@ -43,7 +43,7 @@ defmodule MongoosePush.API.V2 do
         {status, payload} =
           device_id
           |> MongoosePush.push(Map.delete(params, :device_id))
-          |> MongoosePush.API.Errors.to_status
+          |> MongoosePush.API.to_status
 
         conn
           |> put_status(status)

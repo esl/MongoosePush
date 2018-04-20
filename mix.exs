@@ -30,7 +30,7 @@ defmodule MongoosePush.Mixfile do
 
      {:maru,  github: "rslota/maru", ref: "54fc038", override: true},
      {:cowboy,  "~> 2.3", override: true},
-     {:jason, "~> 1.0"}, # This should be included by cowboy, but it's not for some reason
+     {:jason, "~> 1.0"},
 
      {:poison, "~> 3.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},

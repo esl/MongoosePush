@@ -1,4 +1,7 @@
-defmodule MongoosePush.API.Errors do
+defmodule MongoosePush.API do
+
+  @spec to_status(:ok | {:error, term}) ::
+    {non_neg_integer, %{details: atom | String.t} | nil}
   def to_status(:ok), do: {200, nil}
   def to_status({:error, :unable_to_connect}) do
     {503, %{:details => "Please try again later"}}

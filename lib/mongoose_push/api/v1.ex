@@ -35,7 +35,7 @@ defmodule MongoosePush.API.V1 do
         {status, payload} =
           device_id
           |> MongoosePush.push(notification)
-          |> MongoosePush.API.Errors.to_status
+          |> MongoosePush.API.to_status
 
         conn
           |> put_status(status)
