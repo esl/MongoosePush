@@ -42,9 +42,20 @@ defmodule MongoosePush.Metrics do
         end
 
       for final_metric <- final_metrics do
-        unquote(:"update_#{mtype}")(final_metric, value)
+        Metrics.update_metric(unquote(mtype), final_metric, unquote(value))
       end
       return_value
+    end
+  end
+
+  defmacro update_metric(:spiral, metric, value) do
+    quote [bind_quoted: [metric: metric, value: value], unquote: true] do
+      Elixometer.update_spiral(metric, value)
+    end
+  end
+  defmacro update_metric(:timer, metric, value) do
+    quote [bind_quoted: [metric: metric, value: value], unquote: true] do
+      Elixometer.Updater.timer(metric, :microsecond, value)
     end
   end
 

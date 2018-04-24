@@ -32,20 +32,14 @@ defmodule MongoosePush.API.V1 do
           |> Map.delete(:device_id)
           |> transform_alert()
 
-        case MongoosePush.push(device_id, notification) do
-          :ok ->
-            conn
-            |> put_status(200)
-            |> json(nil)
-          {:error, reason} when is_atom(reason) ->
-            conn
-            |> put_status(500)
-            |> json(%{:details => reason})
-          {:error, _reason} ->
-            conn
-            |> put_status(500)
-            |> json(nil)
-        end
+        {status, payload} =
+          device_id
+          |> MongoosePush.push(notification)
+          |> MongoosePush.API.to_status
+
+        conn
+          |> put_status(status)
+          |> json(payload)
       end
     end
   end

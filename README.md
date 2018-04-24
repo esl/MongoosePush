@@ -266,3 +266,16 @@ config :elixometer, reporter: :exometer_report_graphite,
       env: Mix.env,
       metric_prefix: "mongoose_push"
 ```
+
+### Available metrics
+
+The following metrics are available:
+* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.all`
+* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.${REASON}`
+* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.success`
+
+Where:
+* **METRIC_TYPE** is either `timers` or `spirals`
+* **SERVICE** is either `fcm` or `apns`
+* **MODE** is either `prod` or `dev`
+* **REASON** is an arbitrary error reason term
