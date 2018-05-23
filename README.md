@@ -39,7 +39,7 @@ docker run -v `pwd`/priv:/opt/app/priv \
 Building docker is really easy, just type:
 
 ```bash
-MIX_ENV=prod mix do docker.build, docker.release
+MIX_ENV=prod mix do deps.get, certs.dev, docker.build, docker.release
 ```
 
 As a result of this command you get access to `mongoose_push:release` docker image. You may run it by typing:
@@ -49,7 +49,8 @@ docker run -it --rm mongoose_push:release foreground
 ```
 
 Docker image that you have just built, exposes the port `8443` for the REST API of
-MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and REST API certificates.
+MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and REST API certificates since by default the
+docker image comes with fake, self-signed certificates.
 
 #### Configuring
 
