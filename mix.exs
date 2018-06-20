@@ -4,7 +4,7 @@ defmodule MongoosePush.Mixfile do
   def project do
     [
       app: :mongoose_push,
-      version: "1.0.0",
+      version: "1.0.1",
       elixir: "~> 1.5",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
@@ -26,7 +26,7 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
      {:pigeon, github: "rslota/pigeon", ref: "f85b74e"},
-     {:chatterbox, github: "rslota/chatterbox", ref: "4a8abc9", override: true},
+     {:chatterbox, github: "joedevivo/chatterbox", ref: "7a3c64d", override: true},
 
      {:maru,  github: "rslota/maru", ref: "54fc038", override: true},
      {:cowboy,  "~> 2.3", override: true},
