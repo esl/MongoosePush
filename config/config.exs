@@ -25,6 +25,10 @@ config :logger,
   backends: [LoggerLagerBackend],
   handle_otp_reports: false
 
+config :plug, :statuses, %{
+  460 => "Invalid device token"
+}
+
 import_config "#{Mix.env}.exs"
 
 # Globally disable maru's "test mode". If we don't disable it explicitly
