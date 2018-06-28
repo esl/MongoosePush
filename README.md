@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/esl/MongoosePush.svg?branch=master)](https://travis-ci.org/esl/MongoosePush) [![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=master)](https://coveralls.io/github/esl/MongoosePush?branch=master) [![Ebert](https://ebertapp.io/github/esl/MongoosePush.svg)](https://ebertapp.io/github/esl/MongoosePush)
 
-**MongoosePush** is simple (seriously) **RESTful** service written in **Elixir** providing ability to **send push
-notification** to `FCM` (Firebase Cloud Messaging) and/or
+**MongoosePush** is a simple, **RESTful** service written in **Elixir**, providing ability to **send push
+notifications** to `FCM` (Firebase Cloud Messaging) and/or
 `APNS` (Apple Push Notification Service) via their `HTTP/2` API.
 
 ## Quick start
@@ -48,9 +48,7 @@ As a result of this command you get access to `mongoose_push:release` docker ima
 docker run -it --rm mongoose_push:release foreground
 ```
 
-Docker image that you have just built, exposes the port `8443` for the HTTP API of
-MongoosePush. Also there is a `VOLUME` for path */opt/app* where the whole MongoosePush release is stored. This volume will be handy for injecting `APNS` and HTTP API certificates since by default the
-docker image comes with fake, self-signed certificates.
+The docker image that you have just built, exposes the port `8443` for the HTTP API of MongoosePush. It contains a `VOLUME` for path */opt/app* - it is handy for injecting `APNS` and `HTTP API` certificates since by default the docker image comes with test, self-signed certificates.
 
 #### Configuring
 
@@ -59,9 +57,9 @@ The docker image of MongoosePush contains common, basic configuration that is ge
 Environmental variables to configure production release:
 ##### Settings for HTTP endpoint:
 * `PUSH_HTTPS_BIND_ADDR` - Bind IP address of the HTTP endpoint. Default value in prod release is "127.0.0.1", but docker overrides this with "0.0.0.0"
-* `PUSH_HTTPS_PORT` - The port of the MongoosePush HTTP endpoint. Please not that docker exposes only `8443` port, so changing this setting is not recommended
-* `PUSH_HTTPS_KEYFILE` - Path to PEM keyfile used for HTTP endpoint
-* `PUSH_HTTPS_CERTFILE` - Path to PEM certfile used for HTTP endpoint
+* `PUSH_HTTPS_PORT` - The port of the MongoosePush HTTP endpoint. Please note that docker exposes only `8443` port, so changing this setting is not recommended
+* `PUSH_HTTPS_KEYFILE` - Path to a PEM keyfile used for HTTP endpoint
+* `PUSH_HTTPS_CERTFILE` - Path to a PEM certfile used for HTTP endpoint
 * `PUSH_HTTPS_ACCEPTORS` - Number of TCP acceptors to start
 
 ##### General settings:
@@ -131,9 +129,9 @@ config :maru, MongoosePush.Router,
     ]
 ```
 
-This part of configuration relates only to `HTTP` endpoints that `MongoosePush` exposes. Here you can set bind IP adress (option: `ip`), port and paths to your `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing or you're going to get to know by reading [maru's documentation](https://maru.readme.io/docs).
+This part of configuration relates only to `HTTP` endpoints exposed by `MongoosePush`. Here you can set a bind IP adress (option: `ip`), port and paths to your `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing (to learn more, explore [maru's documentation](https://maru.readme.io/docs)).
 
-You may entirely skip the `maru` config entry to disable `HTTP` API and just use this project as `Elixir` library.
+You may entirely skip the `maru` config entry to disable `HTTP` API and just use this project as an `Elixir` library.
 
 ### FCM configuration
 Lets take a look at sample `FCM` service configuration:
@@ -147,12 +145,12 @@ config :mongoose_push, fcm: [
   ]
 ```
 
-Here we can see definition of a pool. Each pool has a name and its configuration. You may have several named pools of different sizes and with different configurations. Currently the only reason you may want to do this is that, the `HTTP` client may switch between them by specifying matching `:mode` in their push request.
+This is a definition of a pool - each pool has a name and configuration. It is possible to have multiple named pools with different configuration, which includes pool size, environment mode etc. Currently the only reason you may want to do this, is to create separate production and development pools which may be selected by an `HTTP` client by specifying matching `:mode` in their push request.
 
 Each `FCM` pool may be configured by setting the following fields:
 * **key** (*required*) - you `FCM` Application Key for using Googles API
 * **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
-* **mode** (*either `:prod` or `:dev`*) - pool's mode. `HTTP` client may select pool used to push his notification by specifying matching option in his request
+* **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
 * **endpoint** (*optional*) - URL override for `FCM` service. Useful mainly in tests
 
 You may entirely skip the `FCM` config entry to disable `FCM` support.
@@ -178,13 +176,13 @@ config :mongoose_push, apns: [
    ]
  ]
  ```
-Analogically to `FCM` configuration, at top level we may specify named pools that have different configurations. For `APNS` this is specifically useful since Apple delivers different APS certificated for development and production use. As in `FCM`, `HTTP` client may select named pool by providing matching `:mode` in his `HTTP` request.
+Just like for `FCM`, at the top level we can specify the named pools that have different configurations. For `APNS` this is especially useful since Apple delivers different APS certificates for development and production use. The HTTP client can select a named pool by providing a matching :mode in the HTTP request.
 
 Each `APNS` pool may be configured by setting the following fields:
 * **cert** (*required*) - relative path to `APNS` `PEM` certificate issued by Apple. This certificate have to be somewhere in `priv` directory
 * **key** (*required*) - relative path to `PEM` private key for `APNS` certificate issued by Apple. This file have to be somewhere in `priv` directory
 * **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
-* **mode** (*either `:prod` or `:dev`*) - pool's mode. `HTTP` client may select pool used to push his notification by specifying matching option in his request
+* **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
 * **endpoint** (*optional*) - URL override for `APNS` service. Useful mainly in tests
 * **use_2197** (*optional `true` or `false`*) - whether use alternative port for `APNS`: 2197
 
@@ -208,7 +206,7 @@ If you happen to have APNS files in `pkcs12` format (.p12 or .pfx extenstion) yo
 
 ### Swagger
 
-If for some reason you need `Swagger` spec for this `RESTful` service, there is swagger endpoint available at `HTTP` path `/swagger.json`
+If for some reason you need `Swagger` spec for this `RESTful` service, there is a swagger endpoint available via an `HTTP` path `/swagger.json`
 
 ### Just tell me what to send already
 
@@ -261,7 +259,7 @@ config :elixometer, reporter: :exometer_report_tty,
 
 The example below on the other hand will enable `graphite` reporter (replace GRAPHITE_OPTIONS with a list of options for `graphite`):
 
-Before making release:
+Before making a release:
 ```elixir
 config :exometer_core, report: [reporters: [{:exometer_report_graphite, GRAPHITE_OPTIONS}]]
 config :elixometer, reporter: :exometer_report_graphite,
@@ -269,7 +267,7 @@ config :elixometer, reporter: :exometer_report_graphite,
       metric_prefix: "mongoose_push"
 ```
 
-or if you modify existing release (`sys.config`):
+or if you modify an existing release (`sys.config`):
 ```erlang
 {exometer_core,[{report, [{reporters, [{exometer_report_graphite, GRAPHITE_OPTIONS}]}]}]},
 {elixometer,
@@ -282,9 +280,9 @@ or if you modify existing release (`sys.config`):
 
 If you use dockerized MongoosePush, you need to do the following:
 * Start MongoosePush docker, let's assume its name is `mongoose_push`
-* Run on you docker host: `docker cp mongoose_push:/opt/app/var/sys.config sys.config` (this will get the current `sys.config` to your `${CWD}`)
+* Run: `docker cp mongoose_push:/opt/app/var/sys.config sys.config` on you docker host (this will get the current `sys.config` to your `${CWD}`)
 * Modify the `sys.config` as you see fit (for metrics, see above)
-* Stop MongoosePush docker container and restart it with the modified `sys.config` as volume in `/opt/app/sys.config` (yes, this is different path then we used to copy this file from, beacuse this is an override)
+* Stop MongoosePush docker container and restart it with the modified `sys.config` as volume in `/opt/app/sys.config` (yes, this is not the path we used to copy this file from, this is an override)
 
 
 ### Available metrics
