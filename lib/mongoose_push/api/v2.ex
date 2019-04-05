@@ -13,6 +13,7 @@ defmodule MongoosePush.API.V2 do
     requires  :service,         type: Atom, values: [:fcm, :apns]
     optional  :mode,            type: Atom, values: [:prod, :dev]
     optional  :priority,        type: Atom, values: [:normal, :high]
+    optional  :time_to_live,    type: Integer
     optional  :mutable_content, type: Boolean, default: false
 
     # Only for APNS, alert/data independent
