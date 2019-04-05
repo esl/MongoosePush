@@ -4,7 +4,7 @@ defmodule MongoosePush.Mixfile do
   def project do
     [
       app: :mongoose_push,
-      version: "1.0.1",
+      version: "1.0.2",
       elixir: "~> 1.5",
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
@@ -26,7 +26,7 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
      {:pigeon, github: "rslota/pigeon", ref: "f85b74e"},
-     {:chatterbox, github: "joedevivo/chatterbox", ref: "7a3c64d", override: true},
+     {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e054430d2990b588afa6fb8f2d184dfeaea", override: true},
 
      {:maru,  github: "rslota/maru", ref: "54fc038", override: true},
      {:cowboy,  "~> 2.3", override: true},
@@ -34,11 +34,11 @@ defmodule MongoosePush.Mixfile do
 
      {:poison, "~> 3.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
-     {:distillery, "~> 1.5"},
+     {:distillery, "~> 2.0", override: true},
      {:confex, "~> 3.2", override: true},
      {:mix_docker, "~> 0.5"},
      {:uuid, "~> 1.1"},
-     {:lager, ">= 3.2.1", override: true},
+     {:lager, ">= 3.6.9", override: true},
      {:logger_lager_backend, "~> 0.1.0"},
 
      # Just overrides to make elixometer compile...
