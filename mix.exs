@@ -50,7 +50,7 @@ defmodule MongoosePush.Mixfile do
       {:meck, github: "eproxus/meck", override: true},
       {:httpoison, "~> 0.13"},
       {:excoveralls, "~> 0.7", only: :test},
-      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.5", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev},
       {:quixir, "~> 0.9", only: :test}

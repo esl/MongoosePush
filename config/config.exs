@@ -21,9 +21,11 @@ use Mix.Config
 #     config :logger, level: :info
 #
 
-config :logger,
-  backends: [LoggerLagerBackend],
-  handle_otp_reports: false
+# Stop lager redirecting :error_logger messages
+config :lager, :error_logger_redirect, false
+
+# Stop lager removing Logger's :error_logger handler
+config :lager, :error_logger_whitelist, [Logger.ErrorHandler]
 
 config :plug, :statuses, %{
   460 => "Invalid device token"
