@@ -25,8 +25,8 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-     {:pigeon, github: "rslota/pigeon", ref: "f85b74e"},
      {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e054430d2990b588afa6fb8f2d184dfeaea", override: true},
+     {:pigeon, github: "rslota/pigeon", ref: "2860eee35b58e2d8674f805f1151f57b9faeca21"},
 
      {:maru,  github: "rslota/maru", ref: "54fc038", override: true},
      {:cowboy,  "~> 2.3", override: true},
