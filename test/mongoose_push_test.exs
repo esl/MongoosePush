@@ -184,7 +184,7 @@ defmodule MongoosePushTest do
       assert notification.alert[:tag] == fcm_data["tag"]
       assert notification.alert[:sound] == fcm_data["sound"]
       assert notification[:data] == fcm_custom
-      assert notification[:time_to_live] == fcm_data["request_data"]["time_to_live"]
+      assert notification[:time_to_live] == fcm_request["request_data"]["time_to_live"]
     end
   end
 

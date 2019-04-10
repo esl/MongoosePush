@@ -29,6 +29,7 @@ defmodule MongoosePush.Service.FCM do
 
     Notification.new(device_id, msg, request[:data])
     |> Notification.put_priority(@priority_mapping[request[:priority]])
+    |> Notification.put_ttl(request[:time_to_live])
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
