@@ -92,7 +92,11 @@ Environmental variables to configure production release:
 
 #### Perquisites
 
-* Elixir 1.4+ (http://elixir-lang.org/install.html)
+* Elixir 1.5+ (http://elixir-lang.org/install.html)
+* Erlang/OTP 19.3+
+  > NOTE: Some Erlang/OTP 20.x releases / builds contain TLS bug that prevents connecting to APNS servers.
+  > When building with this Erlang version, please make sure that MongoosePushRuntimeTest test suite passes.
+  > It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.
 * Rebar3 (just enter ```mix local.rebar```)
 
 #### Build and run
