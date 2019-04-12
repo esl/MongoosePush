@@ -147,7 +147,7 @@ defmodule MongoosePushTest do
         tag: string(min: 3, max: 15, chars: :ascii),
         sound: string(min: 3, max: 15, chars: :ascii),
         click_action: string(min: 3, max: 15, chars: :ascii),
-        time_to_live: int(min: 0, max: 4500),
+        time_to_live: int(min: 0, max: 2419200),
         priority: choose(from: [value(:normal), value(:high)]),
       ], repeat_for: 10 do
 
