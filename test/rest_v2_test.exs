@@ -55,10 +55,11 @@ defmodule RestV2Test do
     end
   end
 
-  test "api gets corrent request arguments" do
+  test "api gets correct request arguments" do
     with_mock MongoosePush, [push: fn(_, _) -> :ok end] do
       args = %{
         service: :fcm, mode: :dev, topic: "apns topic", priority: :high, mutable_content: false,
+        time_to_live: 200,
         alert: %{
           body: "body654", title: "title345",
           badge: 10, tag: "tag123", click_action: "on.click", sound: "sound.wav"

@@ -147,12 +147,14 @@ defmodule MongoosePushTest do
         tag: string(min: 3, max: 15, chars: :ascii),
         sound: string(min: 3, max: 15, chars: :ascii),
         click_action: string(min: 3, max: 15, chars: :ascii),
+        time_to_live: int(min: 0, max: 2419200),
         priority: choose(from: [value(:normal), value(:high)]),
       ], repeat_for: 10 do
 
       notification =
         %{:service => :fcm,
           :priority => priority,
+          :time_to_live => time_to_live,
           :alert => %{
             :title => title,
             :body => body,
@@ -182,6 +184,7 @@ defmodule MongoosePushTest do
       assert notification.alert[:tag] == fcm_data["tag"]
       assert notification.alert[:sound] == fcm_data["sound"]
       assert notification[:data] == fcm_custom
+      assert notification[:time_to_live] == fcm_request["request_data"]["time_to_live"]
     end
   end
 

@@ -234,6 +234,7 @@ The full list of options contains the following:
 * **service** (*required*, `apns` or `fcm`) - push notifications provider to be used for this notification
 * **mode** (*optional*, `prod` (default) or `dev`) - allows for selecting named pool configured in `MongoosePush`
 * **priority** (*optional*) - Either `normal` or `high`. Those values are used without changes for FCM. For APNS however, `normal` maps to priority `5`, while `high` maps to priority `10`. Please refer to FCM / APNS documentation for more details on those values. By default `priority` is not set at all, therefore the push notification service decides which value is used by default.
+* **time_to_live** (*optional*) - Maximum lifespan of an FCM notification. For more details, please, refer to [the official FCM documentation](https://firebase.google.com/docs/cloud-messaging/concept-options#ttl).
 * **mutable_content** (*optional*, `true` / `false` (default)) - Only applicable to APNS. Sets "mutable-content=1" in APNS payload.
 * **topic** (*optional*, `APNS` specific) - if APNS certificate configured in `MongoosePush` allows for multiple applications, this field selects the application. Please refer to `APNS` documentation for more datails
 * **data** (*optional*) - custom JSON structure sent to the target device. For `APNS`, all keys form this stucture are merged into highest level APS message (the one that holds 'aps' key), while for `FCM` the whole `data` json stucture is sent as FCM's `data payload` along with `notification`.
