@@ -74,7 +74,7 @@ defmodule MongoosePush.Service.APNS do
       :dev -> :development_endpoint
       :prod -> :production_endpoint
     end
-    Enum.into([{new_key, config[:endpoint]}], config)
+    Keyword.merge([{new_key, config[:endpoint]}], config)
   end
 
   defp announce_subject(config) do
@@ -101,7 +101,7 @@ defmodule MongoosePush.Service.APNS do
           all_topics = Certificate.extract_topics!(config[:cert])
           default_topic = all_topics[:topic]
           Logger.info(~s"Successfully extracted default APNS topic: #{default_topic}")
-          Enum.into([default_topic: default_topic], config)
+          Keyword.merge([default_topic: default_topic], config)
         default_topic ->
           Logger.info(~s"Using user-defined default APNS topic: #{default_topic}")
           config
