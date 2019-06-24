@@ -53,7 +53,7 @@ defmodule MongoosePush.Service.FCM do
   @spec workers({atom, Keyword.t()} | nil) :: list(Supervisor.Spec.spec())
   def workers(nil), do: []
   def workers({pool_name, pool_config}) do
-    Logger.info ~s"Starting FCM pool with API key #{pool_config[:key]}"
+    Logger.info ~s"Starting FCM pool with API key #{filter_secret(pool_config[:key])}"
     pool_size = pool_config[:pool_size]
     Enum.map(1..pool_size, fn(id) ->
       worker_name = Pools.worker_name(:fcm, pool_name, id)
@@ -61,5 +61,16 @@ defmodule MongoosePush.Service.FCM do
                              [worker_name, pool_config], [id: worker_name])
     end)
   end
+
+  defp filter_secret(secret) when is_binary(secret) do
+    prefix = String.slice(secret, 0..2)
+    suffix =
+      secret
+      |> String.slice(3..-1)
+      |> String.slice(-3..-1)
+
+    prefix <> "*******" <> suffix
+  end
+  defp filter_secret(secret), do: secret
 
 end
