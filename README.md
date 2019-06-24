@@ -12,7 +12,7 @@ notifications** to `FCM` (Firebase Cloud Messaging) and/or
 
 #### Running from DockerHub
 
-We provide already built MongoosePush images. If you just want to use it, then all you need is `docker`, `FCM` app token and/or `APNS` app certificates.
+We provide already built MongoosePush images. If you just want to use it, then all you need is `docker`, `FCM` app token and/or `APNS` app certificates and/or `Pushy` app token.
 In case of certificates you need to setup the following directory structure:
 * priv/
     * ssl/
@@ -24,15 +24,22 @@ In case of certificates you need to setup the following directory structure:
       * dev_cert.pem - Development APNS app certificate
       * dev_key.pem - Development APNS app certificate's private key (has to be unencrypted)
 
-Assuming that your `FCM` app token is "MY_FCM_SECRET_TOKEN" and you have the `priv` directory with all ceriticates in current directory, then you may start MongoosePush with the following command:
+Assuming that your `FCM` app token is "MY_FCM_SECRET_TOKEN", `Pushy` app token is "MY_PUSHY_SECRET_TOKEN" and you have the `priv` directory with all certificates in current directory, then you may start MongoosePush with the following command:
 
 ```bash
 docker run -v `pwd`/priv:/opt/app/priv \
+  -e PUSH_FCM_ENABLED=true \
   -e PUSH_FCM_APP_KEY="MY_FCM_SECRET_TOKEN" \
+  -e PUSH_PUSHY_ENABLED=true \
+  -e PUSH_PUSHY_APP_KEY="MY_PUSHY_SECRET_TOKEN" \
+  -e PUSH_APNS_ENABLED=true \
   -e PUSH_HTTPS_CERTFILE="/opt/app/priv/ssl/rest_cert.pem" \
   -e PUSH_HTTPS_KEYFILE="/opt/app/priv/ssl/rest_key.pem" \
   -it --rm mongooseim/mongoose-push:latest
 ```
+
+Please note that each push service that is being used has to be enabled by `PUSH_FCM_ENABLED` / `PUSH_APNS_ENABLED` / `PUSH_PUSHY_ENABLED` as
+all services are disabled by default. In the example above, we enable all push services, but you may want to skip some of them.
 
 #### Building
 
@@ -64,13 +71,19 @@ Environmental variables to configure production release:
 
 ##### General settings:
 * `PUSH_LOGLEVEL` - `debug`/`info`/`warn`/`error` - Log level of the application. `info` is the default one
-* `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Enabled by default
-* `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
+* `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Disabled by default
+* `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Disabled by default
+* `PUSH_PUSHY_ENABLED` - `true`/`false` - Enable or disable `Pushy` support. Disabled by default
 
 ##### Settings for FCM service:
 * `PUSH_FCM_ENDPOINT` - Hostname of `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
 * `PUSH_FCM_APP_KEY` - App key token to use with `FCM` service
 * `PUSH_FCM_POOL_SIZE` - Connection pool size for `FCM` service
+
+##### Settings for Pushy service:
+* `PUSH_PUSHY_ENDPOINT` - Hostname of `Pushy` service. Set only for local testing. By default this option points to the Google's official hostname
+* `PUSH_PUSHY_APP_KEY` - App key token to use with `Pushy` service
+* `PUSH_PUSHY_POOL_SIZE` - Connection pool size for `Pushy` service. Please note that `Pushy` uses HTTP 1.1, so the pool size has be be significantly bigger then in case of other services that run on HTTP/2
 
 ##### Settings for development APNS service:
 * `PUSH_APNS_DEV_ENDPOINT` - Hostname of `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
@@ -158,6 +171,28 @@ Each `FCM` pool may be configured by setting the following fields:
 * **endpoint** (*optional*) - URL override for `FCM` service. Useful mainly in tests
 
 You may entirely skip the `FCM` config entry to disable `FCM` support.
+
+### Pushy configuration
+Lets take a look at sample `Pushy` service configuration:
+```elixir
+config :mongoose_push, pushy: [
+    default: [
+        key: "fake_app_key",
+        pool_size: 50,
+        mode: :prod
+    ]
+  ]
+```
+
+This is a definition of a pool - each pool has a name and configuration. It is possible to have multiple named pools with different configuration, which includes pool size, environment mode etc. Currently the only reason you may want to do this, is to create separate production and development pools which may be selected by an `HTTP` client by specifying matching `:mode` in their push request.
+
+Each `Pushy` pool may be configured by setting the following fields:
+* **key** (*required*) - you `Pushy` Server Key
+* **pool_size** (*required*) - maximum number of used `HTTP 1.1` connections to Pushy service
+* **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
+* **endpoint** (*optional*) - URL override for `Pushy` service. Useful mainly in tests
+
+You may entirely skip the `Pushy` config entry to disable `Pushy` support.
 
 ### APNS configuration
 

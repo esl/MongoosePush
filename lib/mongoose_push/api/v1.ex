@@ -10,7 +10,7 @@ defmodule MongoosePush.API.V1 do
       parsers: [:urlencoded, :json, :multipart]
 
   params do
-    requires  :service,       type: Atom, values: [:fcm, :apns]
+    requires  :service,       type: Atom, values: [:fcm, :apns, :pushy]
     requires  :body,          type: String
     requires  :title,         type: String
     optional  :badge,         type: Integer
