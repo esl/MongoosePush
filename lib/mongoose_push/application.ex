@@ -43,7 +43,8 @@ defmodule MongoosePush.Application do
   def services do
     [
       fcm: MongoosePush.Service.FCM,
-      apns: MongoosePush.Service.APNS
+      apns: MongoosePush.Service.APNS,
+      pushy: MongoosePush.Service.Pushy
     ]
   end
 
@@ -68,7 +69,7 @@ defmodule MongoosePush.Application do
       case service do
         :apns ->
           [:cert, :key]
-        :fcm ->
+        _ ->
           []
       end
     config

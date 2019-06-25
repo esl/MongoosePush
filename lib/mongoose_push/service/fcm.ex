@@ -26,6 +26,8 @@ defmodule MongoosePush.Service.FCM do
     |> Enum.reduce(%{}, fn(field, map) ->
       Map.put(map, field, alert[field])
     end)
+    |> Enum.filter(fn({_, value}) -> value != nil end)
+    |> Map.new()
 
     Notification.new(device_id, msg, request[:data])
     |> Notification.put_priority(@priority_mapping[request[:priority]])

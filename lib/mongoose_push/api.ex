@@ -16,6 +16,9 @@ defmodule MongoosePush.API do
         {500, %{:details => reason}}
     end
   end
+  def to_status({:error, reason}) when is_binary(reason) do
+    {400, reason}
+  end
   def to_status({:error, _reason}) do
     {500, nil}
   end

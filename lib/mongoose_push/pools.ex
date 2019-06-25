@@ -24,6 +24,12 @@ defmodule MongoosePush.Pools do
     Enum.map(config, &(elem(&1, 0)))
   end
 
+  @spec pools_by_mode(MongoosePush.service, MongoosePush.mode) :: list(atom)
+  def pools_by_mode(:pushy = service, _mode) do
+    config = pools_config(service)
+    Enum.map(config, &(elem(&1, 0)))
+  end
+
   def pools_by_mode(:apns = service, mode) do
     config = pools_config(service)
 

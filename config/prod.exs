@@ -17,17 +17,30 @@ config :maru, MongoosePush.Router,
 
 config :mongoose_push, loglevel:
   {:system, :atom, "PUSH_LOGLEVEL", :info}
+
+config :mongoose_push, pushy_enabled:
+  {:system, :boolean, "PUSH_PUSHY_ENABLED", false}
+
 config :mongoose_push, fcm_enabled:
-  {:system, :boolean, "PUSH_FCM_ENABLED", true}
+  {:system, :boolean, "PUSH_FCM_ENABLED", false}
 
 config :mongoose_push, apns_enabled:
-  {:system, :boolean, "PUSH_APNS_ENABLED", true}
+  {:system, :boolean, "PUSH_APNS_ENABLED", false}
 
 config :mongoose_push, fcm: [
   default: [
     endpoint:   {:system, :string,  "PUSH_FCM_ENDPOINT",   nil},
     key:        {:system, :string,  "PUSH_FCM_APP_KEY",    "fake_app_key"},
     pool_size:  {:system, :integer, "PUSH_FCM_POOL_SIZE",  5},
+    mode:       :prod,
+  ]
+]
+
+config :mongoose_push, pushy: [
+  default: [
+    endpoint:   {:system, :string,  "PUSH_PUSHY_ENDPOINT",   nil},
+    key:        {:system, :string,  "PUSH_PUSHY_APP_KEY",    "fake_app_key"},
+    pool_size:  {:system, :integer, "PUSH_PUSHY_POOL_SIZE",  100},
     mode:       :prod,
   ]
 ]

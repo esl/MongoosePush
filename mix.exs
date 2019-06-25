@@ -25,8 +25,8 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-     {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e054430d2990b588afa6fb8f2d184dfeaea", override: true},
-     {:pigeon, github: "rslota/pigeon", ref: "2860eee35b58e2d8674f805f1151f57b9faeca21"},
+     {:pigeon, github: "rslota/pigeon", ref: "3c83127f25a638b0dd0324742daeb282defd5dc7"},
+     {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e0", override: true},
 
      {:maru,  github: "rslota/maru", ref: "54fc038", override: true},
      {:cowboy,  "~> 2.3", override: true},
@@ -38,7 +38,7 @@ defmodule MongoosePush.Mixfile do
      {:confex, "~> 3.2", override: true},
      {:mix_docker, "~> 0.5"},
      {:uuid, "~> 1.1"},
-     {:lager, ">= 3.6.9", override: true},
+     {:lager, ">= 3.7.0", override: true},
      {:logger_lager_backend, "~> 0.1.0"},
 
      # Just overrides to make elixometer compile...
@@ -51,7 +51,7 @@ defmodule MongoosePush.Mixfile do
      # Until eproxus/meck  #fcc551e3 is in a release, we need to use master version
      # to include this commit (fixes mocking in Erlang 20.x + Elixir 1.5.x)
      {:meck, github: "eproxus/meck", override: true},
-     {:httpoison, "~> 0.13"},
+     {:httpoison, "~> 1.4"},
      {:excoveralls, "~> 0.7", only: :test},
      {:dialyxir, "~> 0.4", only: [:dev, :test], runtime: false},
      {:credo, "~> 0.5", only: [:dev, :test]},
@@ -79,7 +79,7 @@ defmodule MongoosePush.Mixfile do
   end
 
   defp preferred_cli_env do
-    ["coveralls": :test, "coveralls.detail": :test,
+    [coveralls: :test, "coveralls.detail": :test,
      "coveralls.travis": :test, "coveralls.html": :test]
   end
 
