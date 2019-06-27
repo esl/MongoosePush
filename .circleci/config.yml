@@ -61,7 +61,7 @@ jobs:
       - image: rslota/fcm-http2-mock-server
       - image: mobify/apns-http2-mock-server
 
-      working_directory: ~/app
+    working_directory: ~/app
 
     steps:
       - checkout
