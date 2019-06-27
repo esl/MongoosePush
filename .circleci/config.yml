@@ -14,7 +14,7 @@ jobs:
       - run: mix local.hex --force
       - run: mix local.rebar --force
 
-      - run: mix do deps.get, compile, certs.dev
+      - run: mix do deps.get, compile
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - restore_cache:
           keys:
@@ -78,7 +78,7 @@ jobs:
           name: Wait for APNS mock
           command: dockerize -wait tcp://localhost:2197 -timeout 1m
 
-      - run: mix coveralls.circle
+      - run: mix do certs.dev, coveralls.circle
 
       - store_artifacts:
           path: cover
