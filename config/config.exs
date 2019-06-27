@@ -31,7 +31,7 @@ config :plug, :statuses, %{
 
 lager_formater_config = [:date, 'T', :time, :color, ' [', :severity, '] ', :pid, ' ', :message, '\e[0m\r\n']
 config :lager,
-  colored: true,
+  colored: false,
   handlers: [
     lager_console_backend: [
       level: :info,
