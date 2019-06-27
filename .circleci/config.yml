@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/elixir:1.9.0
+      - image: circleci/elixir:1.8.3
         environment:
           MIX_ENV: test
 
@@ -37,7 +37,7 @@ jobs:
 
   dialyzer:
     docker:
-      - image: circleci/elixir:1.9.0
+      - image: circleci/elixir:1.8.3
         environment:
           MIX_ENV: test
 
@@ -55,7 +55,7 @@ jobs:
 
   test:
     docker:
-      - image: circleci/elixir:1.9.0
+      - image: circleci/elixir:1.8.3
         environment:
           MIX_ENV: test
       - image: rslota/fcm-http2-mock-server
@@ -86,7 +86,7 @@ jobs:
 
   format_check:
     docker:
-      - image: circleci/elixir:1.9.0
+      - image: circleci/elixir:1.8.3
         environment:
           MIX_ENV: test
 
