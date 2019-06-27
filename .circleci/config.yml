@@ -1,0 +1,165 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/elixir:1.9.0
+        environment:
+          MIX_ENV: test
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+
+      - run: mix do deps.get, compile, certs.dev
+      - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
+      - restore_cache:
+          keys:
+            - plt-cache-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
+      - run: mix dialyzer --plt
+      - save_cache:
+          key: plt-cache-{{ checksum ".version_file"  }}-{{ checksum "mix.lock" }}
+          paths:
+            - _build
+            - deps
+            - ~/.mix
+      - save_cache:
+          key: mix-cache-{{ .Branch }}-{{ .Revision }}
+          paths:
+                - deps
+                - ~/.mix
+      - save_cache:
+          key: build-cache-{{ .Branch }}-{{ .Revision }}
+          paths: "_build"
+
+  dialyzer:
+    docker:
+      - image: circleci/elixir:1.9.0
+        environment:
+          MIX_ENV: test
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+      - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
+      - restore_cache:
+          keys:
+            - plt-cache-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
+      - run:
+          name: Execute dialyzer
+          command: mix deps.get && mix dialyzer --halt-exit-status
+
+  test:
+    docker:
+      - image: circleci/elixir:1.9.0
+        environment:
+          MIX_ENV: test
+      - image: rslota/fcm-http2-mock-server
+      - image: mobify/apns-http2-mock-server
+
+      working_directory: ~/app
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - build-cache-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Wait for FCM mock
+          command: dockerize -wait tcp://localhost:443 -timeout 1m
+      - run:
+          name: Wait for APNS mock
+          command: dockerize -wait tcp://localhost:2197 -timeout 1m
+
+      - run: mix coveralls.html
+
+      - store_artifacts:
+          path: cover
+          destination: coverage_results
+
+  format_check:
+    docker:
+      - image: circleci/elixir:1.8.1
+        environment:
+          MIX_ENV: test
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Branch }}-{{ .Revision }}
+
+      - run: mix format --check-formatted
+
+  deploy_docker_image:
+    docker:
+      - image: circleci/python:2.7-jessie
+        environment:
+          MIX_ENV: prod
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install awscli and login to AWS
+          command: |
+             sudo pip install awscli
+             $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+      - run:
+          name: Find out tag
+          command: |
+             set -x
+             if [ -n "$CIRCLE_TAG" ]; then
+               DOCKER_TAG="$CIRCLE_TAG"
+             elif [ "$CIRCLE_BRANCH" == "master" ]; then
+               DOCKER_TAG="${CIRCLE_SHA1:0:7}"
+             else
+               DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
+             fi
+             env | sort
+             echo "export DOCKER_TAG=$DOCKER_TAG" >> $BASH_ENV
+      - run:
+          name: Build docker image
+          command: docker build --build-arg MIX_ENV=prod -t cafu_avatar:$DOCKER_TAG .
+      - run:
+          name: Tag and push docker image
+          command: |
+             set -x
+             docker tag cafu_avatar:$DOCKER_TAG $DOCKER_REPO/cafu_avatar:$DOCKER_TAG
+             docker push $DOCKER_REPO/cafu_avatar:$DOCKER_TAG
+             if [ "$CIRCLE_BRANCH" == "master" ]; then
+               docker tag cafu_avatar:$DOCKER_TAG $DOCKER_REPO/cafu_avatar:latest
+               docker push $DOCKER_REPO/cafu_avatar:latest
+             fi
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - format_check:
+          requires:
+            - build
+      - dialyzer:
+          requires:
+            - build
+      - test:
+          requires:
+            - build
+      - deploy_docker_image:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /.*/
