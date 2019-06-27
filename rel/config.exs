@@ -2,18 +2,19 @@
 # They can then be used by adding `plugin MyPlugin` to
 # either an environment, or release definition, where
 # `MyPlugin` is the name of the plugin module.
-Path.join(["rel", "plugins", "*.exs"])
+~w(rel plugins *.exs)
+|> Path.join()
 |> Path.wildcard()
 |> Enum.map(&Code.eval_file(&1))
 
-use Mix.Releases.Config,
-    # This sets the default release built by `mix release`
+use Distillery.Releases.Config,
+    # This sets the default release built by `mix distillery.release`
     default_release: :default,
-    # This sets the default environment used by `mix release`
+    # This sets the default environment used by `mix distillery.release`
     default_environment: Mix.env()
 
 # For a full list of config options for both releases
-# and environments, visit https://hexdocs.pm/distillery/configuration.html
+# and environments, visit https://hexdocs.pm/distillery/config/distillery.html
 
 
 # You may define one or more environments in this file,
@@ -24,18 +25,19 @@ use Mix.Releases.Config,
 environment :dev do
   set dev_mode: true
   set include_erts: false
-  set cookie: :monster
+  set cookie: :"pdxHcLoAby4I:6S(P$1A)DM^4l@)eWo*^W^y[^7H>a2Mmzbj<iuVgqQIZD*h=AG;"
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"}vi>;fSw}i3$:yO3&oT:r%?dz!(O[.($:n*Ym6WN:@D;GK4z$UVr~mREK70&wWAi"
+  set cookie: :"w9fd^wfS`YIf5ID:B;9b(;ZNf5m6btx0LR6l/~UJyh=P~5V5YHn^P]F[.:FOkM4k"
+  set vm_args: "rel/vm.args"
 end
 
 # You may define one or more releases in this file.
 # If you have not set a default release, or selected one
-# when running `mix release`, the first release in the file
+# when running `mix distillery.release`, the first release in the file
 # will be used by default
 
 release :mongoose_push do

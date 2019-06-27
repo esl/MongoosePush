@@ -1,6 +1,5 @@
 defmodule MongoosePushApplicationTest do
   use ExUnit.Case, async: false
-  import MongoosePush.Application
   import MongoosePush.Service.FCM.Pools
   doctest MongoosePush.Application
 

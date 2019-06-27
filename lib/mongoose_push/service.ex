@@ -5,11 +5,14 @@ defmodule MongoosePush.Service do
   alias MongoosePush.Application
 
   @type notification :: term
+  @type options :: [option]
 
-  @callback push(Service.notification(), String.t(), atom(), Service.options()) ::
+  @typep option :: {:timeout, integer()}
+
+  @callback push(notification(), String.t(), atom(), options()) ::
               :ok | {:error, term}
   @callback prepare_notification(String.t(), MongoosePush.request(), Application.pool_name()) ::
-              Service.notification()
+              notification()
   @callback supervisor_entry([Application.pool_definition()] | nil) :: {module(), term()}
   @callback choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
 end
