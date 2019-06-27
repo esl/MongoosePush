@@ -6,7 +6,7 @@ defmodule MongoosePush.Service.FCM do
   @behaviour MongoosePush.Service
   alias Pigeon.GCM
   alias Pigeon.GCM.Notification
-  alias MongoosePush.Application
+  alias MongoosePush.{Application, Service}
   alias MongoosePush.Service.FCM.Pools
   alias MongoosePush.Service.FCM.Pool.Supervisor, as: PoolSupervisor
   require Logger

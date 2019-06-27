@@ -14,7 +14,8 @@ defmodule MongoosePush.Mixfile do
       test_coverage: test_coverage(),
       preferred_cli_env: preferred_cli_env(),
       compilers: compilers(),
-      aliases: aliases()
+      aliases: aliases(),
+      elixirc_paths: elixirc_paths(Mix.env())
     ]
   end
 
@@ -38,7 +39,6 @@ defmodule MongoosePush.Mixfile do
       {:mix_docker, "~> 0.5"},
       {:uuid, "~> 1.1"},
       {:lager, ">= 3.7.0", override: true},
-      {:logger_lager_backend, "~> 0.1.0"},
 
       # Just overrides to make elixometer compile...
       {:exometer_core, github: "esl/exometer_core", override: true},
@@ -98,4 +98,12 @@ defmodule MongoosePush.Mixfile do
   defp aliases do
     [test: "test --no-start"]
   end
+
+  # Exclude lib/mix/tasks/certs_dev.ex as it's conflictng with the same module in Sparrow.
+  # Also, all mix tasks are redundant in runtime, but we still need to compile `lib/mix/tasks/compile_asn1.ex`
+  # as it's required by build process (ASN1 compiler).
+  defp elixirc_paths(:prod),
+    do: ["lib/mix/tasks/compile_asn1.ex", "lib/mongoose_push", "lib/mongoose_push.ex"]
+
+  defp elixirc_paths(_), do: ["lib"]
 end

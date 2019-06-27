@@ -30,4 +30,4 @@ RUN mix do deps.get, deps.compile
 
 COPY . .
 
-RUN mix release --env=prod --verbose
+RUN mix distillery.release --env=prod --verbose

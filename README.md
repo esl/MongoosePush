@@ -103,7 +103,7 @@ Environmental variables to configure production release:
 
 Build step is really easy. Just type in root of the repository:
 ```bash
-MIX_ENV=prod mix do deps.get, compile, certs.dev, release
+MIX_ENV=prod mix do deps.get, compile, certs.dev, distillery.release
 ```
 
 After this step you may try to run the service via:
