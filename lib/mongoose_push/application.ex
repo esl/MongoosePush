@@ -21,16 +21,17 @@ defmodule MongoosePush.Application do
     Supervisor.start_link(children, opts)
   end
 
-  @spec pools_config(MongoosePush.service) :: term
+  @spec pools_config(MongoosePush.service()) :: term
   def pools_config(service) do
     enabled_opt = String.to_atom(~s"#{service}_enabled")
+
     pools_config =
       case Confex.get_env(:mongoose_push, enabled_opt, true) do
-        false ->  []
-        true  ->  Confex.fetch_env!(:mongoose_push, service)
+        false -> []
+        true -> Confex.fetch_env!(:mongoose_push, service)
       end
 
-    Enum.map(pools_config, fn({pool_name, pool_config}) ->
+    Enum.map(pools_config, fn {pool_name, pool_config} ->
       normalized_pool_config =
         pool_config
         |> fix_priv_paths(service)
@@ -58,6 +59,7 @@ defmodule MongoosePush.Application do
     case config[:mode] do
       nil ->
         Enum.into([mode: mode(config)], config)
+
       _ ->
         config
     end
@@ -68,14 +70,17 @@ defmodule MongoosePush.Application do
       case service do
         :apns ->
           [:cert, :key]
+
         :fcm ->
           []
       end
+
     config
-    |> Enum.map(fn({key, value}) ->
+    |> Enum.map(fn {key, value} ->
       case Enum.member?(path_keys, key) do
         true ->
           {key, Application.app_dir(:mongoose_push, value)}
+
         false ->
           {key, value}
       end
@@ -92,9 +97,9 @@ defmodule MongoosePush.Application do
       true ->
         :lager.set_loglevel(:lager_file_backend, level)
         :lager.set_loglevel(:lager_console_backend, level)
+
       false ->
         :ok
     end
   end
-
 end

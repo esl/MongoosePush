@@ -2,17 +2,29 @@ defmodule MongoosePush.Service.APNS.Certificate do
   @moduledoc false
 
   require Record
-  Record.defrecord :otp_cert,
+
+  Record.defrecord(
+    :otp_cert,
     Record.extract(:OTPCertificate, from_lib: "public_key/include/public_key.hrl")
-  Record.defrecord :tbs_cert,
+  )
+
+  Record.defrecord(
+    :tbs_cert,
     Record.extract(:TBSCertificate, from_lib: "public_key/include/public_key.hrl")
-  Record.defrecord :cert_ext,
-    Record.extract(:Extension,      from_lib: "public_key/include/public_key.hrl")
-  Record.defrecord :cert_attr,
-    Record.extract(:AttributeTypeAndValue,      from_lib: "public_key/include/public_key.hrl")
+  )
+
+  Record.defrecord(
+    :cert_ext,
+    Record.extract(:Extension, from_lib: "public_key/include/public_key.hrl")
+  )
+
+  Record.defrecord(
+    :cert_attr,
+    Record.extract(:AttributeTypeAndValue, from_lib: "public_key/include/public_key.hrl")
+  )
 
   # From: https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html
-  @apns_topic_extn_id {1, 2, 840, 113635, 100, 6, 3, 6}
+  @apns_topic_extn_id {1, 2, 840, 113_635, 100, 6, 3, 6}
 
   def extract_topics!(cert_file) do
     maybe_extension =
@@ -23,7 +35,7 @@ defmodule MongoosePush.Service.APNS.Certificate do
       |> get_cert_extension!(@apns_topic_extn_id)
 
     if maybe_extension == nil do
-        throw :no_extension
+      throw(:no_extension)
     end
 
     # The module below is compiled with Mix.Task.Compile.Asn1 after Elixir code is compiled,
@@ -39,7 +51,8 @@ defmodule MongoosePush.Service.APNS.Certificate do
     |> File.read!()
     |> :public_key.pem_decode()
     |> List.keyfind(:Certificate, 0)
-    |> elem(1) # {:Certificate, DEREncoded, EncryptionInfo}
+    # {:Certificate, DEREncoded, EncryptionInfo}
+    |> elem(1)
     |> :public_key.pkix_decode_cert(:otp)
     |> otp_cert(:tbsCertificate)
     |> tbs_cert(:subject)
@@ -49,7 +62,8 @@ defmodule MongoosePush.Service.APNS.Certificate do
   defp parse_subject_name({:rdnSequence, rdn_sequence}) do
     rdn_sequence
     |> List.flatten()
-    |> Enum.map(&(cert_attr(&1, :value))) # Get value for each RDN
+    # Get value for each RDN
+    |> Enum.map(&cert_attr(&1, :value))
     |> Enum.map(&normalize_rdn_string/1)
     |> List.insert_at(0, "")
     |> Enum.join("/")

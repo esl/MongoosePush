@@ -18,11 +18,11 @@ defmodule MongoosePush do
   @typedoc "Available keys in `request` map"
   @type req_key :: :service | :mode | :alert | :data | :topic | :priority
   @type alert_key :: :title | :body | :tag | :badge | :click_action | :sound
-  @type data_key :: atom | String.t
+  @type data_key :: atom | String.t()
 
   @typedoc "Raw push request. The keys: `:service` and at least one of `:alert` or `:body` are required"
-  @type request :: %{req_key => atom | String.t | integer | alert | data}
-  @type alert :: %{alert_key => atom | String.t | integer}
+  @type request :: %{req_key => atom | String.t() | integer | alert | data}
+  @type alert :: %{alert_key => atom | String.t() | integer}
   @type data :: %{data_key => term}
 
   @type service :: :fcm | :apns
@@ -51,38 +51,42 @@ defmodule MongoosePush do
   Field `:mutable_content` (specific to APNS) can be set to `true` (by default `false`) to enable
   this feature (please consult APNS documentation for more information).
   """
-  @timed(key: :auto)
-  @spec push(String.t, request) :: :ok | {:error, term}
+  @timed key: :auto
+  @spec push(String.t(), request) :: :ok | {:error, term}
   def push(device_id, %{:service => service} = request) do
-      mode = Map.get(request, :mode, :prod)
-      worker = Pools.select_worker(service, mode)
-      module = MongoosePush.Application.services()[service]
+    mode = Map.get(request, :mode, :prod)
+    worker = Pools.select_worker(service, mode)
+    module = MongoosePush.Application.services()[service]
 
-      # Just make sure both data and alert keys exist for convenience (but may be nil)
-      request =
-        request
-        |> Map.put(:alert, request[:alert])
-        |> Map.put(:data, request[:data])
+    # Just make sure both data and alert keys exist for convenience (but may be nil)
+    request =
+      request
+      |> Map.put(:alert, request[:alert])
+      |> Map.put(:data, request[:data])
 
-      notification = module.prepare_notification(device_id, request)
-      opts = [timeout: 60_000]
-      {time, push_result} = :timer.tc(module, :push, [notification, device_id, worker, opts])
+    notification = module.prepare_notification(device_id, request)
+    opts = [timeout: 60_000]
+    {time, push_result} = :timer.tc(module, :push, [notification, device_id, worker, opts])
 
-      push_result
-      |> Metrics.update(:spiral, [:push, service, mode])
-      |> Metrics.update(:timer, [:push, service, mode], time)
-      |> maybe_log
+    push_result
+    |> Metrics.update(:spiral, [:push, service, mode])
+    |> Metrics.update(:timer, [:push, service, mode], time)
+    |> maybe_log
   end
 
   defp maybe_log(:ok), do: :ok
+
   defp maybe_log({:error, reason} = return_value) when is_atom(reason) do
-    Logger.warn ~s"Unable to complete push request due to #{reason}"
-    return_value
-  end
-  defp maybe_log({:error, reason} = return_value) do
-    Logger.warn ~s"Unable to complete push request due to unknown error: " <>
-                ~s"#{inspect reason}"
+    Logger.warn(~s"Unable to complete push request due to #{reason}")
     return_value
   end
 
+  defp maybe_log({:error, reason} = return_value) do
+    Logger.warn(
+      ~s"Unable to complete push request due to unknown error: " <>
+        ~s"#{inspect(reason)}"
+    )
+
+    return_value
+  end
 end
