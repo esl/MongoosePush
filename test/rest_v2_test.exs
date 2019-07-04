@@ -1,10 +1,13 @@
 defmodule RestV2Test do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   import Mock
   alias HTTPoison.Response
   doctest MongoosePush.API.V2
 
   @url "/v2/notification/f534534543"
+  setup do
+    TestHelper.reload_app()
+  end
 
   test "incorrect path returns 404" do
     assert 404 = post("/notification", %{})

@@ -42,10 +42,11 @@ config :mongoose_push,
       pool_size: 5
     ],
     prod: [
+      endpoint: "localhost",
       cert: "priv/apns/prod_cert.pem",
       key: "priv/apns/prod_key.pem",
       mode: :prod,
-      use_2197: false,
+      use_2197: true,
       pool_size: 5
     ]
   ]

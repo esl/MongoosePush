@@ -5,77 +5,64 @@ defmodule MongoosePush.Service.APNS do
 
   @behaviour MongoosePush.Service
   require Logger
-  alias Pigeon.APNS
-  alias Pigeon.APNS.Config
-  alias Pigeon.APNS.Notification
+  alias Sparrow.APNS
+  alias Sparrow.APNS.Notification
+  alias MongoosePush.Application
   alias MongoosePush.Service
-  alias MongoosePush.Pools
   alias MongoosePush.Service.APNS.Certificate
+  alias MongoosePush.Service.APNS.State
 
   @priority_mapping %{normal: "5", high: "10"}
 
-  @spec prepare_notification(String.t(), MongoosePush.request()) ::
+  @spec prepare_notification(String.t(), MongoosePush.request(), atom()) ::
           Service.notification()
-  def prepare_notification(device_id, %{alert: nil} = request) do
+  def prepare_notification(device_id, %{alert: nil} = request, _pool) do
     # Setup silent notification
-    %{"content-available" => 1}
-    |> Notification.new(device_id, request[:topic], request[:data])
-    |> maybe_mutable_content(request[:mutable_content])
-    |> Notification.put_priority(@priority_mapping[request[:priority]])
+    Notification.new(device_id, Map.get(request, :mode, :prod))
+    |> Notification.add_content_available(1)
+    |> maybe(:add_apns_topic, request[:topic])
+    |> maybe(:add_mutable_content, request[:mutable_content])
+    |> maybe(:add_apns_priority, @priority_mapping[request[:priority]])
+    |> add_data(request[:data])
   end
 
-  def prepare_notification(device_id, request) do
+  def prepare_notification(device_id, request, pool) do
     # Setup non-silent notification
     alert = request.alert
+    default_topic = State.get_default_topic(pool)
 
-    %{
-      "alert" => %{
-        "title" => alert.title,
-        "body" => alert.body
-      },
-      "badge" => alert[:badge],
-      "category" => alert[:click_action],
-      "sound" => alert[:sound]
-    }
-    |> Notification.new(device_id, request[:topic], request[:data])
-    |> maybe_mutable_content(request[:mutable_content])
-    |> Notification.put_priority(@priority_mapping[request[:priority]])
+    Notification.new(device_id, Map.get(request, :mode, :prod))
+    |> Notification.add_title(alert.title)
+    |> Notification.add_body(alert.body)
+    |> maybe(:add_apns_topic, request[:topic] || default_topic)
+    |> maybe(:add_mutable_content, request[:mutable_content])
+    |> maybe(:add_apns_priority, @priority_mapping[request[:priority]])
+    |> maybe(:add_badge, alert[:badge])
+    |> maybe(:add_category, alert[:click_action])
+    |> maybe(:add_sound, alert[:sound])
+    |> add_data(request[:data])
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
           :ok | {:error, term}
-  def push(notification, _device_id, worker, opts \\ []) do
-    case APNS.push(notification, Keyword.merge([name: worker], opts)) do
-      {:ok, _state} ->
+  def push(notification, _device_id, pool, opts \\ []) do
+    case APNS.push(pool, notification, is_sync: true) do
+      :ok ->
         :ok
 
-      {:error, reason, _state} ->
+      {:error, reason} ->
         {:error, reason}
     end
   end
 
-  @spec workers({atom, Keyword.t()} | nil) :: list(Supervisor.Spec.spec())
-  def workers(nil), do: []
+  @spec supervisor_entry([Application.pool_definition()] | nil) :: {module(), term()}
+  def supervisor_entry(pool_configs) do
+    {MongoosePush.Service.APNS.Supervisor, pool_configs}
+  end
 
-  def workers({pool_name, pool_config}) do
-    pool_size = pool_config[:pool_size]
-
-    pool_config =
-      pool_config
-      |> construct_apns_endpoint_options()
-      |> announce_subject()
-      |> maybe_setup_default_apns_topic()
-
-    Enum.map(1..pool_size, fn id ->
-      worker_name = Pools.worker_name(:apns, pool_name, id)
-      worker_config = Config.config(worker_name, pool_config)
-
-      Supervisor.Spec.worker(
-        Pigeon.APNSWorker,
-        [worker_config],
-        id: worker_name
-      )
-    end)
+  @spec choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
+  def choose_pool(mode) do
+    Sparrow.PoolsWarden.choose_pool({:apns, mode})
   end
 
   defp construct_apns_endpoint_options(config) do
@@ -103,36 +90,16 @@ defmodule MongoosePush.Service.APNS do
     config
   end
 
-  defp maybe_setup_default_apns_topic(config) do
-    try do
-      # There are loooots of things that may went wrong with this. Notably, dev certificates
-      # don't have topic list, while production certificates may not have it if they are old enough.
-      # Also the whole `extract_topics!` function is based on reverse-engineered ASN.1 struct,
-      # so there may be some incompability issues that we may work on based on failure logs.
-      case config[:default_topic] do
-        nil ->
-          all_topics = Certificate.extract_topics!(config[:cert])
-          default_topic = all_topics[:topic]
-          Logger.info(~s"Successfully extracted default APNS topic: #{default_topic}")
-          Keyword.put(config, :default_topic, default_topic)
+  defp maybe(notification, :add_mutable_content, true),
+    do: apply(Notification, :add_mutable_content, [notification])
 
-        default_topic ->
-          Logger.info(~s"Using user-defined default APNS topic: #{default_topic}")
-          config
-      end
-    catch
-      _, reason ->
-        Logger.warn(
-          ~s"Unable to extract APNS topic from the #{config[:mode]} certificate " <>
-            "due to: #{inspect(reason)}"
-        )
+  defp maybe(notification, :add_mutable_content, _), do: notification
+  defp maybe(notification, _function, nil), do: notification
+  defp maybe(notification, function, arg), do: apply(Notification, function, [notification, arg])
 
-        config
-    end
+  defp add_data(notification, arg) do
+    List.foldl(Map.keys(arg || %{}), notification, fn key, notification ->
+      Notification.add_custom_data(notification, key, arg[key])
+    end)
   end
-
-  defp maybe_mutable_content(notification, true),
-    do: Notification.put_mutable_content(notification)
-
-  defp maybe_mutable_content(notification, _), do: notification
 end

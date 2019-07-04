@@ -11,12 +11,19 @@ defmodule MongoosePush do
   """
 
   require Logger
-  alias MongoosePush.Pools
   alias MongoosePush.Metrics
   use Metrics
 
   @typedoc "Available keys in `request` map"
-  @type req_key :: :service | :mode | :alert | :data | :topic | :priority
+  @type req_key ::
+          :service
+          | :mode
+          | :alert
+          | :data
+          | :topic
+          | :priority
+          | :time_to_live
+          | :mutable_content
   @type alert_key :: :title | :body | :tag | :badge | :click_action | :sound
   @type data_key :: atom | String.t()
 
@@ -35,7 +42,7 @@ defmodule MongoosePush do
   Please refer to yours push notification service provider's documentation for more details on
   silent notifications.
 
-  Field `:data` may conatin any custom data that have to be delivered to the target device, while
+  Field `:data` may contain any custom data that have to be delivered to the target device, while
   field `:alert`, if present, must contain at least `:title` and `:body`. The `:alert` field may also
   contain: :sound, `:tag` (option specific to FCM service), `:topic` and `:bagde` (specific to APNS).
   Please consult push notification service provider's documentation for more informations on those
@@ -55,18 +62,17 @@ defmodule MongoosePush do
   @spec push(String.t(), request) :: :ok | {:error, term}
   def push(device_id, %{:service => service} = request) do
     mode = Map.get(request, :mode, :prod)
-    worker = Pools.select_worker(service, mode)
     module = MongoosePush.Application.services()[service]
-
+    pool = module.choose_pool(mode)
     # Just make sure both data and alert keys exist for convenience (but may be nil)
     request =
       request
       |> Map.put(:alert, request[:alert])
       |> Map.put(:data, request[:data])
 
-    notification = module.prepare_notification(device_id, request)
+    notification = module.prepare_notification(device_id, request, pool)
     opts = [timeout: 60_000]
-    {time, push_result} = :timer.tc(module, :push, [notification, device_id, worker, opts])
+    {time, push_result} = :timer.tc(module, :push, [notification, device_id, pool, opts])
 
     push_result
     |> Metrics.update(:spiral, [:push, service, mode])

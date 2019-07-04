@@ -1,8 +1,12 @@
 defmodule RestH2Test do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   import Mock
 
   @url "/v2/notification/f534534543"
+
+  setup do
+    TestHelper.reload_app()
+  end
 
   # Since protocol is the only thing that changes, there's no point in testing the whole API
   test "correct params return 200 over HTTP/2" do

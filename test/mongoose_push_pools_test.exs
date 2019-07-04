@@ -1,7 +1,7 @@
 defmodule MongoosePushPoolsTest do
-  use ExUnit.Case
-  import MongoosePush.Pools
-  doctest MongoosePush.Pools
+  use ExUnit.Case, async: false
+  import MongoosePush.Service.FCM.Pools
+  doctest MongoosePush.Service.FCM.Pools
 
   setup do
     # Validate config/text.exs that is need for this test suite
@@ -10,8 +10,7 @@ defmodule MongoosePushPoolsTest do
 
     fcm_pools = Keyword.keys(Application.get_env(:mongoose_push, :fcm))
     [:default] = fcm_pools
-
-    :ok
+    TestHelper.reload_app()
   end
 
   test "worker name" do
@@ -20,9 +19,7 @@ defmodule MongoosePushPoolsTest do
   end
 
   test "pool groups" do
-    assert [:dev1, :dev2] == pools_by_mode(:apns, :dev)
-    assert [:prod1, :prod2] == pools_by_mode(:apns, :prod)
-    assert [:default] == pools_by_mode(:fcm, :default)
+    assert [:default] == pools_by_mode()
   end
 
   test "pool size" do

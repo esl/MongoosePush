@@ -6,6 +6,23 @@ defmodule MongoosePush.Application do
   use Application
   require Logger
 
+  @typedoc "Possible keys in FCM config"
+  @type fcm_key :: :key | :pool_size | :mode | :endpoint
+  @typedoc "Possible keys in APNS config"
+  @type apns_key :: :cert | :key | :pool_size | :mode | :endpoint | :use_2197
+
+  @typedoc """
+  In FCM `:key` and `:pool_size` are required and `:mode` has to be either `:dev` or `:prod`
+  """
+  @type fcm_config :: [{fcm_key, String.t() | atom | integer}]
+  @typedoc """
+  In APNS `:cert`, `:key` and `:pool_size` are required. `:mode` has to be either `:dev` or `:prod`
+  """
+  @type apns_config :: [{apns_key, String.t() | atom | integer}]
+
+  @type pool_name :: atom()
+  @type pool_definition :: {pool_name, fcm_config | apns_config}
+
   @spec start(atom, list(term)) :: {:ok, pid}
   def start(_type, _args) do
     # Logger setup
@@ -13,7 +30,7 @@ defmodule MongoosePush.Application do
     set_loglevel(loglevel)
 
     # Define workers and child supervisors to be supervised
-    children = List.flatten(workers())
+    children = children()
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
@@ -21,7 +38,7 @@ defmodule MongoosePush.Application do
     Supervisor.start_link(children, opts)
   end
 
-  @spec pools_config(MongoosePush.service()) :: term
+  @spec pools_config(MongoosePush.service()) :: [pool_definition]
   def pools_config(service) do
     enabled_opt = String.to_atom(~s"#{service}_enabled")
 
@@ -48,17 +65,17 @@ defmodule MongoosePush.Application do
     ]
   end
 
-  defp workers do
+  defp children do
     for {service, module} <- services() do
       pools_config = pools_config(service)
-      Enum.map(pools_config, &module.workers/1)
+      module.supervisor_entry(pools_config)
     end
   end
 
   defp ensure_mode(config) do
     case config[:mode] do
       nil ->
-        Keyword.merge(config, [mode: mode(config)])
+        Keyword.merge(config, mode: mode(config))
 
       _ ->
         config
