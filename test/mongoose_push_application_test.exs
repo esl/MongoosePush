@@ -1,7 +1,7 @@
 defmodule MongoosePushApplicationTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   import MongoosePush.Application
-  import MongoosePush.Pools
+  import MongoosePush.Service.FCM.Pools
   doctest MongoosePush.Application
 
   setup do
@@ -11,27 +11,24 @@ defmodule MongoosePushApplicationTest do
 
     fcm_pools = Keyword.keys(Application.get_env(:mongoose_push, :fcm))
     [:default] = fcm_pools
-
-    :ok
+    TestHelper.reload_app()
   end
 
   test "pools online" do
-    assert Process.alive?(Process.whereis(worker_name(:apns, :prod1, 1)))
-    assert Process.alive?(Process.whereis(worker_name(:apns, :prod1, 2)))
+    {_, apns_pid, _, _} =
+      Supervisor.which_children(MongoosePush.Supervisor)
+      |> List.keyfind(:apns_supervisor, 0)
 
-    assert Process.alive?(Process.whereis(worker_name(:apns, :prod2, 1)))
-    assert Process.alive?(Process.whereis(worker_name(:apns, :prod2, 4)))
+    assert Process.alive?(apns_pid)
 
-    assert Process.alive?(Process.whereis(worker_name(:apns, :dev1, 1)))
+    {_, fcm_pid, _, _} =
+      Supervisor.which_children(MongoosePush.Supervisor)
+      |> List.keyfind(:fcm_pool_supervisor, 0)
 
-    assert Process.alive?(Process.whereis(worker_name(:apns, :dev2, 1)))
-    assert Process.alive?(Process.whereis(worker_name(:apns, :dev2, 3)))
-
-    assert Process.alive?(Process.whereis(worker_name(:fcm, :default, 1)))
-    assert Process.alive?(Process.whereis(worker_name(:fcm, :default, 5)))
+    assert Process.alive?(fcm_pid)
   end
 
-  test "pools have corrent size" do
+  test "pools have correct size" do
     assert nil == Process.whereis(worker_name(:apns, :dev1, 2))
     assert nil == Process.whereis(worker_name(:apns, :prod1, 3))
     assert nil == Process.whereis(worker_name(:apns, :dev2, 4))

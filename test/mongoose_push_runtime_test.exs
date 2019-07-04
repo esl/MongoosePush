@@ -1,5 +1,9 @@
 defmodule MongoosePushRuntimeTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
+
+  setup do
+    TestHelper.reload_app()
+  end
 
   test "tls ciphers required by apns are available" do
     # APNS supports only:

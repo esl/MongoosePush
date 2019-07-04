@@ -15,3 +15,13 @@ defmodule TimeHelper do
     end
   end
 end
+
+defmodule TestHelper do
+  def reload_app() do
+    Application.stop(:mongoose_push)
+    Application.unload(:mongoose_push)
+    Application.load(:mongoose_push)
+    {:ok, _} = Application.ensure_all_started(:mongoose_push)
+    :ok
+  end
+end

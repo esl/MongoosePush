@@ -6,21 +6,23 @@ defmodule MongoosePush.Service.FCM do
   @behaviour MongoosePush.Service
   alias Pigeon.GCM
   alias Pigeon.GCM.Notification
-  alias MongoosePush.Pools
+  alias MongoosePush.Application
+  alias MongoosePush.Service.FCM.Pools
+  alias MongoosePush.Service.FCM.Pool.Supervisor, as: PoolSupervisor
   require Logger
 
   @priority_mapping %{normal: "normal", high: "high"}
 
-  @spec prepare_notification(String.t(), MongoosePush.request()) ::
+  @spec prepare_notification(String.t(), MongoosePush.request(), atom()) ::
           Service.notification()
-  def prepare_notification(device_id, %{alert: nil} = request) do
+  def prepare_notification(device_id, %{alert: nil} = request, _pool) do
     # Setup silent notification
     Notification.new(device_id, nil, request[:data])
     |> Notification.put_ttl(request[:time_to_live])
     |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
 
-  def prepare_notification(device_id, request) do
+  def prepare_notification(device_id, request, _pool) do
     # Setup non-silent notification
     alert = request.alert
 
@@ -37,7 +39,9 @@ defmodule MongoosePush.Service.FCM do
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
           :ok | {:error, term}
-  def push(notification, device_id, worker, opts \\ []) do
+  def push(notification, device_id, _pool, opts \\ []) do
+    worker = Pools.select_worker()
+
     case GCM.push(notification, Keyword.merge([name: worker], opts)) do
       {:ok, state} ->
         %Pigeon.GCM.NotificationResponse{ok: ok, update: update} = state
@@ -58,34 +62,14 @@ defmodule MongoosePush.Service.FCM do
     end
   end
 
-  @spec workers({atom, Keyword.t()} | nil) :: list(Supervisor.Spec.spec())
-  def workers(nil), do: []
-
-  def workers({pool_name, pool_config}) do
-    Logger.info(~s"Starting FCM pool with API key #{filter_secret(pool_config[:key])}")
-    pool_size = pool_config[:pool_size]
-
-    Enum.map(1..pool_size, fn id ->
-      worker_name = Pools.worker_name(:fcm, pool_name, id)
-
-      Supervisor.Spec.worker(
-        Pigeon.GCMWorker,
-        [worker_name, pool_config],
-        id: worker_name
-      )
-    end)
+  @spec supervisor_entry([Application.pool_definition()] | nil) :: {module(), term()}
+  def supervisor_entry(pools_configs) do
+    {PoolSupervisor, pools_configs}
   end
 
-  defp filter_secret(secret) when is_binary(secret) do
-    prefix = String.slice(secret, 0..2)
-
-    suffix =
-      secret
-      |> String.slice(3..-1)
-      |> String.slice(-3..-1)
-
-    prefix <> "*******" <> suffix
+  @spec choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
+  def choose_pool(_mode) do
+    [pool | _] = Pools.pools_by_mode()
+    pool
   end
-
-  defp filter_secret(secret), do: secret
 end

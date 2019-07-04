@@ -1,15 +1,18 @@
 defmodule MongoosePushTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: false
   use Quixir
   import Mock
   doctest MongoosePush
 
   @test_token "testdeviceid1234"
   @apns_priority_mapping %{normal: "5", high: "10"}
+  @dev_topic "dev_topic"
+  @prod_topic "prod1_override_topic"
 
   setup do
     reset(:fcm)
     reset(:apns)
+    TestHelper.reload_app()
   end
 
   describe "apns topic" do
@@ -17,8 +20,7 @@ defmodule MongoosePushTest do
       assert :ok ==
                push(@test_token, %{
                  :service => :apns,
-                 :title => "",
-                 :body => "",
+                 :alert => %{:title => "", :body => ""},
                  mode: :dev,
                  topic: "some_topic"
                })
@@ -32,8 +34,7 @@ defmodule MongoosePushTest do
       assert :ok ==
                push(@test_token, %{
                  :service => :apns,
-                 :title => "",
-                 :body => "",
+                 :alert => %{:title => "", :body => ""},
                  mode: :prod,
                  topic: "some_topic"
                })
@@ -42,48 +43,86 @@ defmodule MongoosePushTest do
       assert @test_token == apns_request["device_token"]
       assert "some_topic" == apns_request["request_headers"]["apns-topic"]
     end
+  end
 
-    test "defaults to value set in config using :dev mode" do
-      with_mock(MongoosePush.Pools, [:passthrough], pools_by_mode: fn :apns, :dev -> [:dev1] end) do
-        assert :ok ==
-                 push(@test_token, %{:service => :apns, :title => "", :body => "", mode: :dev})
-
-        apns_request = last_activity(:apns)
-        assert @test_token == apns_request["device_token"]
-        assert "dev_topic" == apns_request["request_headers"]["apns-topic"]
-      end
+  describe "test apns topic specified in config" do
+    setup do
+      old_config = Application.fetch_env!(:mongoose_push, :apns)
+      new_config = Enum.map(old_config, &add_topic_to_config/1)
+      Application.stop(:mongoose_push)
+      Application.load(:mongoose_push)
+      Application.put_env(:mongoose_push, :apns, new_config)
+      Application.start(:mongoose_push)
     end
 
-    test "is not set if theres no default value in config nor certificate" do
-      with_mock(MongoosePush.Pools, [:passthrough], pools_by_mode: fn :apns, :dev -> [:dev2] end) do
+    test "defaults to value set in config using :dev mode" do
+      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:dev1] end) do
         assert :ok ==
-                 push(@test_token, %{:service => :apns, :title => "", :body => "", mode: :dev})
+                 push(@test_token, %{
+                   :service => :apns,
+                   :alert => %{:title => "", :body => ""},
+                   mode: :dev
+                 })
 
         apns_request = last_activity(:apns)
         assert @test_token == apns_request["device_token"]
-        assert nil == apns_request["request_headers"]["apns-topic"]
+        assert @dev_topic == apns_request["request_headers"]["apns-topic"]
       end
     end
 
     test "defaults to value set in config using :prod mode" do
-      with_mock(MongoosePush.Pools, [:passthrough], pools_by_mode: fn :apns, :prod -> [:prod1] end) do
+      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:prod1] end) do
         assert :ok ==
-                 push(@test_token, %{:service => :apns, :title => "", :body => "", mode: :prod})
+                 push(@test_token, %{
+                   :service => :apns,
+                   :alert => %{:title => "", :body => ""},
+                   mode: :prod
+                 })
 
         apns_request = last_activity(:apns)
         assert @test_token == apns_request["device_token"]
-        assert "prod1_override_topic" == apns_request["request_headers"]["apns-topic"]
+        assert @prod_topic == apns_request["request_headers"]["apns-topic"]
       end
+    end
+  end
+
+  describe "test apns topic (without it being specified in pool configs)" do
+    setup do
+      old_config = Application.fetch_env!(:mongoose_push, :apns)
+      new_config = Enum.map(old_config, &delete_topic_from_config/1)
+      Application.stop(:mongoose_push)
+      Application.load(:mongoose_push)
+      Application.put_env(:mongoose_push, :apns, new_config)
+      Application.start(:mongoose_push)
     end
 
     test "defaults to value extracted from cert using :prod mode" do
-      with_mock(MongoosePush.Pools, [:passthrough], pools_by_mode: fn :apns, :prod -> [:prod2] end) do
+      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:prod2] end) do
         assert :ok ==
-                 push(@test_token, %{:service => :apns, :title => "", :body => "", mode: :prod})
+                 push(@test_token, %{
+                   :service => :apns,
+                   :alert => %{:title => "", :body => ""},
+                   mode: :prod
+                 })
 
         apns_request = last_activity(:apns)
         assert @test_token == apns_request["device_token"]
         assert "com.inakanetworks.Mangosta" == apns_request["request_headers"]["apns-topic"]
+      end
+    end
+
+    test "is not set if theres no default value in config nor certificate" do
+      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:dev2] end) do
+        assert :ok ==
+                 push(@test_token, %{
+                   :service => :apns,
+                   :alert => %{:title => "", :body => ""},
+                   mode: :dev
+                 })
+
+        apns_request = last_activity(:apns)
+        assert @test_token == apns_request["device_token"]
+        assert nil == apns_request["request_headers"]["apns-topic"]
       end
     end
   end
@@ -92,7 +131,7 @@ defmodule MongoosePushTest do
     assert :ok ==
              push(
                "device_id",
-               %{:service => :apns, :title => "", :body => ""}
+               %{:service => :apns, :alert => %{:title => "", :body => ""}}
              )
   end
 
@@ -262,35 +301,6 @@ defmodule MongoosePushTest do
     assert {:error, :invalid_device_token} = push("androidtestdeviceid65", notification)
   end
 
-  test "push to apns allows choosing mode" do
-    notification = %{
-      :service => :apns,
-      :alert => %{
-        :title => "title value",
-        :body => "body value"
-      }
-    }
-
-    dev_notification = Map.put(notification, :mode, :dev)
-    prod_notification = Map.put(notification, :mode, :prod)
-
-    # Default should be mode: :prod
-    with_mock MongoosePush.Pools, [:passthrough], [] do
-      assert :ok = push("androidtestdeviceid65", notification)
-      assert called(MongoosePush.Pools.select_worker(:_, :prod))
-    end
-
-    with_mock MongoosePush.Pools, [:passthrough], [] do
-      assert :ok = push("androidtestdeviceid65", dev_notification)
-      assert called(MongoosePush.Pools.select_worker(:_, :dev))
-    end
-
-    with_mock MongoosePush.Pools, [:passthrough], [] do
-      assert :ok = push("androidtestdeviceid65", prod_notification)
-      assert called(MongoosePush.Pools.select_worker(:_, :prod))
-    end
-  end
-
   defp reset(service) do
     {:ok, conn} = get_connection(service)
     headers = headers("POST", "/reset")
@@ -348,4 +358,22 @@ defmodule MongoosePushTest do
   end
 
   defp push(token, notification), do: MongoosePush.push(token, notification)
+
+  def delete_topic_from_config({pool_name, pool_config}) do
+    case pool_config[:default_topic] do
+      nil -> {pool_name, pool_config}
+      _ -> {pool_name, List.keydelete(pool_config, :default_topic, 0)}
+    end
+  end
+
+  def add_topic_to_config({pool_name, pool_config}) do
+    if is_nil(pool_config[:default_topic]) do
+      case pool_config[:mode] do
+        :dev -> {pool_name, [{:default_topic, @dev_topic} | pool_config]}
+        :prod -> {pool_name, [{:default_topic, @prod_topic} | pool_config]}
+      end
+    else
+      {pool_name, pool_config}
+    end
+  end
 end

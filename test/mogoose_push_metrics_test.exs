@@ -9,6 +9,10 @@ defmodule MongoosePushMetricsTest do
   alias MongoosePush.Service.APNS
   alias MongoosePush.Service.FCM
 
+  setup do
+    TestHelper.reload_app()
+  end
+
   describe "sprial metric" do
     test "'ok' increased by successful push" do
       test_metric(:spiral, "success", :ok)
