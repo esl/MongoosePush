@@ -1,5 +1,24 @@
 version: 2.1
 jobs:
+  pre-build:
+    docker:
+      - image: circleci/elixir:1.8.1
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+
+      - run: mix deps.get
+      - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
+      - save_cache:
+          key: mix-cache-{{ .Branch }}-{{ .Revision }}
+          paths:
+                - deps
+                - ~/.mix
   build:
     docker:
       - image: circleci/elixir:1.8.1
@@ -10,30 +29,22 @@ jobs:
 
     steps:
       - checkout
-
-      - run: mix local.hex --force
-      - run: mix local.rebar --force
-
-      - run: mix do deps.get, compile
-      - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
             - plt-cache-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
+      - run: mix compile
+      - save_cache:
+          key: build-cache-{{ .Branch }}-{{ .Revision }}
+          paths: "_build"
       - run: mix dialyzer --plt
       - save_cache:
           key: plt-cache-{{ checksum ".version_file"  }}-{{ checksum "mix.lock" }}
           paths:
-            - _build
-            - deps
-            - ~/.mix
-      - save_cache:
-          key: mix-cache-{{ .Branch }}-{{ .Revision }}
-          paths:
-                - deps
-                - ~/.mix
-      - save_cache:
-          key: build-cache-{{ .Branch }}-{{ .Revision }}
-          paths: "_build"
+            - .dialyzer
+
 
   dialyzer:
     docker:
@@ -46,6 +57,12 @@ jobs:
     steps:
       - checkout
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - build-cache-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
             - plt-cache-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
@@ -177,7 +194,10 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - build
+      - pre-build
+      - build:
+          requires:
+            - pre-build
       - format_check:
           requires:
             - build
@@ -189,7 +209,7 @@ workflows:
             - build
       - release:
           requires:
-            - build
+            - pre-build
       - deploy_docker_image:
           requires:
             - test
