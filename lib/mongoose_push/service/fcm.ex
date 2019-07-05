@@ -7,6 +7,7 @@ defmodule MongoosePush.Service.FCM do
   alias Pigeon.GCM
   alias Pigeon.GCM.Notification
   alias MongoosePush.Pools
+  alias MongoosePush.Service
   require Logger
 
   @priority_mapping %{normal: "normal", high: "high"}
