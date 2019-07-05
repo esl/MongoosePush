@@ -4,10 +4,13 @@ defmodule MongoosePush.Service do
   """
 
   @type notification :: term
+  @type options :: [option]
 
-  @callback push(Service.notification(), String.t(), atom(), Service.options()) ::
+  @typep option :: {:timeout, integer()}
+
+  @callback push(notification(), String.t(), atom(), options()) ::
               :ok | {:error, term}
   @callback prepare_notification(String.t(), MongoosePush.request()) ::
-              Service.notification()
+              notification()
   @callback workers({atom, Keyword.t()} | nil) :: list(Supervisor.Spec.spec())
 end
