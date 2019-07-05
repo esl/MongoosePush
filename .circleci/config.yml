@@ -70,6 +70,7 @@ jobs:
           keys:
             - build-cache-{{ .Branch }}-{{ .Revision }}
       - run: mix release
+      - run: tar -czf mongoose_push.tar.gz -C _build/${MIX_ENV}/rel/mongoose_push .
       - save_cache:
           key: release-cache-{{ .Branch }}-{{ .Revision }}
           paths:
