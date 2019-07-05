@@ -29,8 +29,8 @@ defmodule Mix.Tasks.Compile.Asn1 do
       [] ->
         :ok
 
-      Errors ->
-        {:error, Errors}
+      errors ->
+        {:error, errors}
     end
   end
 end
