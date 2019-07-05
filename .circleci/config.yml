@@ -156,7 +156,7 @@ jobs:
 
       - run:
           name: Build docker image
-          command: docker build --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
+          command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
       - run:
           name: Tag and push docker image
           command: |
