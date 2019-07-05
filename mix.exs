@@ -70,6 +70,9 @@ defmodule MongoosePush.Mixfile do
   defp dialyzer do
     [
       plt_core_path: ".dialyzer/",
+      plt_add_apps: [:mix, :ex_unit],
+      ignore_warnings: ".dialyzer_ignore.exs",
+      list_unused_filters: true,
       flags: ["-Wunmatched_returns", "-Werror_handling", "-Wrace_conditions", "-Wunderspecs"]
     ]
   end
