@@ -71,7 +71,7 @@ jobs:
             - build-cache-{{ .Branch }}-{{ .Revision }}
       - run: mix release
       - save_cache:
-          key: build-cache-{{ .Branch }}-{{ .Revision }}
+          key: release-cache-{{ .Branch }}-{{ .Revision }}
           paths:
             - "_build"
             - "mongoose_push.tar.gz"
@@ -137,7 +137,7 @@ jobs:
       - setup_remote_docker
       - restore_cache:
           keys:
-            - build-cache-{{ .Branch }}-{{ .Revision }}
+            - release-cache-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Generate image tag
           command: |
