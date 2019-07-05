@@ -1,14 +1,10 @@
 version: 2.1
 
-executors:
-  elixir-executor:
+jobs:
+  pre-build:
     docker:
       - image: circleci/elixir:1.8.1
     working_directory: ~/app
-    
-jobs:
-  pre-build:
-    executor: elixir-executor
 
     steps:
       - checkout
@@ -52,7 +48,12 @@ jobs:
 
 
   dialyzer:
-    executor: elixir-executor
+    docker:
+      - image: circleci/elixir:1.8.1
+        environment:
+          MIX_ENV: test
+
+    working_directory: ~/app
 
     steps:
       - checkout
@@ -127,7 +128,12 @@ jobs:
           destination: coverage_results
 
   format_check:
-    executor: elixir-executor
+    docker:
+      - image: circleci/elixir:1.8.1
+        environment:
+          MIX_ENV: test
+
+    working_directory: ~/app
 
     steps:
       - checkout
