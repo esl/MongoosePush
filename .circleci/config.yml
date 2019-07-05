@@ -3,9 +3,9 @@ version: 2.1
 executors:
   elixir-executor:
     docker:
-      - image: buildpack-deps:jessie
-    working_directory: /tmp
-
+      - image: circleci/elixir:1.8.1
+    working_directory: ~/app
+    
 jobs:
   pre-build:
     executor: elixir-executor
