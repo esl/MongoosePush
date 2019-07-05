@@ -53,6 +53,27 @@ jobs:
           name: Execute dialyzer
           command: mix deps.get && mix dialyzer --halt-exit-status
 
+  release:
+    docker:
+      - image: circleci/elixir:1.8.1
+        environment:
+          MIX_ENV: prod
+
+    working_directory: ~/app
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - build-cache-{{ .Branch }}-{{ .Revision }}
+      - run: mix release
+      - save_cache:
+          key: build-cache-{{ .Branch }}-{{ .Revision }}
+          paths: "_build"
+
   test:
     docker:
       - image: circleci/elixir:1.8.1
@@ -111,9 +132,9 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run:
-          name: Build release tarball
-          command: tools/travis-release.sh
+      - restore_cache:
+          keys:
+            - build-cache-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Generate image tag
           command: |
@@ -164,6 +185,7 @@ workflows:
       - deploy_docker_image:
           requires:
             - test
+            - release
           filters:
             tags:
               only: /.*/
