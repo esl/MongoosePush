@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-# Skip this step for jobs that don't run exunit
-test "${PRESET}" == "exunit" || exit 0
-
 tools/travis-release.sh
-docker build -f Dockerfile.release -t mongoose_push:release . 
+docker build -f Dockerfile.release -t mongoose_push:release .
 
 DOCKERHUB_TAG="${TRAVIS_BRANCH//\//-}"
 
