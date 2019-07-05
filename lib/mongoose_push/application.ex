@@ -58,7 +58,7 @@ defmodule MongoosePush.Application do
   defp ensure_mode(config) do
     case config[:mode] do
       nil ->
-        Enum.into([mode: mode(config)], config)
+        Keyword.merge([mode: mode(config)], config)
 
       _ ->
         config
