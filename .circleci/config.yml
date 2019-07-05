@@ -182,6 +182,9 @@ workflows:
       - test:
           requires:
             - build
+      - release:
+          requires:
+            - build
       - deploy_docker_image:
           requires:
             - test
