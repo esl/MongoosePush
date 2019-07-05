@@ -1,10 +1,14 @@
 version: 2.1
+
+executors:
+  elixir-executor:
+    docker:
+      - image: buildpack-deps:jessie
+    working_directory: /tmp
+
 jobs:
   pre-build:
-    docker:
-      - image: circleci/elixir:1.8.1
-
-    working_directory: ~/app
+    executor: elixir-executor
 
     steps:
       - checkout
@@ -29,6 +33,7 @@ jobs:
 
     steps:
       - checkout
+      - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - restore_cache:
           keys:
             - mix-cache-{{ .Branch }}-{{ .Revision }}
@@ -47,12 +52,7 @@ jobs:
 
 
   dialyzer:
-    docker:
-      - image: circleci/elixir:1.8.1
-        environment:
-          MIX_ENV: test
-
-    working_directory: ~/app
+    executor: elixir-executor
 
     steps:
       - checkout
@@ -127,12 +127,7 @@ jobs:
           destination: coverage_results
 
   format_check:
-    docker:
-      - image: circleci/elixir:1.8.1
-        environment:
-          MIX_ENV: test
-
-    working_directory: ~/app
+    executor: elixir-executor
 
     steps:
       - checkout
