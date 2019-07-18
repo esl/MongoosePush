@@ -30,7 +30,7 @@
   "logger_lager_backend": {:hex, :logger_lager_backend, "0.1.0", "4858d5ac26a3a6085274933bf8b3061973cadac4adbe8e0181933e8cece78abb", [:mix], [{:lager, "~> 3.2", [hex: :lager, repo: "hexpm", optional: false]}], "hexpm"},
   "maru": {:git, "https://github.com/rslota/maru.git", "54fc0380cd4b7c8b597429d1fa70c2f08a714c01", [ref: "54fc038"]},
   "maru_swagger": {:git, "https://github.com/elixir-maru/maru_swagger.git", "e3dfad2bd01d50566c041dee3fcb4af375918244", []},
-  "meck": {:git, "https://github.com/eproxus/meck.git", "65b79f46553d591cdf42e060cc49e3add7a4d116", []},
+  "meck": {:git, "https://github.com/eproxus/meck.git", "2c7ba603416e95401500d7e116c5a829cb558665", []},
   "metrics": {:hex, :metrics, "1.0.1", "25f094dea2cda98213cecc3aeff09e940299d950904393b2a29d191c346a8486", [:rebar3], [], "hexpm"},
   "mime": {:hex, :mime, "1.2.0", "78adaa84832b3680de06f88f0997e3ead3b451a440d183d688085be2d709b534", [:mix], [], "hexpm"},
   "mimerl": {:hex, :mimerl, "1.0.2", "993f9b0e084083405ed8252b99460c4f0563e41729ab42d9074fd5e52439be88", [:rebar3], [], "hexpm"},

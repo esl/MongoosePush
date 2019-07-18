@@ -6,24 +6,25 @@ defmodule MongoosePush.Router do
   require Logger
   @test false
 
-  plug Plug.Logger, log: :debug
+  plug(Plug.Logger, log: :debug)
 
-  swagger at:         "/swagger.json",
-          pretty:     true,
-          except:     [:prod],
-          force_json: true,
+  swagger(
+    at: "/swagger.json",
+    pretty: true,
+    except: [:prod],
+    force_json: true,
+    swagger_inject: [
+      basePath: "/",
+      schemes: ["https", "h2"],
+      consumes: ["application/json"],
+      produces: [
+        "application/json"
+      ]
+    ]
+  )
 
-          swagger_inject: [
-            basePath: "/",
-            schemes:  ["https", "h2"],
-            consumes: ["application/json"],
-            produces: [
-              "application/json",
-            ]
-          ]
-
-  mount MongoosePush.API.V1
-  mount MongoosePush.API.V2
+  mount(MongoosePush.API.V1)
+  mount(MongoosePush.API.V2)
 
   rescue_from Maru.Exceptions.NotFound do
     conn
@@ -34,13 +35,13 @@ defmodule MongoosePush.Router do
   rescue_from Maru.Exceptions.InvalidFormat, as: e do
     conn
     |> put_status(400)
-    |> json(%{details: ~s"#{ Exception.message e }"})
+    |> json(%{details: ~s"#{Exception.message(e)}"})
   end
 
   rescue_from Maru.Exceptions.Validation, as: e do
     conn
     |> put_status(400)
-    |> json(%{details: ~s"#{ Exception.message e }"})
+    |> json(%{details: ~s"#{Exception.message(e)}"})
   end
 
   rescue_from Maru.Exceptions.MethodNotAllowed do
@@ -50,16 +51,18 @@ defmodule MongoosePush.Router do
   end
 
   rescue_from :all, as: e do
-    status = Map.get e, :plug_status, 500
+    status = Map.get(e, :plug_status, 500)
+
     log_level =
-        case status >= 500 do
-          true  -> :error
-          false -> :info
-        end
-    Logger.log log_level, inspect e
+      case status >= 500 do
+        true -> :error
+        false -> :info
+      end
+
+    Logger.log(log_level, inspect(e))
+
     conn
     |> put_status(status)
     |> json(nil)
   end
-
 end

@@ -40,23 +40,31 @@ defmodule MongoosePushMetricsTest do
   end
 
   defp test_metric(type, metric_suffix, push_return) do
-    with_mock APNS, [:passthrough], [push: fn(_, _, _, _) -> push_return end] do
-    with_mock FCM,  [:passthrough], [push: fn(_, _, _, _) -> push_return end] do
-    ptest [mode:    choose(from: [value(:dev), value(:prod)]),
-           service: choose(from: [value(:fcm), value(:apns)])], repeat_for: 20 do
-      metric_name = ~s"mongoose_push.#{type}s.push.#{service}.#{mode}."
-                    <> metric_suffix
+    with_mock APNS, [:passthrough], push: fn _, _, _, _ -> push_return end do
+      with_mock FCM, [:passthrough], push: fn _, _, _, _ -> push_return end do
+        ptest [
+                mode: choose(from: [value(:dev), value(:prod)]),
+                service: choose(from: [value(:fcm), value(:apns)])
+              ],
+              repeat_for: 20 do
+          metric_name =
+            ~s"mongoose_push.#{type}s.push.#{service}.#{mode}." <>
+              metric_suffix
 
-      metric_value0 = metric_value(type, metric_name)
+          metric_value0 = metric_value(type, metric_name)
 
-      assert push_return = push("device_id",
-                                %{service: service, title: "", body: "", mode: mode})
-      wait_until fn ->
-        metric_value1 = metric_value(type, metric_name)
-        assert metric_value0 + 1 == metric_value1
+          assert push_return =
+                   push(
+                     "device_id",
+                     %{service: service, title: "", body: "", mode: mode}
+                   )
+
+          wait_until(fn ->
+            metric_value1 = metric_value(type, metric_name)
+            assert metric_value0 + 1 == metric_value1
+          end)
+        end
       end
-    end
-    end
     end
   end
 
@@ -64,6 +72,7 @@ defmodule MongoosePushMetricsTest do
     case Elixometer.get_metric_value(metric_name) do
       {:ok, metric} ->
         metric[:count]
+
       {:error, :not_found} ->
         0
     end

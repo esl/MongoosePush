@@ -11,21 +11,24 @@ defmodule MongoosePush.Service.FCM do
 
   @priority_mapping %{normal: "normal", high: "high"}
 
-  @spec prepare_notification(String.t(), MongoosePush.request) ::
-    Service.notification
+  @spec prepare_notification(String.t(), MongoosePush.request()) ::
+          Service.notification()
   def prepare_notification(device_id, %{alert: nil} = request) do
     # Setup silent notification
     Notification.new(device_id, nil, request[:data])
     |> Notification.put_ttl(request[:time_to_live])
     |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
+
   def prepare_notification(device_id, request) do
     # Setup non-silent notification
     alert = request.alert
-    msg = [:body, :title, :click_action, :tag, :sound]
-    |> Enum.reduce(%{}, fn(field, map) ->
-      Map.put(map, field, alert[field])
-    end)
+
+    msg =
+      [:body, :title, :click_action, :tag, :sound]
+      |> Enum.reduce(%{}, fn field, map ->
+        Map.put(map, field, alert[field])
+      end)
 
     Notification.new(device_id, msg, request[:data])
     |> Notification.put_priority(@priority_mapping[request[:priority]])
@@ -33,18 +36,23 @@ defmodule MongoosePush.Service.FCM do
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
-    :ok | {:error, term}
+          :ok | {:error, term}
   def push(notification, device_id, worker, opts \\ []) do
     case GCM.push(notification, Keyword.merge([name: worker], opts)) do
       {:ok, state} ->
         %Pigeon.GCM.NotificationResponse{ok: ok, update: update} = state
+
         case Enum.member?(ok ++ update, device_id) do
-          true -> :ok
+          true ->
+            :ok
+
           false ->
             {:error, :invalid_device_token}
         end
+
       {:error, reason, _state} ->
         {:error, reason}
+
       {:error, reason} ->
         {:error, reason}
     end
@@ -52,18 +60,25 @@ defmodule MongoosePush.Service.FCM do
 
   @spec workers({atom, Keyword.t()} | nil) :: list(Supervisor.Spec.spec())
   def workers(nil), do: []
+
   def workers({pool_name, pool_config}) do
-    Logger.info ~s"Starting FCM pool with API key #{filter_secret(pool_config[:key])}"
+    Logger.info(~s"Starting FCM pool with API key #{filter_secret(pool_config[:key])}")
     pool_size = pool_config[:pool_size]
-    Enum.map(1..pool_size, fn(id) ->
+
+    Enum.map(1..pool_size, fn id ->
       worker_name = Pools.worker_name(:fcm, pool_name, id)
-      Supervisor.Spec.worker(Pigeon.GCMWorker,
-                             [worker_name, pool_config], [id: worker_name])
+
+      Supervisor.Spec.worker(
+        Pigeon.GCMWorker,
+        [worker_name, pool_config],
+        id: worker_name
+      )
     end)
   end
 
   defp filter_secret(secret) when is_binary(secret) do
     prefix = String.slice(secret, 0..2)
+
     suffix =
       secret
       |> String.slice(3..-1)
@@ -71,6 +86,6 @@ defmodule MongoosePush.Service.FCM do
 
     prefix <> "*******" <> suffix
   end
-  defp filter_secret(secret), do: secret
 
+  defp filter_secret(secret), do: secret
 end
