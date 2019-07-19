@@ -179,7 +179,6 @@ defmodule MongoosePushTest do
         }
       }
 
-      IO.puts(push(device_token, notification))
       assert :ok == push(device_token, notification)
       fcm_request = last_activity(:fcm)
       fcm_data = fcm_request["request_data"]["notification"]

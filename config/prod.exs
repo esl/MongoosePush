@@ -2,6 +2,7 @@ use Mix.Config
 
 config :mix_docker, image: "mongoose_push"
 
+
 config :maru, MongoosePush.Router,
   versioning: [
     using: :path

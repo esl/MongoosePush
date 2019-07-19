@@ -1,4 +1,4 @@
-ExUnit.start()
+ExUnit.start(capture_log: true)
 
 defmodule TimeHelper do
   def wait_until(fun), do: wait_until(500, fun)
