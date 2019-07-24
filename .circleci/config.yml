@@ -19,7 +19,6 @@ executors:
     working_directory: ~/app
     environment:
         MIX_ENV: << parameters.env >>
-        CACHE_VERSION: v1
 
 commands:
   test:
@@ -27,10 +26,10 @@ commands:
       - checkout
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-mix-cache-{{ .Branch }}-{{ .Revision }}
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-build-${CIRCLE_JOB}-cache-{{ .Branch }}-{{ .Revision }}
+            - build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Wait for FCM mock
           command: dockerize -wait tcp://localhost:443 -timeout 1m
@@ -41,7 +40,7 @@ commands:
       - run: MIX_ENV=test mix do certs.dev, coveralls.circle
 
       - save_cache:
-          key: ${CACHE_VERSION}-build-${CIRCLE_JOB}-cache-{{ .Branch }}-{{ .Revision }}
+          key: build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
           paths:
             - "_build"
       - store_artifacts:
@@ -61,7 +60,7 @@ jobs:
       - run: mix deps.get
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - save_cache:
-          key: ${CACHE_VERSION}-mix-cache-{{ .Branch }}-{{ .Revision }}
+          key: mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
           paths:
                 - deps
                 - ~/.mix
@@ -75,18 +74,21 @@ jobs:
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-mix-cache-{{ .Branch }}-{{ .Revision }}
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-plt-cache-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
+            - plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
+            - plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file"  }}
       - run: mix dialyzer --plt
       - save_cache:
-          key: ${CACHE_VERSION}-plt-cache-{{ checksum ".version_file"  }}-{{ checksum "mix.lock" }}
+          key: plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file"  }}-{{ checksum "mix.lock" }}
           paths:
             - .dialyzer
-      - restore_cache:
-          keys:
-            - ${CACHE_VERSION}-plt-cache-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
+            - _build
+      - save_cache:
+          key: plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file"  }}
+          paths:
+            - .dialyzer
       - run:
           name: Execute dialyzer
           command: mix deps.get && mix dialyzer --halt-exit-status
@@ -100,14 +102,14 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-mix-cache-{{ .Branch }}-{{ .Revision }}
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-release-cache-{{ .Branch }}-{{ .Revision }}
-      - run: mix distillery.release
+            - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run: mix do certs.dev, distillery.release
       - run: tar -czf mongoose_push.tar.gz -C _build/${MIX_ENV}/rel/mongoose_push .
       - save_cache:
-          key: ${CACHE_VERSION}-release-cache-{{ .Branch }}-{{ .Revision }}
+          key: release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
           paths:
             - "_build"
             - "mongoose_push.tar.gz"
@@ -181,7 +183,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-mix-cache-{{ .Branch }}-{{ .Revision }}
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
 
       - run: mix format --check-formatted
 
@@ -196,7 +198,7 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
-            - ${CACHE_VERSION}-release-cache-{{ .Branch }}-{{ .Revision }}
+            - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Generate image tag
           command: |
