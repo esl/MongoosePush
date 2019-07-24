@@ -104,7 +104,7 @@ jobs:
       - restore_cache:
           keys:
             - ${CACHE_VERSION}-release-cache-{{ .Branch }}-{{ .Revision }}
-      - run: mix release
+      - run: mix distillery.release
       - run: tar -czf mongoose_push.tar.gz -C _build/${MIX_ENV}/rel/mongoose_push .
       - save_cache:
           key: ${CACHE_VERSION}-release-cache-{{ .Branch }}-{{ .Revision }}

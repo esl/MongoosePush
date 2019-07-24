@@ -18,5 +18,5 @@ if [ "${TRAVIS_SECURE_ENV_VARS}" == 'true' ]; then
   docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
   docker tag mongoose_push:release "${TARGET_IMAGE}"
   docker push "${TARGET_IMAGE}"
-  echo "The image has been push as '${TARGET_IMAGE}'"
+  echo "The image has been pushed as '${TARGET_IMAGE}'"
 fi
