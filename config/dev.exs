@@ -25,7 +25,7 @@ config :mongoose_push,
   fcm: [
     default: [
       endpoint: "localhost",
-      key: "fake_app_key",
+      appfile: "priv/fcm/token.json",
       pool_size: 5,
       mode: :prod
     ]

@@ -9,7 +9,6 @@ defmodule MongoosePush.Service.APNS do
   alias Sparrow.APNS.Notification
   alias MongoosePush.Application
   alias MongoosePush.Service
-  alias MongoosePush.Service.APNS.Certificate
   alias MongoosePush.Service.APNS.State
 
   @priority_mapping %{normal: "5", high: "10"}
@@ -43,9 +42,9 @@ defmodule MongoosePush.Service.APNS do
     |> add_data(request[:data])
   end
 
-  @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
+  @spec push(Service.notification(), String.t(), Application.pool_name(), Service.options()) ::
           :ok | {:error, term}
-  def push(notification, _device_id, pool, opts \\ []) do
+  def push(notification, _device_id, pool, _opts \\ []) do
     case APNS.push(pool, notification, is_sync: true) do
       :ok ->
         :ok
@@ -63,31 +62,6 @@ defmodule MongoosePush.Service.APNS do
   @spec choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
   def choose_pool(mode) do
     Sparrow.PoolsWarden.choose_pool({:apns, mode})
-  end
-
-  defp construct_apns_endpoint_options(config) do
-    new_key =
-      case config[:mode] do
-        :dev -> :development_endpoint
-        :prod -> :production_endpoint
-      end
-
-    Keyword.put(config, new_key, config[:endpoint])
-  end
-
-  defp announce_subject(config) do
-    try do
-      subject = Certificate.extract_subject!(config[:cert])
-      Logger.info(~s"Using APNS certificate '#{subject}' for '#{config[:mode]}' connection pool")
-    catch
-      _, reason ->
-        Logger.warn(
-          ~s"Unable to extract APNS certificate's subject from the #{config[:mode]} " <>
-            "certificate due to: #{inspect(reason)}"
-        )
-    end
-
-    config
   end
 
   defp maybe(notification, :add_mutable_content, true),

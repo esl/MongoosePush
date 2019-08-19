@@ -1,7 +1,6 @@
 defmodule MongoosePushTest do
   use ExUnit.Case, async: false
   use Quixir
-  import Mock
   doctest MongoosePush
 
   @test_token "testdeviceid1234"
@@ -56,33 +55,29 @@ defmodule MongoosePushTest do
     end
 
     test "defaults to value set in config using :dev mode" do
-      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:dev1] end) do
-        assert :ok ==
-                 push(@test_token, %{
-                   :service => :apns,
-                   :alert => %{:title => "", :body => ""},
-                   mode: :dev
-                 })
+      assert :ok ==
+               push(@test_token, %{
+                 :service => :apns,
+                 :alert => %{:title => "", :body => ""},
+                 mode: :dev
+               })
 
-        apns_request = last_activity(:apns)
-        assert @test_token == apns_request["device_token"]
-        assert @dev_topic == apns_request["request_headers"]["apns-topic"]
-      end
+      apns_request = last_activity(:apns)
+      assert @test_token == apns_request["device_token"]
+      assert @dev_topic == apns_request["request_headers"]["apns-topic"]
     end
 
     test "defaults to value set in config using :prod mode" do
-      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:prod1] end) do
-        assert :ok ==
-                 push(@test_token, %{
-                   :service => :apns,
-                   :alert => %{:title => "", :body => ""},
-                   mode: :prod
-                 })
+      assert :ok ==
+               push(@test_token, %{
+                 :service => :apns,
+                 :alert => %{:title => "", :body => ""},
+                 mode: :prod
+               })
 
-        apns_request = last_activity(:apns)
-        assert @test_token == apns_request["device_token"]
-        assert @prod_topic == apns_request["request_headers"]["apns-topic"]
-      end
+      apns_request = last_activity(:apns)
+      assert @test_token == apns_request["device_token"]
+      assert @prod_topic == apns_request["request_headers"]["apns-topic"]
     end
   end
 
@@ -97,33 +92,29 @@ defmodule MongoosePushTest do
     end
 
     test "defaults to value extracted from cert using :prod mode" do
-      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:prod2] end) do
-        assert :ok ==
-                 push(@test_token, %{
-                   :service => :apns,
-                   :alert => %{:title => "", :body => ""},
-                   mode: :prod
-                 })
+      assert :ok ==
+               push(@test_token, %{
+                 :service => :apns,
+                 :alert => %{:title => "", :body => ""},
+                 mode: :prod
+               })
 
-        apns_request = last_activity(:apns)
-        assert @test_token == apns_request["device_token"]
-        assert "com.inakanetworks.Mangosta" == apns_request["request_headers"]["apns-topic"]
-      end
+      apns_request = last_activity(:apns)
+      assert @test_token == apns_request["device_token"]
+      assert "com.inakanetworks.Mangosta" == apns_request["request_headers"]["apns-topic"]
     end
 
     test "is not set if theres no default value in config nor certificate" do
-      with_mock(MongoosePush.Service.FCM.Pools, [:passthrough], pools_by_mode: fn -> [:dev2] end) do
-        assert :ok ==
-                 push(@test_token, %{
-                   :service => :apns,
-                   :alert => %{:title => "", :body => ""},
-                   mode: :dev
-                 })
+      assert :ok ==
+               push(@test_token, %{
+                 :service => :apns,
+                 :alert => %{:title => "", :body => ""},
+                 mode: :dev
+               })
 
-        apns_request = last_activity(:apns)
-        assert @test_token == apns_request["device_token"]
-        assert nil == apns_request["request_headers"]["apns-topic"]
-      end
+      apns_request = last_activity(:apns)
+      assert @test_token == apns_request["device_token"]
+      assert nil == apns_request["request_headers"]["apns-topic"]
     end
   end
 
@@ -219,20 +210,21 @@ defmodule MongoosePushTest do
       }
 
       assert :ok == push(device_token, notification)
-      fcm_request = last_activity(:fcm)
-      fcm_data = fcm_request["request_data"]["notification"]
-      fcm_custom = fcm_request["request_data"]["data"]
+      fcm_request_data = last_activity(:fcm)["request_data"]
+      fcm_message = fcm_request_data["message"]
+      fcm_notification = fcm_message["android"]["notification"]
+      fcm_data = fcm_message["android"]["data"]
 
-      assert device_token == fcm_request["device_token"]
-      assert Atom.to_string(priority) == fcm_request["request_data"]["priority"]
+      assert device_token == fcm_message["token"]
+      assert Atom.to_string(priority) == String.downcase(fcm_message["android"]["priority"])
 
-      assert notification.alert[:title] == fcm_data["title"]
-      assert notification.alert[:body] == fcm_data["body"]
-      assert notification.alert[:click_action] == fcm_data["click_action"]
-      assert notification.alert[:tag] == fcm_data["tag"]
-      assert notification.alert[:sound] == fcm_data["sound"]
-      assert notification[:data] == fcm_custom
-      assert notification[:time_to_live] == fcm_request["request_data"]["time_to_live"]
+      assert notification.alert[:title] == fcm_notification["title"]
+      assert notification.alert[:body] == fcm_notification["body"]
+      assert notification.alert[:click_action] == fcm_notification["click_action"]
+      assert notification.alert[:tag] == fcm_notification["tag"]
+      assert notification.alert[:sound] == fcm_notification["sound"]
+      assert notification[:data] == fcm_data
+      assert notification[:time_to_live] == convert_ttl(fcm_message["android"]["ttl"])
     end
   end
 
@@ -247,16 +239,17 @@ defmodule MongoosePushTest do
     }
 
     assert :ok == push("androidtestdeviceid12", notification)
-    fcm_request = last_activity(:fcm)
-    fcm_data = fcm_request["request_data"]["notification"]
-    fcm_custom = fcm_request["request_data"]["data"]
+    fcm_request_data = last_activity(:fcm)["request_data"]
+    fcm_message = fcm_request_data["message"]
+    fcm_data = fcm_message["android"]["data"]
+    fcm_notification = fcm_message["android"]["notification"]
 
-    assert "androidtestdeviceid12" == fcm_request["device_token"]
-    assert nil == fcm_data["title"]
-    assert nil == fcm_data["body"]
-    assert nil == fcm_data["click_action"]
-    assert nil == fcm_data["tag"]
-    assert notification[:data] == fcm_custom
+    assert "androidtestdeviceid12" == fcm_message["token"]
+    assert nil == fcm_notification["title"]
+    assert nil == fcm_notification["body"]
+    assert nil == fcm_notification["click_action"]
+    assert nil == fcm_notification["tag"]
+    assert notification[:data] == fcm_data
   end
 
   test "push to apns assign correct message fields when sending silent notification" do
@@ -295,22 +288,30 @@ defmodule MongoosePushTest do
     }
 
     fail_tokens(:fcm, [
-      %{device_token: "androidtestdeviceid65", status: 200, reason: "InvalidRegistration"}
+      %{device_token: "androidtestdeviceid65", status: 404, reason: "UNREGISTERED"}
     ])
 
-    assert {:error, :invalid_device_token} = push("androidtestdeviceid65", notification)
+    assert {:error, :UNREGISTERED} = push("androidtestdeviceid65", notification)
   end
 
-  defp reset(service) do
-    {:ok, conn} = get_connection(service)
+  defp reset(:apns) do
+    {:ok, conn} = get_connection(:apns)
     headers = headers("POST", "/reset")
     :h2_client.send_request(conn, headers, "")
     get_response(conn)
     :ok
   end
 
-  defp fail_tokens(service, json) do
-    {:ok, conn} = get_connection(service)
+  defp reset(:fcm) do
+    {:ok, conn} = get_connection(:fcm)
+    headers = headers("POST", "/mock/reset")
+    :h2_client.send_request(conn, headers, "")
+    get_response(conn)
+    :ok
+  end
+
+  defp fail_tokens(:apns, json) do
+    {:ok, conn} = get_connection(:apns)
     payload = Poison.encode!(json)
 
     headers = headers("POST", "/error-tokens", payload)
@@ -319,8 +320,28 @@ defmodule MongoosePushTest do
     :ok
   end
 
-  defp last_activity(service) do
-    {:ok, conn} = get_connection(service)
+  defp fail_tokens(:fcm, json) do
+    {:ok, conn} = get_connection(:fcm)
+    payload = Poison.encode!(json)
+
+    headers = headers("POST", "/mock/error-tokens", payload)
+    :h2_client.send_request(conn, headers, payload)
+    get_response(conn)
+    :ok
+  end
+
+  defp last_activity(:fcm) do
+    {:ok, conn} = get_connection(:fcm)
+    headers = headers("GET", "/mock/activity")
+    :h2_client.send_request(conn, headers, "")
+
+    get_response(conn)
+    |> Poison.decode!()
+    |> List.first()
+  end
+
+  defp last_activity(:apns) do
+    {:ok, conn} = get_connection(:apns)
     headers = headers("GET", "/activity")
     :h2_client.send_request(conn, headers, "")
 
@@ -346,7 +367,7 @@ defmodule MongoosePushTest do
   end
 
   defp get_connection(:fcm) do
-    :h2_client.start_link(:https, 'localhost', 443, [])
+    :h2_client.start_link(:https, 'localhost', 4000, [])
   end
 
   defp get_response(conn) do
@@ -375,5 +396,12 @@ defmodule MongoosePushTest do
     else
       {pool_name, pool_config}
     end
+  end
+
+  # FCM v1 requires "3.5s" format, need to convert back to integer
+  defp convert_ttl(ttl) do
+    ttl
+    |> String.slice(0..-2)
+    |> String.to_integer()
   end
 end

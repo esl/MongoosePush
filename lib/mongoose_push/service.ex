@@ -5,11 +5,9 @@ defmodule MongoosePush.Service do
   alias MongoosePush.Application
 
   @type notification :: term
-  @type options :: [option]
+  @type options :: [Keyword.t()]
 
-  @typep option :: {:timeout, integer()}
-
-  @callback push(notification(), String.t(), atom(), options()) ::
+  @callback push(notification(), String.t(), Application.pool_name(), options()) ::
               :ok | {:error, term}
   @callback prepare_notification(String.t(), MongoosePush.request(), Application.pool_name()) ::
               notification()
