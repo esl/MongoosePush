@@ -24,7 +24,7 @@ config :mongoose_push,
   fcm: [
     default: [
       endpoint: {:system, :string, "PUSH_FCM_ENDPOINT", nil},
-      key: {:system, :string, "PUSH_FCM_APP_KEY", "fake_app_key"},
+      appfile: {:system, :string, "PUSH_FCM_APP_FILE", "priv/fcm/token.json"},
       pool_size: {:system, :integer, "PUSH_FCM_POOL_SIZE", 5},
       mode: :prod
     ]

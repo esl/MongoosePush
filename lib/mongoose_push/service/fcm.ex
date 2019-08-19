@@ -4,58 +4,55 @@ defmodule MongoosePush.Service.FCM do
   """
 
   @behaviour MongoosePush.Service
-  alias Pigeon.GCM
-  alias Pigeon.GCM.Notification
-  alias MongoosePush.{Application, Service}
-  alias MongoosePush.Service.FCM.Pools
+  alias Sparrow.FCM.V1, as: FCM
+  alias Sparrow.FCM.V1.Notification
+  alias Sparrow.FCM.V1.Android
+  alias MongoosePush.Application
+  alias MongoosePush.Service
   alias MongoosePush.Service.FCM.Pool.Supervisor, as: PoolSupervisor
   require Logger
 
-  @priority_mapping %{normal: "normal", high: "high"}
+  @priority_mapping %{normal: :NORMAL, high: :HIGH}
 
   @spec prepare_notification(String.t(), MongoosePush.request(), atom()) ::
           Service.notification()
   def prepare_notification(device_id, %{alert: nil} = request, _pool) do
     # Setup silent notification
-    Notification.new(device_id, nil, request[:data])
-    |> Notification.put_ttl(request[:time_to_live])
-    |> Notification.put_priority(@priority_mapping[request[:priority]])
+    android =
+      Android.new()
+      |> maybe(:add_priority, @priority_mapping[request[:priority]])
+      |> maybe(:add_ttl, request[:time_to_live])
+      |> maybe(:add_data, request[:data])
+
+    Notification.new(:token, device_id)
+    |> Notification.add_android(android)
   end
 
   def prepare_notification(device_id, request, _pool) do
     # Setup non-silent notification
     alert = request.alert
 
-    msg =
-      [:body, :title, :click_action, :tag, :sound]
-      |> Enum.reduce(%{}, fn field, map ->
-        Map.put(map, field, alert[field])
-      end)
+    android =
+      Android.new()
+      |> Android.add_title(alert.title)
+      |> Android.add_body(alert.body)
+      |> maybe(:add_priority, @priority_mapping[request[:priority]])
+      |> maybe(:add_ttl, request[:time_to_live])
+      |> maybe(:add_data, request[:data])
+      |> maybe(:add_click_action, alert[:click_action])
+      |> maybe(:add_tag, alert[:tag])
+      |> maybe(:add_sound, alert[:sound])
 
-    Notification.new(device_id, msg, request[:data])
-    |> Notification.put_priority(@priority_mapping[request[:priority]])
-    |> Notification.put_ttl(request[:time_to_live])
+    Notification.new(:token, device_id)
+    |> Notification.add_android(android)
   end
 
-  @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
+  @spec push(Service.notification(), String.t(), Application.pool_name(), Service.options()) ::
           :ok | {:error, term}
-  def push(notification, device_id, _pool, opts \\ []) do
-    worker = Pools.select_worker()
-
-    case GCM.push(notification, Keyword.merge([name: worker], opts)) do
-      {:ok, state} ->
-        %Pigeon.GCM.NotificationResponse{ok: ok, update: update} = state
-
-        case Enum.member?(ok ++ update, device_id) do
-          true ->
-            :ok
-
-          false ->
-            {:error, :invalid_device_token}
-        end
-
-      {:error, reason, _state} ->
-        {:error, reason}
+  def push(notification, _device_id, pool, _opts \\ []) do
+    case FCM.push(pool, notification, is_sync: true) do
+      :ok ->
+        :ok
 
       {:error, reason} ->
         {:error, reason}
@@ -68,8 +65,10 @@ defmodule MongoosePush.Service.FCM do
   end
 
   @spec choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
-  def choose_pool(_mode) do
-    [pool | _] = Pools.pools_by_mode()
-    pool
+  def choose_pool(mode) do
+    Sparrow.PoolsWarden.choose_pool(:fcm, [mode])
   end
+
+  defp maybe(notification, _function, nil), do: notification
+  defp maybe(notification, function, arg), do: apply(Android, function, [notification, arg])
 end

@@ -4,7 +4,6 @@ defmodule MongoosePush.Router do
   use Maru.Router
   use MaruSwagger
   require Logger
-  @test false
 
   plug(Plug.Logger, log: :debug)
 

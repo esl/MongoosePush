@@ -22,10 +22,11 @@ config :maru, MongoosePush.Router,
 config :mongoose_push,
   fcm: [
     default: [
-      key: "fake_app_key",
+      appfile: "priv/fcm/token.json",
       endpoint: "localhost",
       pool_size: 5,
-      mode: :prod
+      mode: :prod,
+      port: 4000
     ]
   ]
 

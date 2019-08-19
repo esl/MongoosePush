@@ -14,7 +14,7 @@ executors:
         default: test
     docker:
       - image: rslota/beam-builder:erlang-<< parameters.erlang_version >>_elixir-<< parameters.elixir_version >>
-      - image: rslota/fcm-http2-mock-server
+      - image: kmakiela/fcm-mock-server
       - image: mobify/apns-http2-mock-server
     working_directory: ~/app
     environment:
@@ -32,7 +32,7 @@ commands:
             - build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Wait for FCM mock
-          command: dockerize -wait tcp://localhost:443 -timeout 1m
+          command: dockerize -wait tcp://localhost:4000 -timeout 1m
       - run:
           name: Wait for APNS mock
           command: dockerize -wait tcp://localhost:2197 -timeout 1m

@@ -5,7 +5,9 @@ defmodule MongoosePush.Service.FCM.Pool.Supervisor do
   use Supervisor, id: :fcm_pool_supervisor
   require Logger
   alias MongoosePush.Application
-  alias MongoosePush.Service.FCM.Pools
+
+  @default_endpoint "fcm.googleapis.com"
+  @default_port 443
 
   @spec start_link([Application.pool_definition()]) :: Supervisor.on_start()
   def start_link(arg) do
@@ -14,36 +16,37 @@ defmodule MongoosePush.Service.FCM.Pool.Supervisor do
 
   @impl true
   def init(pools_configs) do
-    children =
-      for {pool_name, pool_config} <- pools_configs do
-        Logger.info(~s"Starting FCM pool with API key #{filter_secret(pool_config[:key])}")
-        pool_size = pool_config[:pool_size]
+    sparrow_config = create_sparrow_config(pools_configs)
 
-        Enum.map(1..pool_size, fn id ->
-          worker_name = Pools.worker_name(:fcm, pool_name, id)
+    children = [
+      Supervisor.child_spec({Sparrow.FCM.V1.Supervisor, sparrow_config},
+        id: :fcm_sparrow_supervisor
+      )
+    ]
 
-          Supervisor.Spec.worker(
-            Pigeon.GCMWorker,
-            [worker_name, pool_config],
-            id: worker_name
-          )
-        end)
-      end
-
-    list = List.flatten(children)
-    Supervisor.init(list, strategy: :one_for_one)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 
-  defp filter_secret(secret) when is_binary(secret) do
-    prefix = String.slice(secret, 0..2)
+  defp create_sparrow_config(pool_configs) do
+    # For now only 1 fcm pool may be configured
+    pool_config =
+      pool_configs
+      |> List.first()
+      |> convert_pool_to_sparrow()
 
-    suffix =
-      secret
-      |> String.slice(3..-1)
-      |> String.slice(-3..-1)
-
-    prefix <> "*******" <> suffix
+    [pool_config]
   end
 
-  defp filter_secret(secret), do: secret
+  defp convert_pool_to_sparrow({_pool_name, pool_config}) do
+    token_path = {:path_to_json, pool_config[:appfile]}
+    endpoint = {:endpoint, pool_config[:endpoint] || @default_endpoint}
+    port = {:port, pool_config[:port] || @default_port}
+    pool_size = {:worker_num, pool_config[:pool_size]}
+
+    # mode has to be either `prod` or `dev`, for now we pass it in form of a tag
+    tags = {:tags, [pool_config[:mode]]}
+
+    [token_path, endpoint, port, pool_size, tags]
+    |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
+  end
 end
