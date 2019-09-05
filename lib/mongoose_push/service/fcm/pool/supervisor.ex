@@ -28,13 +28,10 @@ defmodule MongoosePush.Service.FCM.Pool.Supervisor do
   end
 
   defp create_sparrow_config(pool_configs) do
-    # For now only 1 fcm pool may be configured
-    pool_config =
-      pool_configs
-      |> List.first()
-      |> convert_pool_to_sparrow()
-
-    [pool_config]
+    pool_configs
+    |> List.foldl([], fn config, acc ->
+      [convert_pool_to_sparrow(config) | acc]
+    end)
   end
 
   defp convert_pool_to_sparrow({_pool_name, pool_config}) do
