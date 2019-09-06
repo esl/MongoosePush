@@ -34,17 +34,23 @@ config :mongoose_push,
 config :mongoose_push,
   apns: [
     dev: [
+      auth: %{
+        type: :certificate,
+        cert: "priv/apns/dev_cert.pem",
+        key: "priv/apns/dev_key.pem"
+      },
       endpoint: "localhost",
-      cert: "priv/apns/dev_cert.pem",
-      key: "priv/apns/dev_key.pem",
       mode: :dev,
       use_2197: true,
       pool_size: 5
     ],
     prod: [
+      auth: %{
+        type: :certificate,
+        cert: "priv/apns/prod_cert.pem",
+        key: "priv/apns/prod_key.pem"
+      },
       endpoint: "localhost",
-      cert: "priv/apns/prod_cert.pem",
-      key: "priv/apns/prod_key.pem",
       mode: :prod,
       use_2197: true,
       pool_size: 5
