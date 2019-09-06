@@ -94,14 +94,23 @@ defmodule MongoosePush.Application do
     path_keys =
       case service do
         :apns ->
-          [:cert, :key]
+          [:cert, :key, :p8_file_path]
 
         :fcm ->
-          []
+          [:appfile]
       end
 
-    config
-    |> Enum.map(fn {key, value} ->
+    case service do
+      :fcm ->
+        check_paths(config, path_keys)
+
+      :apns ->
+        Keyword.update!(config, :auth, fn auth -> check_paths(auth, path_keys) end)
+    end
+  end
+
+  defp check_paths(config, path_keys) do
+    Enum.map(config, fn {key, value} ->
       case Enum.member?(path_keys, key) do
         true ->
           {key, Application.app_dir(:mongoose_push, value)}

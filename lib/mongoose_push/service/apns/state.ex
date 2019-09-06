@@ -37,7 +37,7 @@ defmodule MongoosePush.Service.APNS.State do
       # so there may be some incompability issues that we may work on based on failure logs.
       case config[:default_topic] do
         nil ->
-          all_topics = Certificate.extract_topics!(config[:cert])
+          all_topics = Certificate.extract_topics!(config[:auth][:cert])
           default_topic = all_topics[:topic]
           Logger.info(~s"Successfully extracted default APNS topic: #{default_topic}")
           Keyword.put(config, :default_topic, default_topic)

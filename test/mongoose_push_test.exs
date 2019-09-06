@@ -338,6 +338,57 @@ defmodule MongoosePushTest do
     TestHelper.reload_app()
   end
 
+  test "APNS token authorization" do
+    apns_config = [
+      new_dev1: [
+        auth: %{
+          type: :token_based,
+          key_id: "fake_key",
+          team_id: "fake_team",
+          p8_file_path: "priv/apns/token.p8"
+        },
+        endpoint: "localhost",
+        mode: :dev,
+        use_2197: true,
+        pool_size: 3,
+        default_topic: "dev_topic1"
+      ],
+      new_prod1: [
+        auth: %{
+          type: :token_based,
+          key_id: "fake_key",
+          team_id: "fake_team",
+          p8_file_path: "priv/apns/token.p8"
+        },
+        endpoint: "localhost",
+        mode: :prod,
+        use_2197: true,
+        pool_size: 3,
+        default_topic: "prod_topic1"
+      ]
+    ]
+
+    Application.stop(:mongoose_push)
+    Application.stop(:sparrow)
+    Application.put_env(:mongoose_push, :apns, apns_config)
+    Application.ensure_all_started(:mongoose_push)
+
+    assert :ok ==
+             push(@test_token, %{
+               :service => :apns,
+               :alert => %{:title => "", :body => ""},
+               mode: :dev
+             })
+
+    auth_type =
+      last_activity(:apns)["request_headers"]["authorization"]
+      |> String.slice(0..5)
+
+    assert "bearer" == auth_type
+
+    TestHelper.reload_app()
+  end
+
   defp reset(:apns) do
     {:ok, conn} = get_connection(:apns)
     headers = headers("POST", "/reset")
