@@ -294,6 +294,50 @@ defmodule MongoosePushTest do
     assert {:error, :UNREGISTERED} = push("androidtestdeviceid65", notification)
   end
 
+  test "check FCM_ENABLED option" do
+    Application.stop(:mongoose_push)
+    Application.load(:mongoose_push)
+    Application.put_env(:mongoose_push, :fcm_enabled, false)
+    Application.start(:mongoose_push)
+
+    apns_entry =
+      MongoosePush.Supervisor
+      |> Supervisor.which_children()
+      |> List.keyfind(:apns_supervisor, 0)
+
+    fcm_entry =
+      MongoosePush.Supervisor
+      |> Supervisor.which_children()
+      |> List.keyfind(:fcm_pool_supervisor, 0)
+
+    assert nil == fcm_entry
+    assert nil != apns_entry
+
+    TestHelper.reload_app()
+  end
+
+  test "check APNS_ENABLED option" do
+    Application.stop(:mongoose_push)
+    Application.load(:mongoose_push)
+    Application.put_env(:mongoose_push, :apns_enabled, false)
+    Application.start(:mongoose_push)
+
+    apns_entry =
+      MongoosePush.Supervisor
+      |> Supervisor.which_children()
+      |> List.keyfind(:apns_supervisor, 0)
+
+    fcm_entry =
+      MongoosePush.Supervisor
+      |> Supervisor.which_children()
+      |> List.keyfind(:fcm_pool_supervisor, 0)
+
+    assert nil != fcm_entry
+    assert nil == apns_entry
+
+    TestHelper.reload_app()
+  end
+
   defp reset(:apns) do
     {:ok, conn} = get_connection(:apns)
     headers = headers("POST", "/reset")
