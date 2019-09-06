@@ -41,11 +41,12 @@ defmodule MongoosePush.Application do
   @spec pools_config(MongoosePush.service()) :: [pool_definition]
   def pools_config(service) do
     enabled_opt = String.to_atom(~s"#{service}_enabled")
+    service_config = Confex.get_env(:mongoose_push, service, nil)
 
     pools_config =
-      case Confex.get_env(:mongoose_push, enabled_opt, true) do
+      case Confex.get_env(:mongoose_push, enabled_opt, !is_nil(service_config)) do
         false -> []
-        true -> Confex.fetch_env!(:mongoose_push, service)
+        true -> service_config
       end
 
     Enum.map(pools_config, fn {pool_name, pool_config} ->
@@ -66,10 +67,17 @@ defmodule MongoosePush.Application do
   end
 
   defp children do
-    for {service, module} <- services() do
+    List.foldl(services(), [], fn {service, module}, acc ->
       pools_config = pools_config(service)
-      module.supervisor_entry(pools_config)
-    end
+
+      case pools_config do
+        [] ->
+          acc
+
+        _ ->
+          [module.supervisor_entry(pools_config) | acc]
+      end
+    end)
   end
 
   defp ensure_mode(config) do
