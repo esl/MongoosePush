@@ -29,6 +29,7 @@ defmodule Mix.Tasks.Certs.Dev do
 
   @spec run(term) :: :ok
   def run(_) do
+    maybe_gen_apns_token()
     maybe_gen_dev_apns()
     maybe_gen_prod_apns()
     maybe_gen_https()
@@ -140,5 +141,27 @@ defmodule Mix.Tasks.Certs.Dev do
     extn_id
     |> Tuple.to_list()
     |> Enum.join(".")
+  end
+
+  defp maybe_gen_apns_token do
+    path = "priv/apns/token.p8"
+
+    if File.exists?(path) do
+      :ok
+    else
+      dir = Path.dirname(path)
+      :ok = File.mkdir_p(dir)
+      :ok = gen_apns_token(path)
+    end
+  end
+
+  defp gen_apns_token(path) do
+    {_, 0} =
+      System.cmd(
+        "openssl",
+        ["ecparam", "-name", "prime256v1", "-genkey", "-noout", "-out", path]
+      )
+
+    :ok
   end
 end
