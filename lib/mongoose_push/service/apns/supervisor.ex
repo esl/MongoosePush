@@ -37,7 +37,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
         pool_config[:mode] == :dev and
           pool_config[:auth][:type] == :certificate_based
       end)
-      |> List.foldl([], &convert_cert_pool_to_sparrow/2)
+      |> Enum.map(&convert_cert_pool_to_sparrow/1)
 
     prod_cert_pools =
       pool_configs
@@ -45,7 +45,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
         pool_config[:mode] == :prod and
           pool_config[:auth][:type] == :certificate_based
       end)
-      |> List.foldl([], &convert_cert_pool_to_sparrow/2)
+      |> Enum.map(&convert_cert_pool_to_sparrow/1)
 
     {dev_token_pools, dev_tokens} =
       pool_configs
@@ -70,7 +70,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     ]
   end
 
-  defp convert_cert_pool_to_sparrow({pool_name, pool_config}, mode_list) do
+  defp convert_cert_pool_to_sparrow({pool_name, pool_config}) do
     auth_type = {:auth_type, :certificate_based}
     cert = {:cert, pool_config[:auth][:cert]}
     key = {:key, pool_config[:auth][:key]}
@@ -79,24 +79,13 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     endpoint_mode = @default_endpoints[pool_config[:mode]]
     endpoint = {:endpoint, pool_config[:endpoint] || endpoint_mode}
 
-    port_config =
-      case pool_config[:use_2197] do
-        true ->
-          2197
-
-        _ ->
-          nil
-      end
-
+    port_config = if pool_config[:use_2197], do: 2197, else: nil
     port = {:port, port_config}
 
     name = {:pool_name, pool_name}
 
-    single_config =
-      [auth_type, cert, key, pool_size, endpoint, port, name]
-      |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
-
-    [single_config | mode_list]
+    [auth_type, cert, key, pool_size, endpoint, port, name]
+    |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
   end
 
   defp convert_token_pool_to_sparrow({pool_name, pool_config}, {mode_list, tokens}) do
@@ -106,15 +95,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     endpoint_mode = @default_endpoints[pool_config[:mode]]
     endpoint = {:endpoint, pool_config[:endpoint] || endpoint_mode}
 
-    port_config =
-      case pool_config[:use_2197] do
-        true ->
-          2197
-
-        _ ->
-          nil
-      end
-
+    port_config = if pool_config[:use_2197], do: 2197, else: nil
     port = {:port, port_config}
 
     name = {:pool_name, pool_name}
@@ -123,20 +104,12 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     team = pool_config[:auth][:team_id]
     p8_file_path = pool_config[:auth][:p8_file_path]
 
-    if not File.exists?(p8_file_path) do
-      Logger.error(~s"Required file does not exist in the given path:
-      p8_file=#{p8_file_path}")
+    if is_nil(key) or is_nil(team) or not File.exists?(p8_file_path) do
+      Logger.error(~s"Required authentication elements are missing. Got:
+      key=#{key}, team=#{team}, p8_file=#{p8_file_path}")
 
-      Supervisor.stop(self(), {:error, "Required file does not exist in the given path:
-      p8_file=#{p8_file_path}"})
-    end
-
-    if is_nil(key) or is_nil(team) do
-      Logger.error(~s"Required authentication elements are missing:
-      key=#{key} or team=#{team}")
-
-      Supervisor.stop(self(), {:error, "Required file does not exist in the given path:
-      p8_file=#{p8_file_path}"})
+      Supervisor.stop(self(), {:error, "Required authentication elements are missing. Got:
+      key=#{key}, team=#{team}, p8_file=#{p8_file_path}"})
     end
 
     key_id = {:key_id, key}
@@ -154,13 +127,8 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     {[single_config | mode_list], [token | tokens]}
   end
 
-  @chars "ABCDEFGHIJKLMNOPQRSTUVWXYZ" |> String.split("")
+  @chars for n <- ?A..?Z, do: <<n::utf8>>
   defp random_atom(len) do
-    1..len
-    |> Enum.reduce([], fn _i, acc ->
-      [Enum.random(@chars) | acc]
-    end)
-    |> Enum.join("")
-    |> String.to_atom()
+    for _ <- 1..len, do: Enum.random(@chars)
   end
 end
