@@ -39,9 +39,10 @@ defmodule MongoosePush.Service.FCM.Pool.Supervisor do
     endpoint = {:endpoint, pool_config[:endpoint] || @default_endpoint}
     port = {:port, pool_config[:port] || @default_port}
     pool_size = {:worker_num, pool_config[:pool_size]}
+    raw_tags = if is_nil(pool_config[:tags]), do: [], else: pool_config[:tags]
 
     # mode has to be either `prod` or `dev`, for now we pass it in form of a tag
-    tags = {:tags, [pool_config[:mode]]}
+    tags = {:tags, [pool_config[:mode] | raw_tags]}
 
     [token_path, endpoint, port, pool_size, tags]
     |> Enum.filter(fn {_key, value} -> !is_nil(value) end)

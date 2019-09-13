@@ -21,12 +21,21 @@ config :maru, MongoosePush.Router,
 
 config :mongoose_push,
   fcm: [
-    default: [
+    pool1: [
       appfile: "priv/fcm/token.json",
       endpoint: "localhost",
       pool_size: 5,
       mode: :prod,
-      port: 4000
+      port: 4000,
+      tags: [:I, :am, :your, :father]
+    ],
+    pool2: [
+      appfile: "priv/fcm/token.json",
+      endpoint: "localhost",
+      pool_size: 3,
+      mode: :dev,
+      port: 4000,
+      tags: [:these, :are, :not]
     ]
   ]
 

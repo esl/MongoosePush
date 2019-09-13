@@ -83,8 +83,9 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     port = {:port, port_config}
 
     name = {:pool_name, pool_name}
+    tags = {:tags, pool_config[:tags]}
 
-    [auth_type, cert, key, pool_size, endpoint, port, name]
+    [auth_type, cert, key, pool_size, endpoint, port, name, tags]
     |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
   end
 
@@ -99,6 +100,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     port = {:port, port_config}
 
     name = {:pool_name, pool_name}
+    tags = {:tags, pool_config[:tags]}
 
     key = pool_config[:auth][:key_id]
     team = pool_config[:auth][:team_id]
@@ -119,7 +121,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     pool_token = {:token_id, token_id}
 
     single_config =
-      [auth_type, pool_token, pool_size, endpoint, port, name]
+      [auth_type, pool_token, pool_size, endpoint, port, name, tags]
       |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
 
     token = [pool_token, key_id, team_id, p8_file]

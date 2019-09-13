@@ -389,6 +389,165 @@ defmodule MongoosePushTest do
     TestHelper.reload_app()
   end
 
+  describe "tagged pools" do
+    setup do
+      apns_config = [
+        dev1: [
+          auth: %{
+            type: :token_based,
+            key_id: "fake_key",
+            team_id: "fake_team",
+            p8_file_path: "priv/apns/token.p8"
+          },
+          endpoint: "localhost",
+          mode: :dev,
+          use_2197: true,
+          pool_size: 3,
+          default_topic: "dev_topic1",
+          tags: [:tag1, :tag2]
+        ],
+        dev2: [
+          auth: %{
+            type: :token_based,
+            key_id: "fake_key",
+            team_id: "fake_team",
+            p8_file_path: "priv/apns/token.p8"
+          },
+          endpoint: "localhost",
+          mode: :dev,
+          use_2197: true,
+          pool_size: 3,
+          default_topic: "prod_topic1",
+          tags: [:tag2, :tag3]
+        ],
+        prod1: [
+          auth: %{
+            type: :token_based,
+            key_id: "fake_key",
+            team_id: "fake_team",
+            p8_file_path: "priv/apns/token.p8"
+          },
+          endpoint: "localhost",
+          mode: :prod,
+          use_2197: true,
+          pool_size: 3,
+          default_topic: "dev_topic1",
+          tags: [:tag1, :tag2]
+        ],
+        prod2: [
+          auth: %{
+            type: :token_based,
+            key_id: "fake_key",
+            team_id: "fake_team",
+            p8_file_path: "priv/apns/token.p8"
+          },
+          endpoint: "localhost",
+          mode: :prod,
+          use_2197: true,
+          pool_size: 3,
+          default_topic: "prod_topic1",
+          tags: [:tag2, :tag3]
+        ]
+      ]
+
+      fcm_config = [
+        pool1: [
+          appfile: "priv/fcm/token.json",
+          endpoint: "localhost",
+          pool_size: 5,
+          mode: :prod,
+          port: 4000,
+          tags: [:tag1, :tag2, :tag3]
+        ],
+        pool2: [
+          appfile: "priv/fcm/token.json",
+          endpoint: "localhost",
+          pool_size: 4,
+          mode: :dev,
+          port: 4000,
+          tags: [:tag2, :tag3, :tag4]
+        ]
+      ]
+
+      Application.stop(:mongoose_push)
+      Application.stop(:sparrow)
+      Application.put_env(:mongoose_push, :apns, apns_config)
+      # Application.put_env(:mongoose_push, :fcm, fcm_config)
+      Application.ensure_all_started(:mongoose_push)
+      :ok
+    end
+
+    test "are tagged and chosen correctly" do
+      assert :dev1 == MongoosePush.Service.APNS.choose_pool(:dev, [:tag1])
+      assert :dev1 == MongoosePush.Service.APNS.choose_pool(:dev, [:tag1, :tag2])
+      assert :dev2 == MongoosePush.Service.APNS.choose_pool(:dev, [:tag3])
+      assert :dev2 == MongoosePush.Service.APNS.choose_pool(:dev, [:tag2, :tag3])
+      assert nil == MongoosePush.Service.APNS.choose_pool(:dev, [:tag1, :tag2, :tag3])
+
+      assert :prod1 == MongoosePush.Service.APNS.choose_pool(:prod, [:tag1])
+      assert :prod1 == MongoosePush.Service.APNS.choose_pool(:prod, [:tag1, :tag2])
+      assert :prod2 == MongoosePush.Service.APNS.choose_pool(:prod, [:tag3])
+      assert :prod2 == MongoosePush.Service.APNS.choose_pool(:prod, [:tag2, :tag3])
+      assert nil == MongoosePush.Service.APNS.choose_pool(:prod, [:tag1, :tag2, :tag3])
+
+      # assert :pool1 == MongoosePush.Service.FCM.choose_pool(:prod)
+      # assert :pool1 == MongoosePush.Service.FCM.choose_pool(:prod, [:tag1])
+      # assert :pool1 == MongoosePush.Service.FCM.choose_pool(:prod, [:tag1, :tag2, :tag3])
+      # assert :pool2 == MongoosePush.Service.FCM.choose_pool(:dev)
+      # assert :pool1 == MongoosePush.Service.FCM.choose_pool(:dev, [:tag2])
+      # assert :pool1 == MongoosePush.Service.FCM.choose_pool(:dev, [:tag2, :tag3, :tag4])
+      # assert nil == MongoosePush.Service.FCM.choose_pool(:prod, [:tag2, :tag3, :tag4])
+      # assert nil == MongoosePush.Service.FCM.choose_pool(:dev, [:tag1, :tag2, :tag3])
+      TestHelper.reload_app()
+    end
+
+    test "are integrated with APNS" do
+      notification = %{
+        :service => :apns,
+        :alert => %{
+          :title => "title",
+          :body => "body"
+        },
+        :mode => :prod,
+        :tags => [:tag2, :tag3],
+        :data => %{
+          "acme1" => "apns1",
+          "acme2" => "apns2",
+          "acme3" => "apns3"
+        }
+      }
+
+      assert :ok == push(@test_token, notification)
+
+      invalid_notification =
+        notification
+        |> Map.replace!(:tags, [:tag1, :tag2, :tag3])
+
+      assert {:error, :no_matching_pool} == push(@test_token, invalid_notification)
+      TestHelper.reload_app()
+    end
+
+    test "are integrated with FCM" do
+      notification = %{
+        :service => :fcm,
+        :data => %{
+          "acme1" => "fcm1",
+          "acme2" => "fcm2",
+          "acme3" => "fcm3"
+        }
+      }
+
+      assert :ok == push(@test_token, notification)
+
+      invalid_notification =
+        notification
+        |> Map.put(:tags, [:tag1, :tag2, :tag3, :tag4])
+
+      assert {:error, :no_matching_pool} == push(@test_token, invalid_notification)
+      TestHelper.reload_app()
+    end
+  end
+
   defp reset(:apns) do
     {:ok, conn} = get_connection(:apns)
     headers = headers("POST", "/reset")

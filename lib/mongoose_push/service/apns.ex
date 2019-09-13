@@ -59,9 +59,9 @@ defmodule MongoosePush.Service.APNS do
     {MongoosePush.Service.APNS.Supervisor, pool_configs}
   end
 
-  @spec choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
-  def choose_pool(mode) do
-    Sparrow.PoolsWarden.choose_pool({:apns, mode})
+  @spec choose_pool(MongoosePush.mode(), [any]) :: Application.pool_name() | nil
+  def choose_pool(mode, tags \\ []) do
+    Sparrow.PoolsWarden.choose_pool({:apns, mode}, tags)
   end
 
   defp maybe(notification, :add_mutable_content, true),
