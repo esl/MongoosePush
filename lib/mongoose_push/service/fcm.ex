@@ -64,9 +64,9 @@ defmodule MongoosePush.Service.FCM do
     {PoolSupervisor, pools_configs}
   end
 
-  @spec choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
-  def choose_pool(mode) do
-    Sparrow.PoolsWarden.choose_pool(:fcm, [mode])
+  @spec choose_pool(MongoosePush.mode(), [any]) :: Application.pool_name() | nil
+  def choose_pool(mode, tags \\ []) do
+    Sparrow.PoolsWarden.choose_pool(:fcm, [mode | tags])
   end
 
   defp maybe(notification, _function, nil), do: notification

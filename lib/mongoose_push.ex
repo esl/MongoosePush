@@ -63,16 +63,24 @@ defmodule MongoosePush do
   def push(device_id, %{:service => service} = request) do
     mode = Map.get(request, :mode, :prod)
     module = MongoosePush.Application.services()[service]
-    pool = module.choose_pool(mode)
-    # Just make sure both data and alert keys exist for convenience (but may be nil)
-    request =
-      request
-      |> Map.put(:alert, request[:alert])
-      |> Map.put(:data, request[:data])
+    tags = Map.get(request, :tags, [])
+    pool = module.choose_pool(mode, tags)
 
-    notification = module.prepare_notification(device_id, request, pool)
-    opts = [timeout: 60_000]
-    {time, push_result} = :timer.tc(module, :push, [notification, device_id, pool, opts])
+    {time, push_result} =
+      if pool == nil do
+        Logger.error(~s"No pool matching mode=#{mode} and tags=#{inspect(tags)}")
+        {0, {:error, :no_matching_pool}}
+      else
+        request =
+          request
+          |> Map.put(:alert, request[:alert])
+          |> Map.put(:data, request[:data])
+
+        notification = module.prepare_notification(device_id, request, pool)
+        opts = [timeout: 60_000]
+
+        :timer.tc(module, :push, [notification, device_id, pool, opts])
+      end
 
     push_result
     |> Metrics.update(:spiral, [:push, service, mode])

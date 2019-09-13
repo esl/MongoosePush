@@ -169,6 +169,7 @@ Each `FCM` pool may be configured by setting the following fields:
 * **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
 * **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
 * **endpoint** (*optional*) - URL override for `FCM` service. Useful mainly in tests
+* **tags** (*optional*) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
 
 You may entirely skip the `FCM` config entry to disable `FCM` support.
 
@@ -202,6 +203,7 @@ Each `APNS` pool may be configured by setting the following fields:
 * **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
 * **endpoint** (*optional*) - URL override for `APNS` service. Useful mainly in tests
 * **use_2197** (*optional `true` or `false`*) - whether use alternative port for `APNS`: 2197
+* **tags** (*optional*) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
 
 You may entirely skip the `APNS` config entry to disable `APNS` support.
 
@@ -250,6 +252,7 @@ The full list of options contains the following:
 * **time_to_live** (*optional*) - Maximum lifespan of an FCM notification. For more details, please, refer to [the official FCM documentation](https://firebase.google.com/docs/cloud-messaging/concept-options#ttl).
 * **mutable_content** (*optional*, `true` / `false` (default)) - Only applicable to APNS. Sets "mutable-content=1" in APNS payload.
 * **topic** (*optional*, `APNS` specific) - if APNS certificate configured in `MongoosePush` allows for multiple applications, this field selects the application. Please refer to `APNS` documentation for more datails
+* **tags** (*optional*) - a list of tags used to choose a pool with matching tags. To see how tags work read: https://github.com/esl/sparrow#tags
 * **data** (*optional*) - custom JSON structure sent to the target device. For `APNS`, all keys form this stucture are merged into highest level APS message (the one that holds 'aps' key), while for `FCM` the whole `data` json stucture is sent as FCM's `data payload` along with `notification`.
 * **alert** (*optional*) - JSON stucture that if provided will send non-silent notification with the following fields:
   * **body** (*required*) - text body of notification
