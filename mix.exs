@@ -32,9 +32,10 @@ defmodule MongoosePush.Mixfile do
      {:cowboy,  "~> 2.3", override: true},
      {:jason, "~> 1.0"},
 
+     {:plug_cowboy, "~> 2.1"},
      {:poison, "~> 3.0"},
      {:maru_swagger, github: "elixir-maru/maru_swagger"},
-     {:distillery, "~> 2.0", override: true},
+     {:distillery, "~> 2.1", override: true},
      {:confex, "~> 3.2", override: true},
      {:mix_docker, "~> 0.5"},
      {:uuid, "~> 1.1"},
