@@ -56,8 +56,6 @@ config :lager,
     ]
   ]
 
-config :sparrow, Sparrow.PoolsWarden, %{:enabled => true}
-
 import_config "#{Mix.env()}.exs"
 
 # Globally disable maru's "test mode". If we don't disable it explicitly
