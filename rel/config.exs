@@ -42,4 +42,8 @@ end
 
 release :mongoose_push do
   set version: current_version(:mongoose_push)
+  set applications: [
+    mongoose_push: :permanent,
+    goth: :load
+  ]
 end

@@ -97,7 +97,7 @@ defmodule MongoosePush.Application do
           [:cert, :key]
 
         :fcm ->
-          []
+          [:appfile]
       end
 
     config
