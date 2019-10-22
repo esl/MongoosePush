@@ -7,6 +7,10 @@ defmodule MongoosePush.API do
     {503, %{:details => "Please try again later"}}
   end
 
+  def to_status({:error, {_type, reason}}) when is_atom(reason) do
+    {500, %{:details => reason}}
+  end
+
   def to_status({:error, reason}) when is_atom(reason) do
     try do
       code = Plug.Conn.Status.code(reason)

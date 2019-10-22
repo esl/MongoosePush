@@ -12,6 +12,7 @@ defmodule MongoosePush do
 
   require Logger
   alias MongoosePush.Metrics
+  alias MongoosePush.Service
   use Metrics
 
   @typedoc "Available keys in `request` map"
@@ -34,6 +35,8 @@ defmodule MongoosePush do
 
   @type service :: :fcm | :apns
   @type mode :: :dev | :prod
+
+  @type error :: {:generic, :no_matching_pool | atom}
 
   @doc """
   Push notification defined by `request` to device with `device_id`.
@@ -59,7 +62,8 @@ defmodule MongoosePush do
   this feature (please consult APNS documentation for more information).
   """
   @timed key: :auto
-  @spec push(String.t(), request) :: :ok | {:error, term}
+  @spec push(String.t(), request) ::
+          :ok | {:error, Service.error()} | {:error, MongoosePush.error()}
   def push(device_id, %{:service => service} = request) do
     mode = Map.get(request, :mode, :prod)
     module = MongoosePush.Application.services()[service]
@@ -90,17 +94,16 @@ defmodule MongoosePush do
 
   defp maybe_log(:ok), do: :ok
 
-  defp maybe_log({:error, reason} = return_value) when is_atom(reason) do
-    Logger.warn(~s"Unable to complete push request due to #{reason}")
+  defp maybe_log({:error, {type, reason}} = return_value) do
+    Logger.warn(
+      ~s"Unable to complete push request due to service error: #{reason} in category: #{type}"
+    )
+
     return_value
   end
 
   defp maybe_log({:error, reason} = return_value) do
-    Logger.warn(
-      ~s"Unable to complete push request due to unknown error: " <>
-        ~s"#{inspect(reason)}"
-    )
-
+    Logger.warn(~s"Unable to complete push request due to #{inspect(reason)}")
     return_value
   end
 end

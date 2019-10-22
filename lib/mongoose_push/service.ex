@@ -7,8 +7,26 @@ defmodule MongoosePush.Service do
   @type notification :: term
   @type options :: [Keyword.t()]
 
+  @type error_type ::
+          :invalid_request
+          | :internal_config
+          | :auth
+          | :unregistered
+          | :too_many_requests
+          | :unspecified
+          | :service_internal
+          | :payload_too_large
+          | :unknown
+
+  @type error_reason :: atom
+
+  @typedoc """
+  Error tuple with unified internal representation and exact reason returned by service
+  """
+  @type error :: {error_type, error_reason}
+
   @callback push(notification(), String.t(), Application.pool_name(), options()) ::
-              :ok | {:error, term}
+              :ok | {:error, error} | {:error, MongoosePush.error()}
   @callback prepare_notification(String.t(), MongoosePush.request(), Application.pool_name()) ::
               notification()
   @callback supervisor_entry([Application.pool_definition()] | nil) :: {module(), term()}
