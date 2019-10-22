@@ -49,7 +49,8 @@ defmodule MongoosePush.Service.FCM.Pool.Supervisor do
       port: port,
       worker_num: pool_size,
       tags: tags,
-      pool_name: pool_name
+      pool_name: pool_name,
+      tls_opts: pool_config[:tls_opts]
     ]
     |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
   end

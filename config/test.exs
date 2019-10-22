@@ -27,7 +27,8 @@ config :mongoose_push,
       pool_size: 5,
       mode: :prod,
       port: 4000,
-      tags: [:I, :am, :your, :father]
+      tags: [:I, :am, :your, :father],
+      tls_opts: []
     ],
     pool2: [
       appfile: "priv/fcm/token.json",
@@ -35,7 +36,8 @@ config :mongoose_push,
       pool_size: 3,
       mode: :dev,
       port: 4000,
-      tags: [:these, :are, :not]
+      tags: [:these, :are, :not],
+      tls_opts: []
     ]
   ]
 
@@ -51,7 +53,8 @@ config :mongoose_push,
       mode: :dev,
       use_2197: true,
       pool_size: 1,
-      default_topic: "dev_topic"
+      default_topic: "dev_topic",
+      tls_opts: []
     ],
     prod1: [
       auth: %{
@@ -62,7 +65,8 @@ config :mongoose_push,
       endpoint: "localhost",
       use_2197: true,
       pool_size: 2,
-      default_topic: "prod1_override_topic"
+      default_topic: "prod1_override_topic",
+      tls_opts: []
     ],
     dev2: [
       auth: %{
@@ -73,7 +77,8 @@ config :mongoose_push,
       endpoint: "localhost",
       mode: :dev,
       use_2197: true,
-      pool_size: 3
+      pool_size: 3,
+      tls_opts: []
     ],
     prod2: [
       auth: %{
@@ -84,7 +89,8 @@ config :mongoose_push,
       endpoint: "localhost",
       mode: :prod,
       use_2197: true,
-      pool_size: 4
+      pool_size: 4,
+      tls_opts: []
     ],
     dev3: [
       auth: %{
@@ -97,7 +103,8 @@ config :mongoose_push,
       mode: :dev,
       use_2197: true,
       pool_size: 3,
-      default_topic: "dev_token_topic"
+      default_topic: "dev_token_topic",
+      tls_opts: []
     ],
     prod3: [
       auth: %{
@@ -110,6 +117,7 @@ config :mongoose_push,
       mode: :prod,
       use_2197: true,
       pool_size: 3,
-      default_topic: "prod_token_topic"
+      default_topic: "prod_token_topic",
+      tls_opts: []
     ]
   ]

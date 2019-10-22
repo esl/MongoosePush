@@ -111,7 +111,8 @@ defmodule MongoosePush.Service.APNS.Supervisor do
         endpoint: pool_config[:endpoint] || endpoint_mode,
         port: port,
         pool_name: pool_name,
-        tags: pool_config[:tags]
+        tags: pool_config[:tags],
+        tls_opts: pool_config[:tls_opts]
       ]
       |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
 
@@ -147,7 +148,8 @@ defmodule MongoosePush.Service.APNS.Supervisor do
         port: port,
         pool_name: pool_name,
         token_id: token_id,
-        tags: pool_config[:tags]
+        tags: pool_config[:tags],
+        tls_opts: pool_config[:tls_opts]
       ]
       |> Enum.filter(fn {_key, value} -> !is_nil(value) end)
 

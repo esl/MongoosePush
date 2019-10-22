@@ -351,7 +351,8 @@ defmodule MongoosePushTest do
         mode: :dev,
         use_2197: true,
         pool_size: 3,
-        default_topic: "dev_topic1"
+        default_topic: "dev_topic1",
+        tls_opts: []
       ],
       new_prod1: [
         auth: %{
@@ -364,7 +365,8 @@ defmodule MongoosePushTest do
         mode: :prod,
         use_2197: true,
         pool_size: 3,
-        default_topic: "prod_topic1"
+        default_topic: "prod_topic1",
+        tls_opts: []
       ]
     ]
 
@@ -404,7 +406,8 @@ defmodule MongoosePushTest do
           use_2197: true,
           pool_size: 3,
           default_topic: "dev_topic1",
-          tags: [:tag1, :tag2]
+          tags: [:tag1, :tag2],
+          tls_opts: []
         ],
         dev2: [
           auth: %{
@@ -418,7 +421,8 @@ defmodule MongoosePushTest do
           use_2197: true,
           pool_size: 3,
           default_topic: "prod_topic1",
-          tags: [:tag2, :tag3]
+          tags: [:tag2, :tag3],
+          tls_opts: []
         ],
         prod1: [
           auth: %{
@@ -432,7 +436,8 @@ defmodule MongoosePushTest do
           use_2197: true,
           pool_size: 3,
           default_topic: "dev_topic1",
-          tags: [:tag1, :tag2]
+          tags: [:tag1, :tag2],
+          tls_opts: []
         ],
         prod2: [
           auth: %{
@@ -446,7 +451,8 @@ defmodule MongoosePushTest do
           use_2197: true,
           pool_size: 3,
           default_topic: "prod_topic1",
-          tags: [:tag2, :tag3]
+          tags: [:tag2, :tag3],
+          tls_opts: []
         ]
       ]
 
@@ -457,7 +463,8 @@ defmodule MongoosePushTest do
           pool_size: 5,
           mode: :prod,
           port: 4000,
-          tags: [:tag1, :tag2, :tag3]
+          tags: [:tag1, :tag2, :tag3],
+          tls_opts: []
         ],
         pool2: [
           appfile: "priv/fcm/token.json",
@@ -465,7 +472,8 @@ defmodule MongoosePushTest do
           pool_size: 4,
           mode: :dev,
           port: 4000,
-          tags: [:tag2, :tag3, :tag4]
+          tags: [:tag2, :tag3, :tag4],
+          tls_opts: []
         ]
       ]
 
