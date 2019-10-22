@@ -292,6 +292,10 @@ If you use dockerized MongoosePush, you need to do the following:
 * Modify the `sys.config` as you see fit (for metrics, see above)
 * Stop MongoosePush docker container and restart it with the modified `sys.config` as volume in `/opt/app/sys.config` (yes, this is not the path we used to copy this file from, this is an override)
 
+### Launching on prod
+
+```_build/prod/rel/mongoose_push/bin/mongoose_push start```
+
 
 ### Available metrics
 
