@@ -10,6 +10,7 @@ defmodule MongoosePush.Service.FCM do
   alias MongoosePush.Application
   alias MongoosePush.Service
   alias MongoosePush.Service.FCM.Pool.Supervisor, as: PoolSupervisor
+  alias MongoosePush.Service.FCM.ErrorHandler
   require Logger
 
   @priority_mapping %{normal: :NORMAL, high: :HIGH}
@@ -48,14 +49,14 @@ defmodule MongoosePush.Service.FCM do
   end
 
   @spec push(Service.notification(), String.t(), Application.pool_name(), Service.options()) ::
-          :ok | {:error, term}
+          :ok | {:error, Service.error()}
   def push(notification, _device_id, pool, _opts \\ []) do
     case FCM.push(pool, notification, is_sync: true) do
       :ok ->
         :ok
 
       {:error, reason} ->
-        {:error, reason}
+        {:error, unify_error(reason)}
     end
   end
 
@@ -71,4 +72,9 @@ defmodule MongoosePush.Service.FCM do
 
   defp maybe(notification, _function, nil), do: notification
   defp maybe(notification, function, arg), do: apply(Android, function, [notification, arg])
+
+  @spec unify_error(Service.error_reason()) :: Service.error()
+  def unify_error(reason) do
+    ErrorHandler.translate_error_reason(reason)
+  end
 end

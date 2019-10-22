@@ -291,7 +291,7 @@ defmodule MongoosePushTest do
       %{device_token: "androidtestdeviceid65", status: 404, reason: "UNREGISTERED"}
     ])
 
-    assert {:error, :UNREGISTERED} = push("androidtestdeviceid65", notification)
+    assert {:error, {:unregistered, :UNREGISTERED}} = push("androidtestdeviceid65", notification)
   end
 
   test "check FCM_ENABLED option" do

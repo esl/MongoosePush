@@ -10,6 +10,7 @@ defmodule MongoosePush.Service.APNS do
   alias MongoosePush.Application
   alias MongoosePush.Service
   alias MongoosePush.Service.APNS.State
+  alias MongoosePush.Service.APNS.ErrorHandler
 
   @priority_mapping %{normal: "5", high: "10"}
 
@@ -43,14 +44,14 @@ defmodule MongoosePush.Service.APNS do
   end
 
   @spec push(Service.notification(), String.t(), Application.pool_name(), Service.options()) ::
-          :ok | {:error, term}
+          :ok | {:error, Service.error()}
   def push(notification, _device_id, pool, _opts \\ []) do
     case APNS.push(pool, notification, is_sync: true) do
       :ok ->
         :ok
 
       {:error, reason} ->
-        {:error, reason}
+        {:error, unify_error(reason)}
     end
   end
 
@@ -62,6 +63,11 @@ defmodule MongoosePush.Service.APNS do
   @spec choose_pool(MongoosePush.mode(), [any]) :: Application.pool_name() | nil
   def choose_pool(mode, tags \\ []) do
     Sparrow.PoolsWarden.choose_pool({:apns, mode}, tags)
+  end
+
+  @spec unify_error(Service.error_reason()) :: Service.error()
+  def unify_error(reason) do
+    ErrorHandler.translate_error_reason(reason)
   end
 
   defp maybe(notification, :add_mutable_content, true),
