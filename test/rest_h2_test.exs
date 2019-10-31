@@ -42,13 +42,12 @@ defmodule RestH2Test do
     end
   end
 
-  defp headers(method, path, payload \\ "") do
+  defp headers(method, path) do
     [
       {":method", method},
       {":authority", "localhost"},
       {":scheme", "https"},
       {":path", path},
-      {"content-length", "#{byte_size(payload)}"},
       {"content-type", "application/json"}
     ]
   end
