@@ -122,7 +122,12 @@ Setup FCM and APNS mocks first:
 $ docker-compose -f test/docker/docker-compose.yml up -d
 ```
 
-Run tests:
+Generate certificates. This step is needed to be run only once:
+```bash
+mix certs.dev
+```
+
+And finally run tests:
 ```bash
 $ mix test
 ```
