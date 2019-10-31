@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+        fcm-mock:
+                image: kmakiela/fcm-mock-server
+                container_name:  fcm-mock
+                ports:
+                    - "4001:4001"
+                    - "4000:4000"
+        apns-mock:
+                image: mobify/apns-http2-mock-server
+                container_name: apns-mock
+                ports:
+                    - "2197:2197"
