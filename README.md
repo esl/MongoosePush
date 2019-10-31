@@ -115,6 +115,23 @@ _build/prod/rel/mongoose_push/bin/mongoose_push console
 
 Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without properly configured `FCM` and/or `APNS` service. So, lets configure it!
 
+### Running tests
+
+Setup FCM and APNS mocks first:
+```bash
+$ docker-compose -f test/docker/docker-compose.yml up -d
+```
+
+Run tests:
+```bash
+$ mix test
+```
+
+You can cleanup docker after tests by calling:
+```bash
+$ docker-compose -f test/docker/docker-compose.yml down
+```
+
 ## Configuration
 
 The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Anyway, lets take a look on `config/dev.exs`, part by part.
