@@ -26,8 +26,9 @@ defmodule RestH2Test do
   end
 
   defp post(conn, path, json) do
-    headers = headers("POST", path)
-    :h2_client.send_request(conn, headers, Poison.encode!(json))
+    payload = Poison.encode!(json)
+    headers = headers("POST", path, payload)
+    :h2_client.send_request(conn, headers, payload)
     get_response(conn)
   end
 
@@ -42,12 +43,13 @@ defmodule RestH2Test do
     end
   end
 
-  defp headers(method, path) do
+  defp headers(method, path, payload) do
     [
       {":method", method},
       {":authority", "localhost"},
       {":scheme", "https"},
       {":path", path},
+      {"content-length", "#{byte_size(payload)}"},
       {"content-type", "application/json"}
     ]
   end
