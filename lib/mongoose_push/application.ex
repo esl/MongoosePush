@@ -49,9 +49,10 @@ defmodule MongoosePush.Application do
         true -> service_config
       end
 
-    Enum.map(pools_config, fn {pool_name, pool_config} ->
+    Enum.map(Enum.with_index(pools_config), fn {{pool_name, pool_config}, index} ->
       normalized_pool_config =
         pool_config
+        |> generate_pool_id(service, index)
         |> fix_priv_paths(service)
         |> ensure_mode()
 
@@ -80,6 +81,11 @@ defmodule MongoosePush.Application do
     end)
   end
 
+  defp generate_pool_id(config, service, index) do
+    id = String.to_atom("#{service}.pool.ID.#{index}")
+    Keyword.merge(config, id: id)
+  end
+
   defp ensure_mode(config) do
     case config[:mode] do
       nil ->
@@ -94,14 +100,23 @@ defmodule MongoosePush.Application do
     path_keys =
       case service do
         :apns ->
-          [:cert, :key]
+          [:cert, :key, :p8_file_path]
 
         :fcm ->
           [:appfile]
       end
 
-    config
-    |> Enum.map(fn {key, value} ->
+    case service do
+      :fcm ->
+        check_paths(config, path_keys)
+
+      :apns ->
+        Keyword.update!(config, :auth, fn auth -> check_paths(auth, path_keys) end)
+    end
+  end
+
+  defp check_paths(config, path_keys) do
+    Enum.map(config, fn {key, value} ->
       case Enum.member?(path_keys, key) do
         true ->
           {key, Application.app_dir(:mongoose_push, value)}

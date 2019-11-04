@@ -4,7 +4,7 @@ defmodule MongoosePush.Mixfile do
   def project do
     [
       app: :mongoose_push,
-      version: "2.0.0-alpha.1",
+      version: "2.0.0-alpha.2",
       elixir: "~> 1.5",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -27,8 +27,9 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e0", override: true},
-      {:sparrow, github: "esl/sparrow", ref: "b41ea2c"},
+      {:sparrow, github: "esl/sparrow", ref: "f1f0d891e0409ff748fc64b23bfc1b072bf7de50"},
       {:maru, github: "rslota/maru", ref: "54fc038", override: true},
+      {:plug_cowboy, "~> 2.0"},
       {:cowboy, "~> 2.3", override: true},
       {:jason, "~> 1.0"},
       {:poison, "~> 3.0"},
@@ -98,11 +99,10 @@ defmodule MongoosePush.Mixfile do
     [test: "test --no-start"]
   end
 
-  # Exclude lib/mix/tasks/certs_dev.ex as it's conflictng with the same module in Sparrow.
-  # Also, all mix tasks are redundant in runtime, but we still need to compile `lib/mix/tasks/compile_asn1.ex`
+  # All mix tasks are redundant in runtime, but we still need to compile `lib/mix/tasks/compile_asn1.ex`
   # as it's required by build process (ASN1 compiler).
   defp elixirc_paths(:prod),
-    do: ["lib/mix/tasks/compile_asn1.ex", "lib/mongoose_push", "lib/mongoose_push.ex"]
+    do: ["lib"]
 
   defp elixirc_paths(_), do: ["lib"]
 end
