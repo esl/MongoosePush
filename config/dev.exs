@@ -27,7 +27,9 @@ config :mongoose_push,
       endpoint: "localhost",
       appfile: "priv/fcm/token.json",
       pool_size: 5,
-      mode: :prod
+      mode: :dev,
+      port: 4000,
+      tls_opts: []
     ]
   ]
 
@@ -42,7 +44,8 @@ config :mongoose_push,
       endpoint: "localhost",
       mode: :dev,
       use_2197: true,
-      pool_size: 5
+      pool_size: 5,
+      tls_opts: []
     ],
     prod: [
       auth: %{
@@ -53,6 +56,7 @@ config :mongoose_push,
       endpoint: "localhost",
       mode: :prod,
       use_2197: true,
-      pool_size: 5
+      pool_size: 5,
+      tls_opts: []
     ]
   ]

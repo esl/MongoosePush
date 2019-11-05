@@ -16,4 +16,5 @@ defmodule MongoosePush.Service.FCM.ErrorHandler do
   def translate_error_reason(:THIRD_PARTY_AUTH_ERROR), do: {:auth, :THIRD_PARTY_AUTH_ERROR}
   def translate_error_reason(:UNAVAILABLE), do: {:service_internal, :UNAVAILABLE}
   def translate_error_reason(:INTERNAL), do: {:service_internal, :INTERNAL}
+  def translate_error_reason(reason), do: {:unknown, reason}
 end

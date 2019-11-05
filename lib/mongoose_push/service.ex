@@ -16,6 +16,7 @@ defmodule MongoosePush.Service do
           | :unspecified
           | :service_internal
           | :payload_too_large
+          | :unknown
 
   @type error_reason :: atom
 
@@ -25,10 +26,10 @@ defmodule MongoosePush.Service do
   @type error :: {error_type, error_reason}
 
   @callback push(notification(), String.t(), Application.pool_name(), options()) ::
-              :ok | {:error, term}
+              :ok | {:error, error} | {:error, MongoosePush.error()}
   @callback prepare_notification(String.t(), MongoosePush.request(), Application.pool_name()) ::
               notification()
   @callback supervisor_entry([Application.pool_definition()] | nil) :: {module(), term()}
   @callback choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
-  @callback unify_error(error_reason) :: error
+  @callback unify_error(error_reason) :: error | MongoosePush.error()
 end

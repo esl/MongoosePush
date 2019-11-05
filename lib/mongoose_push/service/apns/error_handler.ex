@@ -48,4 +48,6 @@ defmodule MongoosePush.Service.APNS.ErrorHandler do
   def translate_error_reason(:InternalServerError), do: {:service_internal, :InternalServerError}
 
   def translate_error_reason(:PayloadTooLarge), do: {:payload_too_large, :PayloadTooLarge}
+
+  def translate_error_reason(reason), do: {:unknown, reason}
 end

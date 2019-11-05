@@ -36,7 +36,9 @@ defmodule MongoosePush do
   @type service :: :fcm | :apns
   @type mode :: :dev | :prod
 
-  @type error :: :no_matching_pool
+  @type error ::
+          :no_matching_pool
+          | {:generic, atom}
 
   @doc """
   Push notification defined by `request` to device with `device_id`.
