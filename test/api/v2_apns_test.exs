@@ -24,9 +24,9 @@ defmodule MongoosePushAPIV2APNSTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-  mock_apns([%{device_token: "f534534543", status: 400, reason: reason}])
+    mock_apns([%{device_token: "f534534543", status: 400, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
   test "push to apns with bad certificate fails" do
@@ -41,7 +41,7 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 403, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
   test "push to apns with bad path fails" do
@@ -56,7 +56,7 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 404, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
   test "push to apns with bad method fails" do
@@ -71,7 +71,7 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 405, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
   test "push to apns with unregistered token fails" do
@@ -86,7 +86,7 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 410, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
 
@@ -102,7 +102,7 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 413, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
   test "push to apns fails with unknown internal error" do
@@ -117,7 +117,7 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 500, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
   test "push to apns fails with too many requests" do
@@ -132,7 +132,7 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 429, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 
   test "push to apns fails when service is unavailable/overloaded" do
@@ -147,6 +147,6 @@ defmodule MongoosePushAPIV2APNSTest do
 
     mock_apns([%{device_token: "f534534543", status: 503, reason: reason}])
 
-    assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, args)
   end
 end
