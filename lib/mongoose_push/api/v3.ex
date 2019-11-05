@@ -1,8 +1,8 @@
-defmodule MongoosePush.API.V2 do
+defmodule MongoosePush.API.V3 do
   @moduledoc false
 
   use Maru.Router
-  version("v2")
+  version("v3")
 
   plug(Plug.Parsers,
     pass: ["application/json", "text/json"],
@@ -45,7 +45,7 @@ defmodule MongoosePush.API.V2 do
         {status, payload} =
           device_id
           |> MongoosePush.push(Map.delete(params, :device_id))
-          |> MongoosePush.API.V2.H2Handler.to_status()
+          |> MongoosePush.API.V3.H2Handler.to_status()
 
         conn
         |> put_status(status)
