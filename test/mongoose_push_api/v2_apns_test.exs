@@ -24,7 +24,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
   mock_apns([%{device_token: "f534534543", status: 400, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
@@ -39,7 +38,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :body => "body value",
         :click_action => "click.action",
         :tag => "tag value"}}
-
 
     mock_apns([%{device_token: "f534534543", status: 403, reason: reason}])
 
@@ -56,7 +54,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
     mock_apns([%{device_token: "f534534543", status: 404, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
@@ -72,7 +69,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
     mock_apns([%{device_token: "f534534543", status: 405, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
@@ -87,7 +83,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :body => "body value",
         :click_action => "click.action",
         :tag => "tag value"}}
-
 
     mock_apns([%{device_token: "f534534543", status: 410, reason: reason}])
 
@@ -105,7 +100,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
     mock_apns([%{device_token: "f534534543", status: 413, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
@@ -120,7 +114,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :body => "body value",
         :click_action => "click.action",
         :tag => "tag value"}}
-
 
     mock_apns([%{device_token: "f534534543", status: 500, reason: reason}])
 
@@ -137,7 +130,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
     mock_apns([%{device_token: "f534534543", status: 429, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
@@ -152,7 +144,6 @@ defmodule MongoosePushAPIV2APNSTest do
         :body => "body value",
         :click_action => "click.action",
         :tag => "tag value"}}
-
 
     mock_apns([%{device_token: "f534534543", status: 503, reason: reason}])
 

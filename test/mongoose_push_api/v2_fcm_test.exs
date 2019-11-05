@@ -24,7 +24,6 @@ defmodule MongoosePushAPIV2FCMTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
     mock_fcm([%{device_token: "f534534543", status: 404, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
@@ -39,7 +38,6 @@ defmodule MongoosePushAPIV2FCMTest do
         :body => "body value",
         :click_action => "click.action",
         :tag => "tag value"}}
-
 
     mock_fcm([%{device_token: "f534534543", status: 403, reason: reason}])
 
@@ -56,7 +54,6 @@ defmodule MongoosePushAPIV2FCMTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
     mock_fcm([%{device_token: "f534534543", status: 429, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
@@ -71,7 +68,6 @@ defmodule MongoosePushAPIV2FCMTest do
         :body => "body value",
         :click_action => "click.action",
         :tag => "tag value"}}
-
 
     mock_fcm([%{device_token: "f534534543", status: 500, reason: reason}])
 
@@ -88,7 +84,6 @@ defmodule MongoosePushAPIV2FCMTest do
         :click_action => "click.action",
         :tag => "tag value"}}
 
-
     mock_fcm([%{device_token: "f534534543", status: 401, reason: reason}])
 
     assert {500, reason} = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
@@ -103,7 +98,6 @@ defmodule MongoosePushAPIV2FCMTest do
         :body => "body value",
         :click_action => "click.action",
         :tag => "tag value"}}
-
 
     mock_fcm([%{device_token: "f534534543", status: 503, reason: reason}])
 
