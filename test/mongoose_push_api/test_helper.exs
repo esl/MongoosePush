@@ -80,5 +80,3 @@ defmodule MongoosePushAPITestHelper do
   end
 
 end
-
-

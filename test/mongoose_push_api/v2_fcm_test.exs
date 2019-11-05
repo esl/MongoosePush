@@ -1,4 +1,4 @@
-defmodule MongoosePushAPIV2Test do
+defmodule MongoosePushAPIV2FCMTest do
   require Logger
   use ExUnit.Case, async: false
   use Quixir
@@ -11,7 +11,6 @@ defmodule MongoosePushAPIV2Test do
 
   setup do
     reset(:fcm)
-    reset(:apns)
     TestHelper.reload_app()
   end
 
@@ -108,9 +107,6 @@ defmodule MongoosePushAPIV2Test do
 
     mock_fcm([%{device_token: "f534534543", status: 503, reason: reason}])
 
-    assert {503, reason} = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
+    assert {500, reason} = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
   end
 end
-
-
-
