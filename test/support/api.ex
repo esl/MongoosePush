@@ -1,6 +1,16 @@
 defmodule MongoosePushSupportAPI do
   alias HTTPoison.Response
 
+  def sample_notification do
+    %{
+      :service => :apns,
+      :alert => %{
+        :title => "title value",
+        :body => "body value",
+        :click_action => "click.action",
+        :tag => "tag value"}}
+  end
+
   def post(path, json) do
     %Response{status_code: status_code, body: body} =
       HTTPoison.post!(
