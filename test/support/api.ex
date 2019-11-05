@@ -1,4 +1,4 @@
-defmodule MongoosePushSupportAPI do
+defmodule MongoosePush.Support.API do
   alias HTTPoison.Response
 
   def sample_notification do
@@ -8,7 +8,9 @@ defmodule MongoosePushSupportAPI do
         :title => "title value",
         :body => "body value",
         :click_action => "click.action",
-        :tag => "tag value"}}
+        :tag => "tag value"
+      }
+    }
   end
 
   def post(path, json) do
@@ -86,5 +88,4 @@ defmodule MongoosePushSupportAPI do
         Enum.join(body)
     end
   end
-
 end
