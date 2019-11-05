@@ -1,6 +1,4 @@
-ExUnit.start(capture_log: true)
-
-defmodule MongoosePushAPITestHelper do
+defmodule MongoosePushSupportAPI do
   alias HTTPoison.Response
 
   def post(path, json) do

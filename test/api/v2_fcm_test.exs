@@ -2,7 +2,7 @@ defmodule MongoosePushAPIV2FCMTest do
   require Logger
   use ExUnit.Case, async: false
   use Quixir
-  import MongoosePushAPITestHelper
+  import MongoosePushSupportAPI
 
   alias HTTPoison.Response
   doctest MongoosePush.API.V2
