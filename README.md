@@ -199,7 +199,8 @@ config :mongoose_push, fcm: [
         appfile: "path/to/token.json",
         endpoint: "localhost",
         pool_size: 5,
-        mode: :prod
+        mode: :prod,
+        tls_opts: []
     ]
   ]
 ```
@@ -211,7 +212,9 @@ Each `FCM` pool may be configured by setting the following fields:
 * **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
 * **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
 * **endpoint** (*optional*) - URL override for `FCM` service. Useful mainly in tests
+* **port** (*optional*) - Port number override for `FCM` service. Useful mainly in tests
 * **tags** (*optional*) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
+* **tls_opts** (*optional*) - a list of raw options passed to `ssl:connect` function call while connecting to `FCM`. When this option is omitted, it will default to set of values that will verify server certificate based on internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
 
 You may entirely skip the `FCM` config entry to disable `FCM` support.
 
@@ -225,14 +228,16 @@ config :mongoose_push, apns: [
      key: "priv/apns/dev_key.pem",
      mode: :dev,
      use_2197: false,
-     pool_size: 5
+     pool_size: 5,
+     tls_opts: []
    ],
    prod: [
      cert: "priv/apns/prod_cert.pem",
      key: "priv/apns/prod_key.pem",
      mode: :prod,
      use_2197: false,
-     pool_size: 5
+     pool_size: 5,
+     tls_opts: []
    ]
  ]
  ```
@@ -244,8 +249,10 @@ Each `APNS` pool may be configured by setting the following fields:
 * **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
 * **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
 * **endpoint** (*optional*) - URL override for `APNS` service. Useful mainly in tests
+* **port** (*optional*) - Port number override for `APNS` service. Useful mainly in tests
 * **use_2197** (*optional `true` or `false`*) - whether use alternative port for `APNS`: 2197
 * **tags** (*optional*) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
+* **tls_opts** (*optional*) - a list of raw options passed to `ssl:connect` function call while connecting to `APNS`. When this option is omitted, it will default to set of values that will verify server certificate based on internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
 
 You may entirely skip the `APNS` config entry to disable `APNS` support.
 
