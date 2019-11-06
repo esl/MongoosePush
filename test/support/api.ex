@@ -84,8 +84,7 @@ defmodule MongoosePush.Support.API do
   def get_response(conn) do
     receive do
       {:END_STREAM, stream_id} ->
-        {:ok, {_headers, body}} = :h2_client.get_response(conn, stream_id)
-        Enum.join(body)
+        :h2_client.get_response(conn, stream_id)
     end
   end
 end
