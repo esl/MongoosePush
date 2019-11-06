@@ -48,16 +48,18 @@ defmodule MongoosePush.Support.API do
 
   def reset(:apns) do
     {:ok, conn} = get_connection(:apns)
-    headers = headers("POST", "/reset")
-    :h2_client.send_request(conn, headers, "")
+    payload = ""
+    headers = headers("POST", "/reset", payload)
+    :h2_client.send_request(conn, headers, payload)
     get_response(conn)
     :ok
   end
 
   def reset(:fcm) do
     {:ok, conn} = get_connection(:fcm)
-    headers = headers("POST", "/mock/reset")
-    :h2_client.send_request(conn, headers, "")
+    payload = ""
+    headers = headers("POST", "/mock/reset", payload)
+    :h2_client.send_request(conn, headers, payload)
     get_response(conn)
     :ok
   end
@@ -70,7 +72,7 @@ defmodule MongoosePush.Support.API do
     :h2_client.start_link(:https, 'localhost', 4000, [])
   end
 
-  def headers(method, path, payload \\ "") do
+  def headers(method, path, payload) do
     [
       {":method", method},
       {":authority", "localhost"},
