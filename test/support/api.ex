@@ -32,7 +32,7 @@ defmodule MongoosePush.Support.API do
 
     headers = headers("POST", "/error-tokens", payload)
     :h2_client.send_request(conn, headers, payload)
-    get_response(conn)
+    {"200", payload} = get_response(conn)
     :ok
   end
 
@@ -42,8 +42,7 @@ defmodule MongoosePush.Support.API do
 
     headers = headers("POST", "/mock/error-tokens", payload)
     :h2_client.send_request(conn, headers, payload)
-    get_response(conn)
-    :ok
+    {"200", payload} = get_response(conn)
   end
 
   def reset(:apns) do
@@ -51,7 +50,7 @@ defmodule MongoosePush.Support.API do
     payload = ""
     headers = headers("POST", "/reset", payload)
     :h2_client.send_request(conn, headers, payload)
-    get_response(conn)
+    {"200", "OK"} = get_response(conn)
     :ok
   end
 
@@ -60,7 +59,7 @@ defmodule MongoosePush.Support.API do
     payload = ""
     headers = headers("POST", "/mock/reset", payload)
     :h2_client.send_request(conn, headers, payload)
-    get_response(conn)
+    {"200", "OK"} = get_response(conn)
     :ok
   end
 
@@ -86,7 +85,9 @@ defmodule MongoosePush.Support.API do
   def get_response(conn) do
     receive do
       {:END_STREAM, stream_id} ->
-        :h2_client.get_response(conn, stream_id)
+        {:ok, {headers, body}} = :h2_client.get_response(conn, stream_id)
+        {":status", code} = List.keyfind(headers, ":status", 0)
+        {code, Enum.join(body)}
     end
   end
 end
