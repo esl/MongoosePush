@@ -1,9 +1,9 @@
 defmodule MongoosePush.Support.API do
   alias HTTPoison.Response
 
-  def sample_notification do
+  def sample_notification(service) do
     %{
-      :service => :apns,
+      :service => service,
       :alert => %{
         :title => "title value",
         :body => "body value",
