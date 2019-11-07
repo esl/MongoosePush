@@ -23,7 +23,7 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
         :generic -> 400
       end
 
-    {return_code, %{:details => type}}
+    {return_code, %{:reason => type}}
   end
 
   def to_status({:error, reason}) when is_atom(reason) do

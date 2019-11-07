@@ -22,7 +22,7 @@ defmodule MongoosePush.Support.API do
         hackney: [:insecure]
       )
 
-    %{"details" => details} = Poison.decode!(body)
+    details = Poison.decode!(body)
     {status_code, details}
   end
 
