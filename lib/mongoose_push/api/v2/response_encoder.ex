@@ -1,4 +1,4 @@
-defmodule MongoosePush.API.V2.H2Handler do
+defmodule MongoosePush.API.V2.ResponseEncoder do
   @moduledoc """
   Module for handling internal responses to V2 HTTP2 codes
   """

@@ -1,4 +1,4 @@
-defmodule MongoosePush.API.V1.H2Handler do
+defmodule MongoosePush.API.V1.ResponseEncoder do
   @moduledoc """
     Module for handling internal responses to V1 HTTP2 codes
   """
@@ -7,6 +7,6 @@ defmodule MongoosePush.API.V1.H2Handler do
   @spec to_status(:ok | {:error, term}) ::
     {non_neg_integer, %{details: atom | String.t()} | nil}
   def to_status(return_val) do
-    MongoosePush.API.V2.H2Handler.to_status(return_val)
+    MongoosePush.API.V2.ResponseEncoder.to_status(return_val)
   end
 end
