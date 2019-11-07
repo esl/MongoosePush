@@ -6,31 +6,23 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
   alias MongoosePush.Service
 
   @spec to_status(:ok | {:error, Service.error()} | {:error, MongoosePush.error()}) ::
-    {non_neg_integer, %{details: atom | String.t()} | nil}
+          {non_neg_integer, %{details: atom | String.t()} | nil}
   def to_status(:ok), do: {200, nil}
 
   def to_status({:error, {type, reason}}) when is_atom(reason) do
     return_code =
       case type do
-        :invalid_request ->
-          461
-        :auth ->
-          462
-        :unregistered ->
-          463
-        :unspecified ->
-          464
-        :service_internal ->
-          465
-        :internal_config ->
-          561
-        :too_many_requests ->
-          562
-        :payload_too_large ->
-          563
-        :generic ->
-          564
+        :invalid_request -> 461
+        :auth -> 462
+        :unregistered -> 463
+        :unspecified -> 464
+        :service_internal -> 465
+        :internal_config -> 561
+        :too_many_requests -> 562
+        :payload_too_large -> 563
+        :generic -> 564
       end
+
     {return_code, %{:details => type}}
   end
 
