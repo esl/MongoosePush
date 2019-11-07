@@ -12,15 +12,15 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
   def to_status({:error, {type, reason}}) when is_atom(reason) do
     return_code =
       case type do
-        :invalid_request -> 461
-        :auth -> 462
-        :unregistered -> 463
-        :unspecified -> 464
-        :service_internal -> 465
-        :internal_config -> 561
-        :too_many_requests -> 562
-        :payload_too_large -> 563
-        :generic -> 564
+        :invalid_request -> 400
+        :unregistered -> 410
+        :payload_too_large -> 413
+        :too_many_requests -> 429
+        :auth -> 503
+        :service_internal -> 503
+        :internal_config -> 503
+        :unspecified -> 520
+        :generic -> 400
       end
 
     {return_code, %{:details => type}}
