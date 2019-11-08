@@ -10,20 +10,22 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
   def to_status(:ok), do: {200, nil}
 
   def to_status({:error, {type, reason}}) when is_atom(reason) do
-    return_code =
-      case type do
-        :invalid_request -> 400
-        :unregistered -> 410
-        :payload_too_large -> 413
-        :too_many_requests -> 429
-        :auth -> 503
-        :service_internal -> 503
-        :internal_config -> 503
-        :unspecified -> 520
-        :generic -> 400
+    {status, error_reason} =
+      case {type, reason} do
+        {:invalid_request, _} -> {400, type}
+        {:unregistered, _} -> {410, type}
+        {:payload_too_large, _} -> {413, type}
+        {:too_many_requests, _} -> {429, type}
+        {:service_internal, _} -> {503, type}
+        {:auth, _} -> {503, :service_internal}
+        {:internal_config, _} -> {503, type}
+        {:unspecified, _} -> {520, type}
+        {:generic, :no_matching_pool} -> {400, reason}
+        {:generic, _} -> {500, reason}
+        {:unspecified, _} -> {500, reason}
       end
 
-    {return_code, %{:reason => type}}
+    {status, %{:reason => error_reason}}
   end
 
   def to_status({:error, reason}) when is_atom(reason) do
