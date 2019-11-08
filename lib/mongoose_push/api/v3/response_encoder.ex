@@ -22,7 +22,6 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
         {:unspecified, _} -> {520, type}
         {:generic, :no_matching_pool} -> {400, reason}
         {:generic, _} -> {500, reason}
-        {:unspecified, _} -> {500, reason}
       end
 
     {status, %{:reason => error_reason}}
