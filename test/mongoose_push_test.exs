@@ -531,7 +531,7 @@ defmodule MongoosePushTest do
         notification
         |> Map.replace!(:tags, [:tag1, :tag2, :tag3])
 
-      assert {:error, :no_matching_pool} == push(@test_token, invalid_notification)
+      assert {:error, {:generic, :no_matching_pool}} == push(@test_token, invalid_notification)
       TestHelper.reload_app()
     end
 
@@ -551,7 +551,7 @@ defmodule MongoosePushTest do
         notification
         |> Map.put(:tags, [:tag1, :tag2, :tag3, :tag4])
 
-      assert {:error, :no_matching_pool} == push(@test_token, invalid_notification)
+      assert {:error, {:generic, :no_matching_pool}} == push(@test_token, invalid_notification)
       TestHelper.reload_app()
     end
   end

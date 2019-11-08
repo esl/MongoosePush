@@ -73,7 +73,7 @@ defmodule MongoosePush do
     {time, push_result} =
       if pool == nil do
         Logger.error(~s"No pool matching mode=#{mode} and tags=#{inspect(tags)}")
-        {0, {:error, :no_matching_pool}}
+        {0, {:error, {:generic, :no_matching_pool}}}
       else
         request =
           request

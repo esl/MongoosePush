@@ -1,9 +1,9 @@
 defmodule MongoosePush.Support.API do
   alias HTTPoison.Response
 
-  def sample_notification do
+  def sample_notification(service) do
     %{
-      :service => :apns,
+      :service => service,
       :alert => %{
         :title => "title value",
         :body => "body value",
@@ -22,7 +22,7 @@ defmodule MongoosePush.Support.API do
         hackney: [:insecure]
       )
 
-    %{"details" => details} = Poison.decode!(body)
+    details = Poison.decode!(body)
     {status_code, details}
   end
 
