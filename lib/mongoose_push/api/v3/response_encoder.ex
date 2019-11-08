@@ -6,7 +6,7 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
   alias MongoosePush.Service
 
   @spec to_status(:ok | {:error, Service.error()} | {:error, MongoosePush.error()}) ::
-          {non_neg_integer, %{details: atom | String.t()} | nil}
+          {non_neg_integer, %{reason: atom | String.t()} | nil}
   def to_status(:ok), do: {200, nil}
 
   def to_status({:error, {type, reason}}) when is_atom(reason) do
@@ -31,11 +31,11 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
     try do
       code = Plug.Conn.Status.code(reason)
       reason_phrase = Plug.Conn.Status.reason_phrase(code)
-      {code, %{:details => reason_phrase}}
+      {code, %{:reason => reason_phrase}}
     catch
       # We really don't care what happened here, we have to return something
       _, _ ->
-        {500, %{:details => reason}}
+        {500, %{:reason => reason}}
     end
   end
 
