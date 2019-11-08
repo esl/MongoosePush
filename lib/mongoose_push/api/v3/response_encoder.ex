@@ -27,18 +27,6 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
     {status, %{:reason => error_reason}}
   end
 
-  def to_status({:error, reason}) when is_atom(reason) do
-    try do
-      code = Plug.Conn.Status.code(reason)
-      reason_phrase = Plug.Conn.Status.reason_phrase(code)
-      {code, %{:reason => reason_phrase}}
-    catch
-      # We really don't care what happened here, we have to return something
-      _, _ ->
-        {500, %{:reason => reason}}
-    end
-  end
-
   def to_status({:error, _reason}) do
     {500, nil}
   end
