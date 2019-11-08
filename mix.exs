@@ -4,7 +4,7 @@ defmodule MongoosePush.Mixfile do
   def project do
     [
       app: :mongoose_push,
-      version: "2.0.0-alpha.2",
+      version: "2.0.0-alpha.3",
       elixir: "~> 1.5",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
