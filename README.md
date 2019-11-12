@@ -327,9 +327,8 @@ If you specify both **alert** and **data**, target device will receive both noti
 * **429** `{"reason" : "too_many_requests"}` - there were too many requests to the server.
 * **503** `{"reason" : "service_internal"|"internal_config"|"unspecified"}` - the internal service or configuration error occured.
 * **520** `{"reason" : "unspecified"}` - the unknown error occured.
-
-
-
+* **500** `{"reason" : reason}` - the server internal error occured, 
+  specified by **reason**.
 
 ## Metrics
 

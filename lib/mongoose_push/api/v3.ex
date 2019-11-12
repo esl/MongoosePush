@@ -21,6 +21,7 @@ defmodule MongoosePush.API.V3 do
       status 429, desc: "{"reason" : "too_many_requests"} - there were too many requests to the server"
       status 503, desc: "{"reason" : "service_internal"|"internal_config"|"unspecified"} - the internal service or configuration error occured"
       status 520, desc: "{"reason" : "unspecified"} - the unknown error occured"
+      status 500, desc: "{"reason" : reason} - the server internal error occured"
     end
   end
 
