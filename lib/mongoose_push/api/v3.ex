@@ -10,6 +10,21 @@ defmodule MongoosePush.API.V3 do
     parsers: [:urlencoded, :json, :multipart]
   )
 
+  desc "description" do
+    detail "details of described request"
+
+    responses do
+      status 200, desc: "OK"
+      status 400, desc: "{"reason" : "invalid_request"|"no_matching_pool"} - the request was invalid"
+      status 410, desc: "{"reason" : "unregistered"} - the device was not registered"
+      status 413, desc: "{"reason" : "payload_too_large"} - the payload was too large"
+      status 429, desc: "{"reason" : "too_many_requests"} - there were too many requests to the server"
+      status 503, desc: "{"reason" : "service_internal"|"internal_config"|"unspecified"} - the internal service or configuration error occured"
+      status 520, desc: "{"reason" : "unspecified"} - the unknown error occured"
+      status 500, desc: "{"reason" : reason} - the server internal error occured"
+    end
+  end
+
   params do
     requires(:service, type: Atom, values: [:fcm, :apns])
     optional(:mode, type: Atom, values: [:prod, :dev])

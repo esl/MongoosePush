@@ -278,6 +278,8 @@ If for some reason you need `Swagger` spec for this `RESTful` service, there is 
 
 ### Just tell me what to send already
 
+#### Request
+
 There is only one endpoint at this moment:
 * `POST /v2/notification/{device_id}`
 
@@ -315,6 +317,18 @@ Please note that either **alert** and **data** has to be provided (also can be b
 If you only specify **alert**, the request will result in classic, simple notification.
 If you only specify **data**, the request will result in "silent" notification, i.e. the client will receive the data and will be able to decide whether notification shall be shown and how should be shown to the user.
 If you specify both **alert** and **data**, target device will receive both notification and the custom data payload to process.
+
+#### Description of the possible server responses
+
+* **200** `"OK"` - the request was successful.
+* **400** `{"reason" : "invalid_request"|"no_matching_pool"}` - the request was invalid.
+* **410** `{"reason" : "unregistered"}` - the device was not registered.
+* **413** `{"reason" : "payload_too_large"}` - the payload was too large.
+* **429** `{"reason" : "too_many_requests"}` - there were too many requests to the server.
+* **503** `{"reason" : "service_internal"|"internal_config"|"unspecified"}` - the internal service or configuration error occured.
+* **520** `{"reason" : "unspecified"}` - the unknown error occured.
+* **500** `{"reason" : reason}` - the server internal error occured, 
+  specified by **reason**.
 
 ## Metrics
 
