@@ -32,7 +32,7 @@ defmodule MongoosePush.Support.API do
 
     headers = headers("POST", "/error-tokens", payload)
     :h2_client.send_request(conn, headers, payload)
-    {"200", payload} = get_response(conn)
+    {"200", _payload} = get_response(conn)
     :ok
   end
 
@@ -42,7 +42,7 @@ defmodule MongoosePush.Support.API do
 
     headers = headers("POST", "/mock/error-tokens", payload)
     :h2_client.send_request(conn, headers, payload)
-    {"200", payload} = get_response(conn)
+    {"200", _payload} = get_response(conn)
   end
 
   def reset(:apns) do
