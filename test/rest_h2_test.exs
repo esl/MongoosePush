@@ -6,15 +6,14 @@ defmodule RestH2Test do
 
   # Since protocol is the only thing that changes, there's no point in testing the whole API
   test "correct params return 200 over HTTP/2" do
-    with_mock MongoosePush, [push: fn(_, _) -> :ok end] do
-
+    with_mock MongoosePush, push: fn _, _ -> :ok end do
       {:ok, conn} = get_connection()
 
-      assert 200 = post(conn, @url, %{service: :apns,  alert: %{body: "body", title: "title"}})
-      assert 200 = post(conn, @url, %{service: :fcm,   alert: %{body: "body", title: "title"}})
+      assert 200 = post(conn, @url, %{service: :apns, alert: %{body: "body", title: "title"}})
+      assert 200 = post(conn, @url, %{service: :fcm, alert: %{body: "body", title: "title"}})
 
-      assert 200 = post(conn, @url, %{service: :apns,  data: %{a1: "test", a2: "test"}})
-      assert 200 = post(conn, @url, %{service: :fcm,   data: %{a1: "test", a2: "test"}})
+      assert 200 = post(conn, @url, %{service: :apns, data: %{a1: "test", a2: "test"}})
+      assert 200 = post(conn, @url, %{service: :fcm, data: %{a1: "test", a2: "test"}})
     end
   end
 
@@ -32,6 +31,7 @@ defmodule RestH2Test do
     receive do
       {:END_STREAM, stream_id} ->
         {:ok, {headers, _body}} = :h2_client.get_response(conn, stream_id)
+
         List.keyfind(headers, ":status", 0)
         |> Kernel.elem(1)
         |> String.to_integer()
@@ -48,5 +48,4 @@ defmodule RestH2Test do
       {"content-type", "application/json"}
     ]
   end
-
 end

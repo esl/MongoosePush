@@ -32,5 +32,4 @@ defmodule MongoosePushPoolsTest do
     assert 4 == pool_size(:apns, :prod2)
     assert 5 == pool_size(:fcm, :default)
   end
-
 end

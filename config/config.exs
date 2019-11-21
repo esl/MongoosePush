@@ -29,7 +29,20 @@ config :plug, :statuses, %{
   460 => "Invalid device token"
 }
 
-lager_formater_config = [:date, 'T', :time, :color, ' [', :severity, '] ', :pid, ' ', :message, '\e[0m\r\n']
+lager_formater_config = [
+  :date,
+  'T',
+  :time,
+  :color,
+  ' [',
+  :severity,
+  '] ',
+  :pid,
+  ' ',
+  :message,
+  '\e[0m\r\n'
+]
+
 config :lager,
   colored: false,
   handlers: [
@@ -49,10 +62,10 @@ config :lager,
       level: :info,
       formatter: :lager_default_formatter,
       formatter_config: lager_formater_config
-      ]
+    ]
   ]
 
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"
 
 # Globally disable maru's "test mode". If we don't disable it explicitly
 # it will crash a release.
