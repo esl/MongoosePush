@@ -51,9 +51,9 @@
   "pollution": {:hex, :pollution, "0.9.2", "3f67542631071c99f807d2a8f9da799c07cd983c902f5357b9e1569c20a26e76", [:mix], [], "hexpm"},
   "quixir": {:hex, :quixir, "0.9.3", "f01c37386b9e1d0526f01a8734a6d7884af294a0ec360f05c24c7171d74632bd", [:mix], [{:pollution, "~> 0.9.2", [hex: :pollution, repo: "hexpm", optional: false]}], "hexpm"},
   "ranch": {:hex, :ranch, "1.7.1", "6b1fab51b49196860b733a49c07604465a47bdb78aa10c1c16a3d199f7f8c881", [:rebar3], [], "hexpm"},
-  "sparrow": {:git, "https://github.com/esl/sparrow.git", "f1f0d891e0409ff748fc64b23bfc1b072bf7de50", [ref: "f1f0d891e0409ff748fc64b23bfc1b072bf7de50"]},
+  "sparrow": {:git, "https://github.com/esl/sparrow.git", "a94d1490cb819c62e147bad8059fbbdf7e8a260e", [ref: "a94d1490cb819c62e147bad8059fbbdf7e8a260e"]},
   "ssl_verify_fun": {:hex, :ssl_verify_fun, "1.1.5", "6eaf7ad16cb568bb01753dbbd7a95ff8b91c7979482b95f38443fe2c8852a79b", [:make, :mix, :rebar3], [], "hexpm"},
   "unicode_util_compat": {:hex, :unicode_util_compat, "0.4.1", "d869e4c68901dd9531385bb0c8c40444ebf624e60b6962d95952775cac5e90cd", [:rebar3], [], "hexpm"},
   "uuid": {:hex, :uuid, "1.1.8", "e22fc04499de0de3ed1116b770c7737779f226ceefa0badb3592e64d5cfb4eb9", [:mix], [], "hexpm"},
-  "worker_pool": {:hex, :worker_pool, "3.1.1", "a9bf27cff366999784a3f0657f016ce3a57901490858cca3fb3be1208bf2110d", [:rebar3], [], "hexpm"},
+  "worker_pool": {:hex, :worker_pool, "4.0.1", "8cdebce7e09ecb4f1eb4bbf78aa99248064ac357077668c011ac600599973723", [:rebar3], [], "hexpm"},
 }
