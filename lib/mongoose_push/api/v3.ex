@@ -43,9 +43,13 @@ defmodule MongoosePush.API.V3 do
     optional(:priority, type: Atom, values: [:normal, :high])
     optional(:time_to_live, type: Integer)
     optional(:mutable_content, type: Boolean, default: false)
-    optional(:tags, type: fn tags ->
-      Enum.map(tags, &String.to_existing_atom(&1))
-    end, default: [])
+
+    optional(:tags,
+      type: fn tags ->
+        Enum.map(tags, &String.to_existing_atom(&1))
+      end,
+      default: []
+    )
 
     # Only for APNS, alert/data independent
     optional(:topic, type: String)
