@@ -15,6 +15,28 @@ defmodule RestV2Test do
     assert 404 = post("/v2/notifications/test", %{})
   end
 
+  test "incorrect tags return 400" do
+    args = %{
+      service: :fcm,
+      mode: :dev,
+      topic: "apns topic",
+      priority: :high,
+      mutable_content: false,
+      time_to_live: 200,
+      tags: ["non existing atom here"],
+      alert: %{
+        body: "body654",
+        title: "title345",
+        badge: 10,
+        tag: "tag123",
+        click_action: "on.click",
+        sound: "sound.wav"
+      }
+    }
+
+    assert 400 = post(@url, args)
+  end
+
   test "incorrect params returns 400" do
     assert 400 = post(@url, %{service: :apns})
     assert 400 = post(@url, %{service: :fcm})
@@ -67,6 +89,7 @@ defmodule RestV2Test do
         priority: :high,
         mutable_content: false,
         time_to_live: 200,
+        tags: [:pool, :type],
         alert: %{
           body: "body654",
           title: "title345",
