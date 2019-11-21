@@ -11,6 +11,7 @@ config :maru, MongoosePush.Router,
     port: {:system, :integer, "PUSH_HTTPS_PORT", 8443},
     keyfile: {:system, :string, "PUSH_HTTPS_KEYFILE", "priv/ssl/fake_key.pem"},
     certfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
+    cacertfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
     acceptors: {:system, :integer, "PUSH_HTTPS_ACCEPTORS", 100},
     otp_app: :mongoose_push
   ]
