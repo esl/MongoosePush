@@ -73,6 +73,20 @@ defmodule RestV3Test do
     end
   end
 
+  test "connection_lost error returns 503" do
+    with_mock MongoosePush, push: fn _, _ -> {:error, {:generic, :connection_lost}} end do
+      assert 503 = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+      assert 503 = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
+    end
+  end
+
+  test "unable_to_connect error returns 503" do
+    with_mock MongoosePush, push: fn _, _ -> {:error, {:generic, :unable_to_connect}} end do
+      assert 503 = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+      assert 503 = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
+    end
+  end
+
   test "unknown push error returns 500" do
     with_mock MongoosePush, push: fn _, _ -> {:error, {1, "unknown"}} end do
       assert 500 = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
