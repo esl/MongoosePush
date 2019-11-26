@@ -21,6 +21,8 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
         {:internal_config, _} -> {503, type}
         {:unspecified, _} -> {520, type}
         {:generic, :no_matching_pool} -> {400, reason}
+        {:generic, :unable_to_connect} -> {503, reason}
+        {:generic, :connection_lost} -> {503, reason}
         {:generic, _} -> {500, reason}
       end
 
