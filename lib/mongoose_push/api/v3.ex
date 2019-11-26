@@ -29,7 +29,7 @@ defmodule MongoosePush.API.V3 do
 
       status(503,
         desc:
-          "{\"reason\" : \"service_internal\"|\"internal_config\"|\"unspecified\"} - the internal service or configuration error occured"
+          "{\"reason\" : \"service_internal\"|\"internal_config\"|\"connection_lost\"|\"unable_to_connect\"|\"unspecified\"} - the internal service or configuration error occured or the connection to the push service has been temporalily lost"
       )
 
       status(520, desc: "{\"reason\" : \"unspecified\"} - the unknown error occured")
