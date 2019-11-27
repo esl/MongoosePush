@@ -90,4 +90,12 @@ defmodule MongoosePush.API.V3APNSTest do
     assert {503, %{"reason" => "service_internal"}} =
              Tools.post(@url, Tools.sample_notification(:apns))
   end
+
+  test "push to apns succeeds" do
+    desc = "OK"
+
+    Tools.reset(:apns)
+
+    assert {200, _} = Tools.post(@url, Tools.sample_notification(:apns))
+  end
 end

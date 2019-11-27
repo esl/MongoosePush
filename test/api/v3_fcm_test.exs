@@ -63,4 +63,12 @@ defmodule MongoosePush.API.V3FCMTest do
     assert {503, %{"reason" => "service_internal"}} =
              Tools.post(@url, Tools.sample_notification(:fcm))
   end
+
+  test "push to fcm succeeds" do
+    desc = "OK"
+
+    Tools.reset(:fcm)
+
+    assert {200, _} = Tools.post(@url, Tools.sample_notification(:fcm))
+  end
 end
