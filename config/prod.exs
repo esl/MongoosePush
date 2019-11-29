@@ -22,6 +22,9 @@ config :mongoose_push, fcm_enabled: {:system, :boolean, "PUSH_FCM_ENABLED", true
 config :mongoose_push, apns_enabled: {:system, :boolean, "PUSH_APNS_ENABLED", true}
 
 config :mongoose_push,
+  tls_server_cert_validation: {:system, :boolean, "TLS_SERVER_CERT_VALIDATION", true}
+
+config :mongoose_push,
   fcm: [
     default: [
       endpoint: {:system, :string, "PUSH_FCM_ENDPOINT", nil},
