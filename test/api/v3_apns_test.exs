@@ -1,7 +1,6 @@
 defmodule MongoosePush.API.V3APNSTest do
   use ExUnit.Case, async: false
   alias MongoosePush.Support.API, as: Tools
-  doctest MongoosePush.API.V3
 
   @url "/v3/notification/f534534543"
 

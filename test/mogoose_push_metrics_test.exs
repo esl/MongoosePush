@@ -4,7 +4,6 @@ defmodule MongoosePushMetricsTest do
   import MongoosePush
   import Mock
   import TimeHelper
-  doctest MongoosePush.Metrics
 
   alias MongoosePush.Service.APNS
   alias MongoosePush.Service.FCM

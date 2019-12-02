@@ -1,13 +1,26 @@
 defmodule MongoosePush.API.V3FCMTest do
   use ExUnit.Case, async: false
   alias MongoosePush.Support.API, as: Tools
-  doctest MongoosePush.API.V3
 
   @url "/v3/notification/f534534543"
 
+  setup_all do
+    if Mix.env() == :integration do
+      HTTPoison.start()
+    end
+
+    :ok
+  end
+
   setup do
-    Tools.reset(:fcm)
-    TestHelper.reload_app()
+    case Mix.env() do
+      :test ->
+        Tools.reset(:fcm)
+        TestHelper.reload_app()
+
+      :integration ->
+        Tools.reset(:fcm)
+    end
   end
 
   test "push to fcm with id mismatch fails" do
