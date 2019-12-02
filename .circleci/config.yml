@@ -18,7 +18,7 @@ executors:
         default: test
     docker:
       - image: rslota/beam-builder:erlang-<< parameters.erlang_version >>_elixir-<< parameters.elixir_version >>
-      - image: kmakiela/fcm-mock-server
+      - image: mongooseim/fcm-mock-server
       - image: mobify/apns-http2-mock-server
     working_directory: ~/app
     environment:

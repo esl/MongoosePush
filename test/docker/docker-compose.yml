@@ -2,7 +2,7 @@ version: '3'
 
 services:
     fcm-mock:
-        image: kmakiela/fcm-mock-server
+        image: mongooseim/fcm-mock-server
         container_name:  fcm-mock
         ports:
             - "4001:4001"
