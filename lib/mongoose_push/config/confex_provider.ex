@@ -1,7 +1,7 @@
 defmodule MongoosePush.Config.ConfexProvider do
   @moduledoc """
   """
-  @behaviour Mix.Releases.Config.Provider
+  @behaviour Distillery.Releases.Config.Provider
 
   @spec init([any()]) :: :ok
   def init(_opts) do
