@@ -2,6 +2,8 @@ use Mix.Config
 
 config :mix_docker, image: "mongoose_push"
 
+config :goth, endpoint: {:system, :string, "FCM_AUTH_ENDPOINT", "https://www.googleapis.com"}
+
 config :maru, MongoosePush.Router,
   versioning: [
     using: :path
