@@ -4,6 +4,21 @@ filters: &all_tags
   tags:
     only: /.*/
 
+run: &DOCKER_TAGS
+    name: Generate image tag
+    command: |
+        set -x
+        if [ -n "$CIRCLE_TAG" ]; then
+        DOCKER_TAG="$CIRCLE_TAG"
+        elif [ "$CIRCLE_BRANCH" == "master" ]; then
+        DOCKER_TAG="${CIRCLE_SHA1:0:7}"
+        else
+        DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
+        fi
+        env | sort
+        echo "export DOCKER_TAG=$DOCKER_TAG" >> $BASH_ENV
+        echo "export DOCKER_IMAGE=mongoose-push" >> $BASH_ENV
+
 executors:
   elixir-builder:
     parameters:
@@ -57,10 +72,8 @@ jobs:
 
     steps:
       - checkout
-
       - run: mix local.hex --force
       - run: mix local.rebar --force
-
       - run: mix deps.get
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - save_cache:
@@ -72,7 +85,6 @@ jobs:
 
   dialyzer:
     executor: elixir-builder
-
     steps:
       - checkout
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
@@ -97,35 +109,12 @@ jobs:
           name: Execute dialyzer
           command: mix deps.get && mix dialyzer --halt-exit-status
 
-  release:
-    executor:
-      name: elixir-builder
-      env: prod
-
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-      - restore_cache:
-          keys:
-            - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-      - run: mix do certs.dev, distillery.release
-      - run: tar -czf mongoose_push.tar.gz -C _build/${MIX_ENV}/rel/mongoose_push .
-      - save_cache:
-          key: release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - "_build"
-            - "mongoose_push.tar.gz"
-
-
   test-erlang-22_elixir-1-9:
     executor:
       name: elixir-builder
       env: test
       erlang_version: "22.0"
       elixir_version: "1.9"
-
     steps:
       - test
 
@@ -135,7 +124,6 @@ jobs:
       env: test
       erlang_version: "22.0"
       elixir_version: "1.8"
-
     steps:
       - test
 
@@ -145,7 +133,6 @@ jobs:
       env: test
       erlang_version: "22.0"
       elixir_version: "1.7"
-
     steps:
       - test
 
@@ -155,7 +142,6 @@ jobs:
       env: test
       erlang_version: "21.3"
       elixir_version: "1.9"
-
     steps:
       - test
 
@@ -165,7 +151,6 @@ jobs:
       env: test
       erlang_version: "21.3"
       elixir_version: "1.8"
-
     steps:
       - test
 
@@ -175,64 +160,73 @@ jobs:
       env: test
       erlang_version: "21.3"
       elixir_version: "1.7"
-
     steps:
       - test
 
   format_check:
     executor:
       name: elixir-builder
-
     steps:
       - checkout
       - restore_cache:
           keys:
             - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-
       - run: mix format --check-formatted
 
-  deploy:
+  build-tar-and-docker-image:
     executor:
       name: elixir-builder
       env: prod
-
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
       - restore_cache:
           keys:
-            - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run:
-          name: Generate image tag
-          command: |
-             set -x
-             if [ -n "$CIRCLE_TAG" ]; then
-               DOCKER_TAG="$CIRCLE_TAG"
-             elif [ "$CIRCLE_BRANCH" == "master" ]; then
-               DOCKER_TAG="${CIRCLE_SHA1:0:7}"
-             else
-               DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
-             fi
-             env | sort
-             echo "export DOCKER_TAG=$DOCKER_TAG" >> $BASH_ENV
-             echo "export DOCKER_IMAGE=mongoose-push" >> $BASH_ENV
+          name: Mix build release
+          command: mix do certs.dev, distillery.release
+      - run:
+          name : Build tar archive
+          command: tar -czf mongoose_push.tar.gz -C _build/${MIX_ENV}/rel/mongoose_push .
+      - run: *DOCKER_TAGS
+      - run:
+          name: Build docker image
+          command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG .
 
+  integration-tests:
+    executor:
+      name: elixir-builder
+      env: prod
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: *DOCKER_TAGS
+      - run:
+          name: Run integration tests
+          command: echo "ok"
+
+  push-to-dockerhub:
+    executor:
+      name: elixir-builder
+      env: prod
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: *DOCKER_TAGS
       - run:
           name: Login to DockerHub
           command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
-
-      - run:
-          name: Build docker image
-          command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
       - run:
           name: Tag and push docker image
           command: |
              set -x
-             docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              if [ "$CIRCLE_BRANCH" == "master" ]; then
-               docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
+               docker tag $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
                docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
              fi
 
@@ -242,6 +236,7 @@ workflows:
     jobs:
       - pre-build:
           filters: *all_tags
+
       - format_check:
           requires:
             - pre-build
@@ -250,7 +245,6 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-
       - test-erlang-22_elixir-1-9:
           requires:
             - pre-build
@@ -276,12 +270,18 @@ workflows:
             - pre-build
           filters: *all_tags
 
-      - release:
+      - build-tar-and-docker-image:
           requires:
             - pre-build
           filters: *all_tags
-      - deploy:
+
+      - integration-tests:
           requires:
+            - build-tar-and-docker-image
+          filters: *all_tags
+
+      - push-to-dockerhub:
+          requires:
+            - integration-tests
             - test-erlang-22_elixir-1-9
-            - release
           filters: *all_tags
