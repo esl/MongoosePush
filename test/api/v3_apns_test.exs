@@ -4,11 +4,26 @@ defmodule MongoosePush.API.V3APNSTest do
 
   @url "/v3/notification/f534534543"
 
-  setup do
-    Tools.reset(:apns)
-    TestHelper.reload_app()
+  setup_all do
+    if Mix.env() == :integration do
+      HTTPoison.start()
+    end
+
+    :ok
   end
 
+  setup do
+    case Mix.env() do
+      :test ->
+        Tools.reset(:apns)
+        TestHelper.reload_app()
+
+      :integration ->
+        Tools.reset(:apns)
+    end
+  end
+
+  @tag integration: true
   test "push to apns with invalid token fails" do
     reason = "BadDeviceToken"
 
@@ -18,6 +33,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns with bad certificate fails" do
     reason = "BadCertificate"
 
@@ -27,6 +43,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns with bad path fails" do
     reason = "BadPath"
 
@@ -36,6 +53,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns with bad method fails" do
     reason = "MethodNotAllowed"
 
@@ -45,6 +63,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns with unregistered token fails" do
     reason = "Unregistered"
 
@@ -54,6 +73,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns with too large payload fails" do
     reason = "PayloadTooLarge"
 
@@ -63,6 +83,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns fails with unknown internal error" do
     reason = "InternalServerError"
 
@@ -72,6 +93,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns fails with too many requests" do
     reason = "TooManyRequests"
 
@@ -81,6 +103,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns fails when service is unavailable/overloaded" do
     reason = "ServiceUnavailable"
 
@@ -90,6 +113,7 @@ defmodule MongoosePush.API.V3APNSTest do
              Tools.post(@url, Tools.sample_notification(:apns))
   end
 
+  @tag integration: true
   test "push to apns succeeds" do
     desc = "OK"
 
