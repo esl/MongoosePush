@@ -23,6 +23,7 @@ defmodule MongoosePush.API.V3FCMTest do
     end
   end
 
+  @tag integration: true
   test "push to fcm with id mismatch fails" do
     reason = "SENDER_ID_MISMATCH"
 
@@ -32,6 +33,7 @@ defmodule MongoosePush.API.V3FCMTest do
              Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
+  @tag integration: true
   test "push to fcm with unregistered token fails" do
     reason = "UNREGISTERED"
 
@@ -41,6 +43,7 @@ defmodule MongoosePush.API.V3FCMTest do
              Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
+  @tag integration: true
   test "push to fcm with the limit exceeded fails" do
     reason = "QUOTA_EXCEEDED"
 
@@ -50,6 +53,7 @@ defmodule MongoosePush.API.V3FCMTest do
              Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
+  @tag integration: true
   test "push to fcm fails with unknown internal error" do
     reason = "INTERNAL"
 
@@ -59,6 +63,7 @@ defmodule MongoosePush.API.V3FCMTest do
              Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
+  @tag integration: true
   test "push to fcm with invalid or missing certificate/web push fails" do
     reason = "THIRD_PARTY_AUTH_ERROR"
 
@@ -68,6 +73,7 @@ defmodule MongoosePush.API.V3FCMTest do
              Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
+  @tag integration: true
   test "push to fcm fails when service is unavailable/overloaded" do
     reason = "UNAVAILABLE"
 
@@ -77,6 +83,7 @@ defmodule MongoosePush.API.V3FCMTest do
              Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
+  @tag integration: true
   test "push to fcm succeeds" do
     desc = "OK"
 
