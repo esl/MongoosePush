@@ -201,7 +201,6 @@ jobs:
     executor:
       name: elixir-builder
       env: prod
-      mpush-docker: "tianon/true"
     steps:
       - checkout
       - setup_remote_docker:
@@ -211,16 +210,30 @@ jobs:
             - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
       - run:
-          name: Login to DockerHub
-          command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
-      - run:
           name: Build docker image
           command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
+
+  test-container:
+    executor:
+      name: elixir-builder
+      env: prod
+      mpush-docker: "tianon/true"
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run: *DOCKER_TAGS
+      - run: mix do deps.get, compile, test test/api test/api/v3_fcm_test.ex
+      - run:
+          name: Login to DockerHub
+          command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
       - run:
           name: Tag and push docker image
           command: |
              set -x
-             docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              if [ "$CIRCLE_BRANCH" == "master" ]; then
                docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
@@ -275,4 +288,8 @@ workflows:
           requires:
             - test-erlang-22_elixir-1-9
             - release
+          filters: *all_tags
+      - test-container:
+          requires:
+            - build-docker-image
           filters: *all_tags
