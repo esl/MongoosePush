@@ -57,7 +57,6 @@ commands:
           command: dockerize -wait tcp://localhost:2197 -timeout 1m
 
       - run: MIX_ENV=test mix do certs.dev, coveralls.circle
-
       - save_cache:
           key: build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
           paths:
@@ -69,13 +68,10 @@ commands:
 jobs:
   pre-build:
     executor: elixir-builder
-
     steps:
       - checkout
-
       - run: mix local.hex --force
       - run: mix local.rebar --force
-
       - run: mix deps.get
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - save_cache:
@@ -87,7 +83,6 @@ jobs:
 
   dialyzer:
     executor: elixir-builder
-
     steps:
       - checkout
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
@@ -116,7 +111,6 @@ jobs:
     executor:
       name: elixir-builder
       env: prod
-
     steps:
       - checkout
       - restore_cache:
@@ -140,7 +134,6 @@ jobs:
       env: test
       erlang_version: "22.0"
       elixir_version: "1.9"
-
     steps:
       - test
 
@@ -150,7 +143,6 @@ jobs:
       env: test
       erlang_version: "22.0"
       elixir_version: "1.8"
-
     steps:
       - test
 
@@ -160,7 +152,6 @@ jobs:
       env: test
       erlang_version: "22.0"
       elixir_version: "1.7"
-
     steps:
       - test
 
@@ -170,7 +161,6 @@ jobs:
       env: test
       erlang_version: "21.3"
       elixir_version: "1.9"
-
     steps:
       - test
 
@@ -180,7 +170,6 @@ jobs:
       env: test
       erlang_version: "21.3"
       elixir_version: "1.8"
-
     steps:
       - test
 
@@ -190,14 +179,12 @@ jobs:
       env: test
       erlang_version: "21.3"
       elixir_version: "1.7"
-
     steps:
       - test
 
   format_check:
     executor:
       name: elixir-builder
-
     steps:
       - checkout
       - restore_cache:
@@ -206,11 +193,10 @@ jobs:
 
       - run: mix format --check-formatted
 
-  deploy:
+  build-docker-image:
     executor:
       name: elixir-builder
       env: prod
-
     steps:
       - checkout
       - setup_remote_docker:
@@ -222,7 +208,6 @@ jobs:
       - run:
           name: Login to DockerHub
           command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
-
       - run:
           name: Build docker image
           command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
@@ -281,7 +266,7 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - deploy:
+      - build-docker-image:
           requires:
             - test-erlang-22_elixir-1-9
             - release
