@@ -24,7 +24,7 @@ executors:
     parameters:
       mpush-docker:
         type: string
-        default: "tianon/true"
+        default: "circleci/python:stretch"
       erlang_version:
         type: string
         default: "22.0"
@@ -217,7 +217,7 @@ jobs:
     executor:
       name: elixir-builder
       env: prod
-      mpush-docker: "tianon/true"
+      mpush-docker: "circleci/python:stretch"
     steps:
       - checkout
       - setup_remote_docker:
