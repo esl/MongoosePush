@@ -22,6 +22,9 @@ run: &DOCKER_TAGS
 executors:
   elixir-builder:
     parameters:
+      mpush-docker:
+        type: string
+        default: "tianon/true"
       erlang_version:
         type: string
         default: "22.0"
@@ -35,6 +38,7 @@ executors:
       - image: rslota/beam-builder:erlang-<< parameters.erlang_version >>_elixir-<< parameters.elixir_version >>
       - image: mongooseim/fcm-mock-server
       - image: mobify/apns-http2-mock-server
+      - image: <<parameters.mpush-docker>>
     working_directory: ~/app
     environment:
         MIX_ENV: << parameters.env >>
@@ -197,6 +201,7 @@ jobs:
     executor:
       name: elixir-builder
       env: prod
+      mpush-docker: "tianon/true"
     steps:
       - checkout
       - setup_remote_docker:
