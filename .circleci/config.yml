@@ -265,47 +265,12 @@ workflows:
     jobs:
       - pre-build:
           filters: *all_tags
-      - format_check:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - dialyzer:
-          requires:
-            - pre-build
-          filters: *all_tags
-
-      - test-erlang-22_elixir-1-9:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - test-erlang-22_elixir-1-8:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - test-erlang-22_elixir-1-7:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - test-erlang-21_elixir-1-9:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - test-erlang-21_elixir-1-8:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - test-erlang-21_elixir-1-7:
-          requires:
-            - pre-build
-          filters: *all_tags
-
       - release:
           requires:
             - pre-build
           filters: *all_tags
       - build-docker-image:
           requires:
-            - test-erlang-22_elixir-1-9
             - release
           filters: *all_tags
       - integration-tests:
