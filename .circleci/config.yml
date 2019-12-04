@@ -224,6 +224,12 @@ jobs:
           docker_layer_caching: true
       - restore_cache:
           keys:
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
             - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
       - run: mix do deps.get, compile, test test/api test/api/v3_fcm_test.ex
