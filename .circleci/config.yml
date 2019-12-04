@@ -212,15 +212,15 @@ jobs:
       - run:
           name: Build docker image
           command: |
-              docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$CIRCLE_SHA1 .
+              docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKERHUB_REPOSITORY/$CIRCLE_SHA1 .
               docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
-              docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$CIRCLE_SHA1
+              docker push $DOCKERHUB_REPOSITORY/$CIRCLE_SHA1
 
   integration-tests:
     executor:
       name: elixir-builder
       env: prod
-      mpush-docker: $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$CIRCLE_SHA1
+      mpush-docker: $DOCKERHUB_REPOSITORY/$CIRCLE_SHA1
     steps:
       - checkout
       - setup_remote_docker:
