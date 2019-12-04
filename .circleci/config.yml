@@ -213,7 +213,7 @@ jobs:
           name: Build docker image
           command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
 
-  test-container:
+  integration-tests:
     executor:
       name: elixir-builder
       env: prod
@@ -233,6 +233,15 @@ jobs:
             - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
       - run: mix do deps.get, compile, test test/api test/api/v3_fcm_test.ex
+
+  push-container:
+    executor:
+      name: elixir-builder
+      env: prod
+    steps:
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: *DOCKER_TAGS
       - run:
           name: Login to DockerHub
           command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
@@ -240,6 +249,7 @@ jobs:
           name: Tag and push docker image
           command: |
              set -x
+             docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              if [ "$CIRCLE_BRANCH" == "master" ]; then
                docker tag $DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
@@ -295,7 +305,11 @@ workflows:
             - test-erlang-22_elixir-1-9
             - release
           filters: *all_tags
-      - test-container:
+      - integration-tests:
           requires:
             - build-docker-image
+          filters: *all_tags
+      - push-container:
+          requires:
+            - integration-tests
           filters: *all_tags
