@@ -217,7 +217,7 @@ jobs:
     executor:
       name: elixir-builder
       env: prod
-      mpush-docker: "circleci/python:stretch"
+      mpush-docker: $DOCKER_IMAGE:$DOCKER_TAG
     steps:
       - checkout
       - setup_remote_docker:
