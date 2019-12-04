@@ -211,13 +211,14 @@ jobs:
       - run: *DOCKER_TAGS
       - run:
           name: Build docker image
-          command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
+          command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t temp:tag .
+          # command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
 
   integration-tests:
     executor:
       name: elixir-builder
       env: prod
-      mpush-docker: $DOCKER_IMAGE:$DOCKER_TAG
+      mpush-docker: "temp:tag"
     steps:
       - checkout
       - setup_remote_docker:
