@@ -232,7 +232,7 @@ jobs:
           keys:
             - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
-      - run: mix do deps.get, compile, test test/api test/api/v3_fcm_test.ex
+      - run: MIX_ENV=integration mix test --only integration
 
   push-container:
     executor:
