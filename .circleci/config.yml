@@ -211,14 +211,16 @@ jobs:
       - run: *DOCKER_TAGS
       - run:
           name: Build docker image
-          command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t temp:tag .
-          # command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$DOCKER_TAG .
+          command: |
+              docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKER_IMAGE:$CIRCLE_SHA1 .
+              docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
+              docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$CIRCLE_SHA1
 
   integration-tests:
     executor:
       name: elixir-builder
       env: prod
-      mpush-docker: "temp:tag"
+      mpush-docker: $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$CIRCLE_SHA1
     steps:
       - checkout
       - setup_remote_docker:
