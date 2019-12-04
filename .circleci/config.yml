@@ -4,6 +4,21 @@ filters: &all_tags
   tags:
     only: /.*/
 
+run: &DOCKER_TAGS
+    name: Generate image tag
+    command: |
+        set -x
+        if [ -n "$CIRCLE_TAG" ]; then
+        DOCKER_TAG="$CIRCLE_TAG"
+        elif [ "$CIRCLE_BRANCH" == "master" ]; then
+        DOCKER_TAG="${CIRCLE_SHA1:0:7}"
+        else
+        DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
+        fi
+        env | sort
+        echo "export DOCKER_TAG=$DOCKER_TAG" >> $BASH_ENV
+        echo "export DOCKER_IMAGE=mongoose-push" >> $BASH_ENV
+
 executors:
   elixir-builder:
     parameters:
@@ -203,21 +218,7 @@ jobs:
       - restore_cache:
           keys:
             - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-      - run:
-          name: Generate image tag
-          command: |
-             set -x
-             if [ -n "$CIRCLE_TAG" ]; then
-               DOCKER_TAG="$CIRCLE_TAG"
-             elif [ "$CIRCLE_BRANCH" == "master" ]; then
-               DOCKER_TAG="${CIRCLE_SHA1:0:7}"
-             else
-               DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
-             fi
-             env | sort
-             echo "export DOCKER_TAG=$DOCKER_TAG" >> $BASH_ENV
-             echo "export DOCKER_IMAGE=mongoose-push" >> $BASH_ENV
-
+      - run: *DOCKER_TAGS
       - run:
           name: Login to DockerHub
           command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
