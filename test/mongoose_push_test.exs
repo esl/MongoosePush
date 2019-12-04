@@ -1,7 +1,6 @@
 defmodule MongoosePushTest do
   use ExUnit.Case, async: false
   use Quixir
-  doctest MongoosePush
 
   @test_token "testdeviceid1234"
   @apns_priority_mapping %{normal: "5", high: "10"}

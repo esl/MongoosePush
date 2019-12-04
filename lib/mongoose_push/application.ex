@@ -26,7 +26,7 @@ defmodule MongoosePush.Application do
   @spec start(atom, list(term)) :: {:ok, pid}
   def start(_type, _args) do
     # Logger setup
-    loglevel = Confex.get_env(:mongoose_push, :loglevel, :info)
+    loglevel = Application.get_env(:mongoose_push, :loglevel, :info)
     set_loglevel(loglevel)
 
     # Define workers and child supervisors to be supervised
@@ -41,10 +41,10 @@ defmodule MongoosePush.Application do
   @spec pools_config(MongoosePush.service()) :: [pool_definition]
   def pools_config(service) do
     enabled_opt = String.to_atom(~s"#{service}_enabled")
-    service_config = Confex.get_env(:mongoose_push, service, nil)
+    service_config = Application.get_env(:mongoose_push, service, nil)
 
     pools_config =
-      case Confex.get_env(:mongoose_push, enabled_opt, !is_nil(service_config)) do
+      case Application.get_env(:mongoose_push, enabled_opt, !is_nil(service_config)) do
         false -> []
         true -> service_config
       end
@@ -55,6 +55,7 @@ defmodule MongoosePush.Application do
         |> generate_pool_id(service, index)
         |> fix_priv_paths(service)
         |> ensure_mode()
+        |> ensure_tls_opts()
 
       {pool_name, normalized_pool_config}
     end)
@@ -125,6 +126,16 @@ defmodule MongoosePush.Application do
           {key, value}
       end
     end)
+  end
+
+  defp ensure_tls_opts(config) do
+    case Application.get_env(:mongoose_push, :tls_server_cert_validation, nil) do
+      false ->
+        Keyword.put(config, :tls_opts, [])
+
+      _ ->
+        config
+    end
   end
 
   defp mode(config), do: config[:mode] || :prod

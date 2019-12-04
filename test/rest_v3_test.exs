@@ -2,7 +2,6 @@ defmodule RestV3Test do
   use ExUnit.Case, async: false
   import Mock
   alias HTTPoison.Response
-  doctest MongoosePush.API.V3
 
   @url "/v3/notification/f534534543"
   setup do

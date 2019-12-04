@@ -2,6 +2,8 @@ use Mix.Config
 
 config :mix_docker, image: "mongoose_push"
 
+config :goth, endpoint: {:system, :string, "FCM_AUTH_ENDPOINT", "https://www.googleapis.com"}
+
 config :maru, MongoosePush.Router,
   versioning: [
     using: :path
@@ -22,9 +24,13 @@ config :mongoose_push, fcm_enabled: {:system, :boolean, "PUSH_FCM_ENABLED", true
 config :mongoose_push, apns_enabled: {:system, :boolean, "PUSH_APNS_ENABLED", true}
 
 config :mongoose_push,
+  tls_server_cert_validation: {:system, :boolean, "TLS_SERVER_CERT_VALIDATION", true}
+
+config :mongoose_push,
   fcm: [
     default: [
       endpoint: {:system, :string, "PUSH_FCM_ENDPOINT", nil},
+      port: {:system, :integer, "PUSH_FCM_PORT", nil},
       appfile: {:system, :string, "PUSH_FCM_APP_FILE", "priv/fcm/token.json"},
       pool_size: {:system, :integer, "PUSH_FCM_POOL_SIZE", 5},
       mode: :prod

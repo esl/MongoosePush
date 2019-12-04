@@ -16,7 +16,7 @@ defmodule MongoosePush.Support.API do
   def post(path, json) do
     %Response{status_code: status_code, body: body} =
       HTTPoison.post!(
-        "https://localhost:8443" <> path,
+        "https://" <> mpush_host(Mix.env()) <> ":8443" <> path,
         Poison.encode!(json),
         [{"Content-Type", "application/json"}],
         hackney: [:insecure]
@@ -64,11 +64,23 @@ defmodule MongoosePush.Support.API do
   end
 
   def get_connection(:apns) do
-    :h2_client.start_link(:https, 'localhost', 2197, [])
+    case Mix.env() do
+      :test ->
+        :h2_client.start_link(:https, 'localhost', 2197, [])
+
+      :integration ->
+        :h2_client.start_link(:https, 'apns', 2197, [])
+    end
   end
 
   def get_connection(:fcm) do
-    :h2_client.start_link(:https, 'localhost', 4000, [])
+    case Mix.env() do
+      :test ->
+        :h2_client.start_link(:https, 'localhost', 4000, [])
+
+      :integration ->
+        :h2_client.start_link(:https, 'fcm', 4000, [])
+    end
   end
 
   def headers(method, path, payload) do
@@ -90,4 +102,7 @@ defmodule MongoosePush.Support.API do
         {code, Enum.join(body)}
     end
   end
+
+  def mpush_host(:test), do: "localhost"
+  def mpush_host(:integration), do: "MPush"
 end
