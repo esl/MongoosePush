@@ -235,7 +235,7 @@ jobs:
           keys:
             - release-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
-      - run: MIX_ENV=integration mix test --only integration
+      - run: MIX_ENV=integration mix test test/api --only integration
 
   push-container:
     executor:
