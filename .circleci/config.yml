@@ -187,26 +187,83 @@ jobs:
       - run:
           name: Mix build release
           command: mix do certs.dev, distillery.release
+      - save_cache:
+          key: certs-cache
+          paths:
+            - "priv"
       - run:
           name : Build tar archive
           command: tar -czf mongoose_push.tar.gz -C _build/${MIX_ENV}/rel/mongoose_push .
       - run: *DOCKER_TAGS
       - run:
+          name: Login to DockerHub
+          command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
+      - run:
           name: Build docker image
           command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG .
+      - run:
+          name: Push docker image but do not tag it as the latest
+          command: docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
 
   integration-tests:
-    executor:
-      name: elixir-builder
-      env: prod
+    machine:
+        image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
+      - run:
+          name: Install elixir
+          command: |
+              wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
+              sudo dpkg -i erlang-solutions_1.0_all.deb && \
+              sudo apt-get update && \
+              sudo apt-get install -y esl-erlang=1:21.0 && \
+              sudo apt-get install -y elixir=1.8.0-1
+              wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
+              sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
+              sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
+              sudo chmod +x /usr/local/bin/dockerize && \
+              sudo rm dockerize-linux-amd64-v0.6.1.tar.gz
+
+      - restore_cache:
+          keys:
+              - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+              - certs-cache
       - run: *DOCKER_TAGS
       - run:
+          name: Setup mocks and MPush
+          command: |
+              docker network create integration || true && \
+              docker run -d -p 4000:4000 -p 4001:4001 --name fcm --network integration mongooseim/fcm-mock-server && \
+              docker run -d -p 2197:2197 --name apns --network integration mobify/apns-http2-mock-server && \
+              echo "echo $PWD/app/priv" >> $BASH_ENV && \
+              docker run -d -v /home/circleci/app/priv:/opt/app/priv \
+                  --name mpush \
+                  -e PUSH_APNS_ENABLED=true \
+                  -e PUSH_APNS_PROD_ENDPOINT="apns" \
+                  -e PUSH_APNS_PROD_USE_2197=true \
+                  -e PUSH_APNS_AUTH_TYPE=certificate \
+                  -e PUSH_APNS_DEV_ENDPOINT="apns" \
+                  -e PUSH_APNS_DEV_USE_2197=true \
+                  -e PUSH_FCM_ENABLED=true \
+                  -e PUSH_FCM_PORT=4000 \
+                  -e PUSH_FCM_ENDPOINT="fcm" \
+                  -e TLS_SERVER_CERT_VALIDATION=false \
+                  -e FCM_AUTH_ENDPOINT="http://fcm:4001" \
+                  --network integration -p 8443:8443 $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+      - run:
+          name: Wait for FCM mock
+          command: sudo dockerize -wait tcp://localhost:4000 -timeout 1m
+      - run:
+          name: Wait for APNS mock
+          command: sudo dockerize -wait tcp://localhost:2197 -timeout 1m
+      - run:
+          name: Wait for MongoosePush
+          command: sudo dockerize -wait tcp://localhost:8443 -timeout 2m
+      - run:
           name: Run integration tests
-          command: echo "ok"
+          command: MIX_ENV=integration mix do deps.get, deps.compile, test test/api --only integration
 
   push-to-dockerhub:
     executor:
@@ -224,7 +281,6 @@ jobs:
           name: Tag and push docker image
           command: |
              set -x
-             docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              if [ "$CIRCLE_BRANCH" == "master" ]; then
                docker tag $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
                docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
