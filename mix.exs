@@ -15,7 +15,8 @@ defmodule MongoosePush.Mixfile do
       preferred_cli_env: preferred_cli_env(),
       compilers: compilers(Mix.env()),
       aliases: aliases(),
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      test_paths: test_paths(Mix.env())
     ]
   end
 
@@ -106,9 +107,13 @@ defmodule MongoosePush.Mixfile do
 
   defp elixirc_paths(:prod), do: ["lib"]
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/common", "test/unit"]
 
-  defp elixirc_paths(:integration), do: ["test/api", "test/support"]
+  defp elixirc_paths(:integration), do: ["test/support", "test/common", "test/integration"]
 
   defp elixirc_paths(_), do: ["lib"]
+
+  defp test_paths(:integration), do: ["test/integration", "test/common"]
+
+  defp test_paths(_), do: ["test/unit", "test/common"]
 end
