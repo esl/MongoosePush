@@ -4,23 +4,12 @@ defmodule MongoosePush.API.V3FCMTest do
 
   @url "/v3/notification/f534534543"
 
-  setup_all do
-    if Mix.env() == :integration do
-      HTTPoison.start()
-    end
-
-    :ok
-  end
-
   setup do
-    case Mix.env() do
-      :test ->
-        Tools.reset(:fcm)
-        TestHelper.reload_app()
-
-      :integration ->
-        Tools.reset(:fcm)
+    if Mix.env() == :test do
+      TestHelper.reload_app()
     end
+
+    Tools.reset(:fcm)
   end
 
   @tag integration: true

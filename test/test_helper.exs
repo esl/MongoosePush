@@ -1,5 +1,9 @@
 ExUnit.start(capture_log: true)
 
+if Mix.env() == :integration do
+  HTTPoison.start()
+end
+
 defmodule TimeHelper do
   def wait_until(fun), do: wait_until(500, fun)
 
