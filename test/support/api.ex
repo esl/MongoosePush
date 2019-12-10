@@ -26,6 +26,18 @@ defmodule MongoosePush.Support.API do
     {status_code, details}
   end
 
+  def post_conn_error(path, json) do
+    %Response{status_code: status_code, body: body} =
+      HTTPoison.post!(
+        "https://localhost:8443" <> path,
+        Poison.encode!(json),
+        [{"Content-Type", "application/json"}],
+        hackney: [:insecure]
+      )
+
+    {status_code, body}
+  end
+
   def mock_apns(json) do
     {:ok, conn} = get_connection(:apns)
     payload = Poison.encode!(json)
@@ -36,13 +48,12 @@ defmodule MongoosePush.Support.API do
     :ok
   end
 
-  def mock_fcm(json) do
-    {:ok, conn} = get_connection(:fcm)
-    payload = Poison.encode!(json)
-
-    headers = headers("POST", "/mock/error-tokens", payload)
-    :h2_client.send_request(conn, headers, payload)
-    {"200", _payload} = get_response(conn)
+  def mock_fcm(path, json) do
+    HTTPoison.post!(
+      "http://localhost:4001/mock" <> path,
+      Poison.encode!(json),
+      [{"Content-Type", "application/json"}]
+    )
   end
 
   def reset(:apns) do
@@ -55,20 +66,11 @@ defmodule MongoosePush.Support.API do
   end
 
   def reset(:fcm) do
-    {:ok, conn} = get_connection(:fcm)
-    payload = ""
-    headers = headers("POST", "/mock/reset", payload)
-    :h2_client.send_request(conn, headers, payload)
-    {"200", "OK"} = get_response(conn)
-    :ok
+    %Response{status_code: 200} = mock_fcm("/reset", "")
   end
 
   def get_connection(:apns) do
     :h2_client.start_link(:https, 'localhost', 2197, [])
-  end
-
-  def get_connection(:fcm) do
-    :h2_client.start_link(:https, 'localhost', 4000, [])
   end
 
   def headers(method, path, payload) do
