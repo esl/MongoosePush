@@ -72,6 +72,8 @@ Environmental variables to configure production release:
 * `PUSH_LOGLEVEL` - `debug`/`info`/`warn`/`error` - Log level of the application. `info` is the default one
 * `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Enabled by default
 * `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
+* `TLS_SERVER_CERT_VALIDATION` - `true`/`false` - Enable or distable TLS 
+  options for both FCM and APNS in production environment.
 
 ##### Settings for FCM service:
 * `PUSH_FCM_ENDPOINT` - Hostname of `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
