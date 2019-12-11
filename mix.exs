@@ -56,7 +56,8 @@ defmodule MongoosePush.Mixfile do
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.5", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev},
-      {:quixir, "~> 0.9", only: [:test, :integration]}
+      {:quixir, "~> 0.9", only: [:test, :integration]},
+      {:assert_eventually, "~> 0.2.0", only: [:test, :integration]}
     ]
   end
 
