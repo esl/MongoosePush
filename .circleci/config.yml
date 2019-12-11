@@ -263,7 +263,7 @@ jobs:
           command: sudo dockerize -wait tcp://localhost:8443 -timeout 2m
       - run:
           name: Run integration tests
-          command: MIX_ENV=integration mix do deps.get, deps.compile, test test/api --only integration
+          command: MIX_ENV=integration mix do deps.get, deps.compile, test
 
   push-to-dockerhub:
     executor:
