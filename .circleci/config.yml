@@ -9,11 +9,11 @@ run: &DOCKER_TAGS
     command: |
         set -x
         if [ -n "$CIRCLE_TAG" ]; then
-        DOCKER_TAG="$CIRCLE_TAG"
+            DOCKER_TAG="$CIRCLE_TAG"
         elif [ "$CIRCLE_BRANCH" == "master" ]; then
-        DOCKER_TAG="${CIRCLE_SHA1:0:7}"
+            DOCKER_TAG="${CIRCLE_SHA1:0:7}"
         else
-        DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
+            DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
         fi
         env | sort
         echo "export DOCKER_TAG=$DOCKER_TAG" >> $BASH_ENV
@@ -233,25 +233,7 @@ jobs:
       - run: *DOCKER_TAGS
       - run:
           name: Setup mocks and MPush
-          command: |
-              docker network create integration || true && \
-              docker run -d -p 4000:4000 -p 4001:4001 --name fcm --network integration mongooseim/fcm-mock-server && \
-              docker run -d -p 2197:2197 --name apns --network integration mobify/apns-http2-mock-server && \
-              echo "echo $PWD/app/priv" >> $BASH_ENV && \
-              docker run -d -v /home/circleci/app/priv:/opt/app/priv \
-                  --name mpush \
-                  -e PUSH_APNS_ENABLED=true \
-                  -e PUSH_APNS_PROD_ENDPOINT="apns" \
-                  -e PUSH_APNS_PROD_USE_2197=true \
-                  -e PUSH_APNS_AUTH_TYPE=certificate \
-                  -e PUSH_APNS_DEV_ENDPOINT="apns" \
-                  -e PUSH_APNS_DEV_USE_2197=true \
-                  -e PUSH_FCM_ENABLED=true \
-                  -e PUSH_FCM_PORT=4000 \
-                  -e PUSH_FCM_ENDPOINT="fcm" \
-                  -e TLS_SERVER_CERT_VALIDATION=false \
-                  -e FCM_AUTH_ENDPOINT="http://fcm:4001" \
-                  --network integration -p 8443:8443 $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+          command: docker-compose -f /home/circleci/project/test/docker/integration.yml up -d
       - run:
           name: Wait for FCM mock
           command: sudo dockerize -wait tcp://localhost:4000 -timeout 1m

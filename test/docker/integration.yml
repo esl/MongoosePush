@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+    fcm-mock:
+        image: mongooseim/fcm-mock-server
+        container_name:  fcm-mock
+        ports:
+            - "4001:4001"
+            - "4000:4000"
+    apns-mock:
+        image: mobify/apns-http2-mock-server
+        container_name: apns-mock
+        ports:
+            - "2197:2197"
+
+    mongoose-push:
+        image: ${DOCKERHUB_REPOSITORY}/${DOCKER_IMAGE}:${DOCKER_TAG}
+        container_name: mongoose-push
+        environment:
+            - PUSH_APNS_ENABLED=true
+            - PUSH_APNS_PROD_ENDPOINT=apns-mock
+            - PUSH_APNS_PROD_USE_2197=true
+            - PUSH_APNS_AUTH_TYPE=certificate
+            - PUSH_APNS_DEV_ENDPOINT=apns-mock
+            - PUSH_APNS_DEV_USE_2197=true
+            - PUSH_FCM_ENABLED=true
+            - PUSH_FCM_PORT=4000
+            - PUSH_FCM_ENDPOINT=fcm-mock
+            - TLS_SERVER_CERT_VALIDATION=false
+            - FCM_AUTH_ENDPOINT=http://fcm-mock:4001
+        ports:
+            - "8443:8443"
+        volumes:
+            - /home/circleci/app/priv:/opt/app/priv
