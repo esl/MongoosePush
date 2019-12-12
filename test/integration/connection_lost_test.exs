@@ -11,7 +11,8 @@ defmodule MongoosePush.API.ConnectionTest do
     :ok
   end
 
-  @tag integration: true
+  # We have to skip it until MIM-748 is resolved
+  @tag :skip
   test "When connection to FCM is lost and regained a PN succeeds" do
     Tools.mock_fcm("/connection", %{"https" => false})
 
