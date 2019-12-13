@@ -188,7 +188,7 @@ jobs:
           name: Mix build release
           command: mix do certs.dev, distillery.release
       - save_cache:
-          key: certs-cache
+          key: certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
           paths:
             - "priv"
       - run:
@@ -229,7 +229,7 @@ jobs:
               - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           keys:
-              - certs-cache
+              - certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
       - run:
           name: Setup mocks and MPush
