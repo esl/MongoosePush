@@ -236,7 +236,7 @@ jobs:
           command: docker-compose -f /home/circleci/project/test/docker/integration.yml up -d
       - run:
           name: Wait for FCM mock
-          command: sudo dockerize -wait tcp://localhost:4000 -timeout 1m
+          command: sudo dockerize -wait tcp://localhost:4001 -timeout 1m
       - run:
           name: Wait for APNS mock
           command: sudo dockerize -wait tcp://localhost:2197 -timeout 1m
