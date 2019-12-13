@@ -30,4 +30,4 @@ services:
         ports:
             - "8443:8443"
         volumes:
-            - /home/circleci/app/priv:/opt/app/priv
+            - ${PRIV}:/opt/app/priv

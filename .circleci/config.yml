@@ -233,7 +233,9 @@ jobs:
       - run: *DOCKER_TAGS
       - run:
           name: Setup mocks and MPush
-          command: docker-compose -f /home/circleci/project/test/docker/integration.yml up -d
+          command: |
+              export PRIV=$HOME/app/priv && \
+              docker-compose -f /home/circleci/project/test/docker/integration.yml up -d
       - run:
           name: Wait for FCM mock
           command: sudo dockerize -wait tcp://localhost:4001 -timeout 1m
