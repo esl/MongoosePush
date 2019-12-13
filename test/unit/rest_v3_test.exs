@@ -1,18 +1,17 @@
-defmodule RestV2Test do
+defmodule RestV3Test do
   use ExUnit.Case, async: false
   import Mock
   alias HTTPoison.Response
-  doctest MongoosePush.API.V2
 
-  @url "/v2/notification/f534534543"
+  @url "/v3/notification/f534534543"
   setup do
     TestHelper.reload_app()
   end
 
   test "incorrect path returns 404" do
     assert 404 = post("/notification", %{})
-    assert 404 = post("/v2/notification", %{})
-    assert 404 = post("/v2/notifications/test", %{})
+    assert 404 = post("/v3/notification", %{})
+    assert 404 = post("/v3/notifications/test", %{})
   end
 
   test "incorrect tags return 400" do
@@ -47,7 +46,7 @@ defmodule RestV2Test do
   end
 
   test "invalid method returns 405" do
-    assert 405 = get("/v2/notification/test")
+    assert 405 = get("/v3/notification/test")
   end
 
   test "api crash returns 500" do
@@ -70,6 +69,20 @@ defmodule RestV2Test do
     with_mock MongoosePush, push: fn _, _ -> {:error, :something} end do
       assert 500 = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
       assert 500 = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
+    end
+  end
+
+  test "connection_lost error returns 503" do
+    with_mock MongoosePush, push: fn _, _ -> {:error, {:generic, :connection_lost}} end do
+      assert 503 = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+      assert 503 = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
+    end
+  end
+
+  test "unable_to_connect error returns 503" do
+    with_mock MongoosePush, push: fn _, _ -> {:error, {:generic, :unable_to_connect}} end do
+      assert 503 = post(@url, %{service: :apns, alert: %{body: "body", title: "title"}})
+      assert 503 = post(@url, %{service: :fcm, alert: %{body: "body", title: "title"}})
     end
   end
 

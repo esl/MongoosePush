@@ -3,8 +3,7 @@ defmodule MongoosePushMetricsTest do
   use Quixir
   import MongoosePush
   import Mock
-  import TimeHelper
-  doctest MongoosePush.Metrics
+  import MongoosePush.Support.TimeHelper
 
   alias MongoosePush.Service.APNS
   alias MongoosePush.Service.FCM
