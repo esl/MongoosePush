@@ -13,6 +13,21 @@ defmodule MongoosePush.Support.API do
     }
   end
 
+  def sample_bad_notification(service) do
+    %{
+      :service => service,
+      :alert => %{
+        :title => "title value",
+        :body => "body value",
+        :click_action => "click.action",
+        :tag => "tag value"
+      },
+      :data => %{
+        :x => %{"a" => 222}
+      }
+    }
+  end
+
   def post(path, json) do
     %Response{status_code: status_code, body: body} =
       HTTPoison.post!(

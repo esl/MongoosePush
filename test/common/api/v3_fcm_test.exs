@@ -81,4 +81,14 @@ defmodule MongoosePush.API.V3FCMTest do
 
     assert {200, nil} == Tools.post(@url, Tools.sample_notification(:fcm))
   end
+
+  @tag integration: true
+  test "push to fcm with bad notification format fails" do
+    desc = "OK"
+
+    Tools.reset(:fcm)
+
+    assert {400, %{"reason" => "invalid_notification"}} ==
+             Tools.post(@url, Tools.sample_bad_notification(:fcm))
+  end
 end

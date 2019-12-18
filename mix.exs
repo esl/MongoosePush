@@ -22,13 +22,16 @@ defmodule MongoosePush.Mixfile do
 
   def application do
     # Specify extra applications you'll use from Erlang/Elixir
-    [extra_applications: [:lager, :logger, :runtime_tools], mod: {MongoosePush.Application, []}]
+    [
+      extra_applications: [:lager, :logger, :runtime_tools],
+      mod: {MongoosePush.Application, []}
+    ]
   end
 
   defp deps do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e0", override: true},
-      {:sparrow, github: "esl/sparrow", ref: "571feb0dc"},
+      {:sparrow, github: "esl/sparrow", ref: "d1a30cf"},
       {:maru, github: "rslota/maru", ref: "54fc038", override: true},
       {:plug_cowboy, "~> 2.0"},
       {:cowboy, "~> 2.3", override: true},
@@ -74,7 +77,12 @@ defmodule MongoosePush.Mixfile do
   defp dialyzer do
     [
       plt_core_path: ".dialyzer/",
-      flags: ["-Wunmatched_returns", "-Werror_handling", "-Wrace_conditions", "-Wunderspecs"]
+      flags: [
+        "-Wunmatched_returns",
+        "-Werror_handling",
+        "-Wrace_conditions",
+        "-Wunderspecs"
+      ]
     ]
   end
 
