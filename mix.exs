@@ -31,7 +31,7 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e0", override: true},
-      {:sparrow, github: "esl/sparrow", ref: "3f4d28938cc27c28baa7ad7ae141727c79a540d1"},
+      {:sparrow, github: "esl/sparrow", ref: "9c5dc3c"},
       {:maru, github: "rslota/maru", ref: "54fc038", override: true},
       {:plug_cowboy, "~> 2.0"},
       {:cowboy, "~> 2.3", override: true},
