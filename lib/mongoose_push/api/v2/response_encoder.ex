@@ -9,7 +9,7 @@ defmodule MongoosePush.API.V2.ResponseEncoder do
           {non_neg_integer, %{details: atom | String.t()} | nil}
   def to_status(:ok), do: {200, nil}
 
-  def to_status({:error, :unable_to_connect}) do
+  def to_status({:error, {:generic, :unable_to_connect}}) do
     {503, %{:details => "Please try again later"}}
   end
 

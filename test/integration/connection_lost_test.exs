@@ -15,16 +15,14 @@ defmodule MongoosePush.API.ConnectionTest do
     Tools.mock_fcm("/connection", %{"https" => false})
 
     Enum.each(1..5, fn _ ->
-      eventually(assert {503, ""} == Tools.post_conn_error(@url, Tools.sample_notification(:fcm)))
+      eventually(assert {503, _} = Tools.post_conn_error(@url, Tools.sample_notification(:fcm)))
       Process.sleep(1000)
     end)
 
     Tools.mock_fcm("/connection", %{"https" => true})
 
     Enum.each(1..5, fn _ ->
-      eventually(
-        assert {200, "null"} == Tools.post_conn_error(@url, Tools.sample_notification(:fcm))
-      )
+      eventually(assert {200, _} = Tools.post_conn_error(@url, Tools.sample_notification(:fcm)))
 
       Process.sleep(1000)
     end)

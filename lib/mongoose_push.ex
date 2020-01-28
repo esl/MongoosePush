@@ -96,7 +96,9 @@ defmodule MongoosePush do
 
   defp maybe_log({:error, {type, reason}} = return_value) do
     Logger.warn(
-      ~s"Unable to complete push request due to service error: #{reason} in category: #{type}"
+      ~s"Unable to complete push request due to service error: #{inspect(reason)} in category: #{
+        type
+      }"
     )
 
     return_value
