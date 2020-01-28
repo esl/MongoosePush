@@ -6,7 +6,8 @@ defmodule MongoosePush.Service.APNS.ErrorHandler do
 
   # More information about possible return codes is here:
   # https://developer.apple.com/library/archive/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/CommunicatingwithAPNs.html
-  @spec translate_error_reason(Service.error_reason()) :: Service.error()
+  @spec translate_error_reason(Service.error_reason() | {Service.error_reason(), any()}) ::
+          Service.error()
   def translate_error_reason(:BadCollapseId), do: {:invalid_request, :BadCollapseId}
   def translate_error_reason(:BadDeviceToken), do: {:invalid_request, :BadDeviceToken}
 
@@ -49,5 +50,6 @@ defmodule MongoosePush.Service.APNS.ErrorHandler do
 
   def translate_error_reason(:PayloadTooLarge), do: {:payload_too_large, :PayloadTooLarge}
 
+  def translate_error_reason({reason, _specific}), do: {:unknown, reason}
   def translate_error_reason(reason), do: {:unknown, reason}
 end

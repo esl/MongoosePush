@@ -11,15 +11,20 @@ defmodule MongoosePush.API.ConnectionTest do
     :ok
   end
 
-  # We have to skip it until MIM-748 is resolved
-  @tag :skip
   test "When connection to FCM is lost and regained a PN succeeds" do
     Tools.mock_fcm("/connection", %{"https" => false})
 
-    eventually(assert {500, ""} == Tools.post_conn_error(@url, Tools.sample_notification(:fcm)))
+    Enum.each(1..5, fn _ ->
+      eventually(assert {503, _} = Tools.post_conn_error(@url, Tools.sample_notification(:fcm)))
+      Process.sleep(1000)
+    end)
 
     Tools.mock_fcm("/connection", %{"https" => true})
 
-    eventually(assert {200, nil} == Tools.post(@url, Tools.sample_notification(:fcm)))
+    Enum.each(1..5, fn _ ->
+      eventually(assert {200, _} = Tools.post_conn_error(@url, Tools.sample_notification(:fcm)))
+
+      Process.sleep(1000)
+    end)
   end
 end

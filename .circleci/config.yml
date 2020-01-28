@@ -293,10 +293,6 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-22_elixir-1-7:
-          requires:
-            - pre-build
-          filters: *all_tags
       - test-erlang-21_elixir-1-9:
           requires:
             - pre-build
@@ -305,11 +301,6 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-21_elixir-1-7:
-          requires:
-            - pre-build
-          filters: *all_tags
-
       - build-tar-and-docker-image:
           requires:
             - pre-build
