@@ -30,7 +30,8 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
     {status, %{:reason => error_reason}}
   end
 
-  def to_status({:error, _reason}) do
+  def to_status({:error, reason}) do
+    IO.inspect(reason)
     {500, nil}
   end
 end
