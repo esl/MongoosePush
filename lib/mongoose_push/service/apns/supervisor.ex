@@ -32,6 +32,12 @@ defmodule MongoosePush.Service.APNS.Supervisor do
           {MongoosePush.Service.APNS.State, pool_configs}
         ]
 
+        :telemetry.execute(
+          [:mongoose_push, :apns, :supervisor, :init],
+          %{},
+          %{}
+        )
+
         Supervisor.init(children, strategy: :one_for_one)
     end
   end

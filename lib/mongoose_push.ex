@@ -11,9 +11,7 @@ defmodule MongoosePush do
   """
 
   require Logger
-  alias MongoosePush.Metrics
   alias MongoosePush.Service
-  use Metrics
 
   @typedoc "Available keys in `request` map"
   @type req_key ::
@@ -61,7 +59,6 @@ defmodule MongoosePush do
   Field `:mutable_content` (specific to APNS) can be set to `true` (by default `false`) to enable
   this feature (please consult APNS documentation for more information).
   """
-  @timed key: :auto
   @spec push(String.t(), request) ::
           :ok | {:error, Service.error()} | {:error, MongoosePush.error()}
   def push(device_id, %{:service => service} = request) do
@@ -86,10 +83,9 @@ defmodule MongoosePush do
         :timer.tc(module, :push, [notification, device_id, pool, opts])
       end
 
-    push_result
-    |> Metrics.update(:spiral, [:push, service, mode])
-    |> Metrics.update(:timer, [:push, service, mode], time)
-    |> maybe_log
+    emit_telemetry_event(time, push_result, service, mode)
+
+    maybe_log(push_result)
   end
 
   defp maybe_log(:ok), do: :ok
@@ -107,5 +103,41 @@ defmodule MongoosePush do
   defp maybe_log({:error, reason} = return_value) do
     Logger.warn(~s"Unable to complete push request due to #{inspect(reason)}")
     return_value
+  end
+
+  defp emit_telemetry_event(time, :ok, service, mode) do
+    :telemetry.execute(
+      [:mongoose_push, service, :push, :success],
+      %{time: time},
+      %{
+        service: service,
+        mode: mode
+      }
+    )
+  end
+
+  defp emit_telemetry_event(time, {:error, {type, reason}}, service, mode) do
+    :telemetry.execute(
+      [:mongoose_push, service, :push, :error],
+      %{time: time},
+      %{
+        type: type,
+        reason: reason,
+        service: service,
+        mode: mode
+      }
+    )
+  end
+
+  defp emit_telemetry_event(time, {:error, reason}, service, mode) do
+    :telemetry.execute(
+      [:mongoose_push, service, :push, :error],
+      %{time: time},
+      %{
+        reason: reason,
+        service: service,
+        mode: mode
+      }
+    )
   end
 end

@@ -15,7 +15,29 @@ defmodule MongoosePush.Service.APNS.State do
     default_topics = setup_default_topics(pool_configs)
     :apns_state = :ets.new(:apns_state, [:set, :public, :named_table])
     true = :ets.insert(:apns_state, default_topics)
+
+    :telemetry.execute(
+      [:mongoose_push, :apns, :state, :init],
+      %{},
+      %{
+        default_topics: default_topics
+      }
+    )
+
     {:ok, %{}}
+  end
+
+  @impl true
+  def terminate(reason, _state) do
+    :telemetry.execute(
+      [:mongoose_push, :apns, :state, :terminate],
+      %{},
+      %{
+        reason: reason
+      }
+    )
+
+    :ok
   end
 
   defp setup_default_topics(pool_configs) do
@@ -26,6 +48,15 @@ defmodule MongoosePush.Service.APNS.State do
 
   def get_default_topic(pool_name) do
     [{_name, topic}] = :ets.lookup(:apns_state, pool_name)
+
+    :telemetry.execute(
+      [:mongoose_push, :apns, :state, :get_default_topic],
+      %{},
+      %{
+        topic: topic
+      }
+    )
+
     topic
   end
 

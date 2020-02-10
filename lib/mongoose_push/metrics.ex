@@ -17,30 +17,40 @@ defmodule MongoosePush.Metrics do
   Provided return value of `:ok` is counted as succeses, while
   `{:error, reason :: term}` as error `reason`.
   """
-  defmacro update(return_value, mtype, metric, value \\ 1) do
+  defmacro update_success(return_value, mtype, metric, value \\ 1) do
     quote bind_quoted: [mtype: mtype, metric: metric, value: value, return_value: return_value],
           unquote: true do
       alias MongoosePush.Metrics
 
-      final_metrics =
-        case return_value do
-          :ok ->
-            [Metrics.name(unquote(mtype), unquote(metric), [:success])]
+      final_metrics = [Metrics.name(unquote(mtype), unquote(metric), [:success])]
 
-          {:error, reason} ->
-            general_metric = Metrics.name(unquote(mtype), unquote(metric), [:error, :all])
+      for final_metric <- final_metrics do
+        Metrics.update_metric(unquote(mtype), final_metric, unquote(value))
+      end
 
-            main_metric =
-              case is_atom(reason) do
-                true ->
-                  Metrics.name(unquote(mtype), unquote(metric), [:error, reason])
+      return_value
+    end
+  end
 
-                false ->
-                  Metrics.name(unquote(mtype), unquote(metric), [:error, :unknown])
-              end
+  defmacro update_error(return_value, mtype, metric, value \\ 1) do
+    quote bind_quoted: [mtype: mtype, metric: metric, value: value, return_value: return_value],
+          unquote: true do
+      alias MongoosePush.Metrics
 
-            [main_metric, general_metric]
+      {:error, reason} = return_value
+
+      general_metric = Metrics.name(unquote(mtype), unquote(metric), [:error, :all])
+
+      main_metric =
+        case is_atom(reason) do
+          true ->
+            Metrics.name(unquote(mtype), unquote(metric), [:error, reason])
+
+          false ->
+            Metrics.name(unquote(mtype), unquote(metric), [:error, :unknown])
         end
+
+      final_metrics = [main_metric, general_metric]
 
       for final_metric <- final_metrics do
         Metrics.update_metric(unquote(mtype), final_metric, unquote(value))

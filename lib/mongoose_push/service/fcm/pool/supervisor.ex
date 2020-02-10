@@ -24,6 +24,12 @@ defmodule MongoosePush.Service.FCM.Pool.Supervisor do
       )
     ]
 
+    :telemetry.execute(
+      [:mongoose_push, :fcm, :supervisor, :init],
+      %{},
+      %{}
+    )
+
     Supervisor.init(children, strategy: :one_for_one)
   end
 
