@@ -3,7 +3,8 @@
 use Mix.Config
 
 config :logger,
-  handle_otp_reports: true
+  handle_otp_reports: true,
+  handle_sasl_reports: false
 
 config :logger, :console,
   format: "\n$dateT$time [$level] $metadata$levelpad$message\n",
