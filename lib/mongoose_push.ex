@@ -69,7 +69,16 @@ defmodule MongoosePush do
 
     {time, push_result} =
       if pool == nil do
-        Logger.error(~s"No pool matching mode=#{mode} and tags=#{inspect(tags)}")
+        Logger.error(
+          fn ->
+            "choose_pool"
+          end,
+          result: :error,
+          log: :command,
+          mode: mode,
+          tags: tags
+        )
+
         {0, {:error, {:generic, :no_matching_pool}}}
       else
         request =
@@ -92,16 +101,21 @@ defmodule MongoosePush do
 
   defp maybe_log({:error, {type, reason}} = return_value) do
     Logger.warn(
-      ~s"Unable to complete push request due to service error: #{inspect(reason)} in category: #{
-        type
-      }"
+      fn ->
+        "push"
+      end,
+      result: :error,
+      log: :command,
+      reason: reason,
+      type: type
     )
 
     return_value
   end
 
   defp maybe_log({:error, reason} = return_value) do
-    Logger.warn(~s"Unable to complete push request due to #{inspect(reason)}")
+    Logger.warn(fn -> "push" end, result: :error, log: :command, reason: reason)
+
     return_value
   end
 

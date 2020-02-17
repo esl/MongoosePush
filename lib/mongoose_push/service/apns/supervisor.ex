@@ -100,8 +100,17 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     error =
       case not File.exists?(cert_path) or not File.exists?(key_path) do
         true ->
-          Logger.error(~s"Required authentication elements are missing. Got:
-          certificate_path=#{cert_path}, key_path=#{key_path}")
+          Logger.error(
+            fn ->
+              "authenticate_cert"
+            end,
+            result: :error,
+            log: :trace,
+            reason: "required_element_missing",
+            cert_path: cert_path,
+            key_path: key_path
+          )
+
           :bad_auth
 
         false ->
@@ -138,8 +147,18 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     error =
       case is_nil(key) or is_nil(team) or not File.exists?(p8_file_path) do
         true ->
-          Logger.error(~s"Required authentication elements are missing. Got:
-          key=#{key}, team=#{team}, p8_file=#{p8_file_path}")
+          Logger.error(
+            fn ->
+              "authenticate_token"
+            end,
+            result: :error,
+            log: :trace,
+            reason: "requested_element_missing",
+            key: key,
+            team: team,
+            p8_file: p8_file_path
+          )
+
           :bad_auth
 
         false ->

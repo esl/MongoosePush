@@ -70,18 +70,40 @@ defmodule MongoosePush.Service.APNS.State do
         nil ->
           all_topics = Certificate.extract_topics!(config[:auth][:cert])
           default_topic = all_topics[:topic]
-          Logger.info(~s"Successfully extracted default APNS topic: #{default_topic}")
+
+          Logger.info(
+            fn ->
+              "extract_default_topic"
+            end,
+            result: :ok,
+            log: :trace,
+            topic: default_topic
+          )
+
           Keyword.put(config, :default_topic, default_topic)
 
         default_topic ->
-          Logger.info(~s"Using user-defined default APNS topic: #{default_topic}")
+          Logger.info(
+            fn ->
+              "use_user_defined_topic"
+            end,
+            result: :ok,
+            log: :trace,
+            topic: default_topic
+          )
+
           config
       end
     catch
       _, reason ->
         Logger.warn(
-          ~s"Unable to extract APNS topic from the #{config[:mode]} certificate " <>
-            "due to: #{inspect(reason)}"
+          fn ->
+            "extract_topic_from_cert"
+          end,
+          result: :error,
+          log: :trace,
+          mode: config[:mode],
+          reason: reason
         )
 
         config
