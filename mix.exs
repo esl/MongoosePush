@@ -60,7 +60,8 @@ defmodule MongoosePush.Mixfile do
       {:credo, "~> 0.5", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev},
       {:quixir, "~> 0.9", only: [:test, :integration]},
-      {:assert_eventually, "~> 0.2.0", only: [:test, :integration]}
+      {:assert_eventually, "~> 0.2.0", only: [:test, :integration]},
+      {:telemetry, "~>0.4.1"}
     ]
   end
 

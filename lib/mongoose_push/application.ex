@@ -29,6 +29,8 @@ defmodule MongoosePush.Application do
     loglevel = Application.get_env(:mongoose_push, :loglevel, :info)
     set_loglevel(loglevel)
 
+    MongoosePush.Telemetry.attach_all()
+
     # Define workers and child supervisors to be supervised
     children = children()
 
