@@ -59,6 +59,11 @@ config :lager,
 
 config :sparrow, Sparrow.PoolsWarden, %{enabled: true}
 
+config :mongoose_push, MongoosePushWeb.Endpoint, url: [host: "localhost"]
+
+# Use Jason for JSON parsing in Phoenix
+config :phoenix, :json_library, Jason
+
 import_config "#{Mix.env()}.exs"
 
 # Globally disable maru's "test mode". If we don't disable it explicitly

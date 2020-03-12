@@ -22,6 +22,12 @@ config :maru, MongoosePush.Router,
     otp_app: :mongoose_push
   ]
 
+config :mongoose_push, MongoosePushWeb.Endpoint,
+  http: [port: 8445],
+  server: true,
+  check_origin: false,
+  watchers: []
+
 config :mongoose_push,
   fcm: [
     default: [
