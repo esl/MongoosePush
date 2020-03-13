@@ -8,6 +8,6 @@ defmodule MongoosePushWeb.Router do
   scope "/", MongoosePushWeb do
     pipe_through(:api)
 
-    get("/dummy", ApiController, :index)
+    post("/simple", ApiController, :post)
   end
 end
