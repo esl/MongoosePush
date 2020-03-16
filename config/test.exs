@@ -21,7 +21,7 @@ config :maru, MongoosePush.Router,
 
 config :mongoose_push, MongoosePushWeb.Endpoint,
   http: [port: 8445],
-  server: true,
+  server: false,
   check_origin: false,
   watchers: []
 
