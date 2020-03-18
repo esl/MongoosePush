@@ -32,7 +32,7 @@ defmodule MongoosePush.Application do
     MongoosePush.Telemetry.attach_all()
 
     # Define workers and child supervisors to be supervised
-    children = children()
+    children = children() ++ [MongoosePushWeb.Endpoint]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

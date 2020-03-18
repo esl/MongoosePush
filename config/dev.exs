@@ -61,3 +61,10 @@ config :mongoose_push,
       tls_opts: []
     ]
   ]
+
+  config :mongoose_push, MongoosePushWeb.Endpoint,
+  http: [port: 8445],
+  debug_errors: true,
+  code_reloader: true,
+  check_origin: false,
+  server: true
