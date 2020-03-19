@@ -7,7 +7,7 @@ defmodule MongoosePushWeb.Router do
 
   scope "/api", MongoosePushWeb do
     pipe_through :api
-  
+
     post "/dummy", DummyController, :handle
   end
 end
