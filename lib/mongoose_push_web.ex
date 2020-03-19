@@ -22,7 +22,6 @@ defmodule MongoosePushWeb do
       use Phoenix.Controller, namespace: MongoosePushWeb
 
       import Plug.Conn
-      import MongoosePushWeb.Gettext
       alias MongoosePushWeb.Router.Helpers, as: Routes
     end
   end
@@ -37,7 +36,6 @@ defmodule MongoosePushWeb do
       import Phoenix.Controller, only: [get_flash: 1, get_flash: 2, view_module: 1]
 
       import MongoosePushWeb.ErrorHelpers
-      import MongoosePushWeb.Gettext
       alias MongoosePushWeb.Router.Helpers, as: Routes
     end
   end
@@ -53,7 +51,6 @@ defmodule MongoosePushWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import MongoosePushWeb.Gettext
     end
   end
 

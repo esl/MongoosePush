@@ -65,6 +65,6 @@ config :mongoose_push,
   config :mongoose_push, MongoosePushWeb.Endpoint,
   http: [port: 8445],
   debug_errors: true,
-  code_reloader: true,
+  code_reloader: false,
   check_origin: false,
   server: true
