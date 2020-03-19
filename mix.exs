@@ -126,5 +126,5 @@ defmodule MongoosePush.Mixfile do
 
   defp test_paths(:integration), do: ["test/integration", "test/common"]
 
-  defp test_paths(_), do: ["test/unit", "test/common"]
+  defp test_paths(_), do: ["test/unit", "test/common",  "test/mongoose_push_web"]
 end
