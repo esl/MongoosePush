@@ -32,7 +32,7 @@ defmodule MongoosePush.Application do
     MongoosePush.Telemetry.attach_all()
 
     # Define workers and child supervisors to be supervised
-    children = children() ++ [MongoosePushWeb.Endpoint]
+    children = service_children() ++ [MongoosePushWeb.Endpoint]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
@@ -70,7 +70,7 @@ defmodule MongoosePush.Application do
     ]
   end
 
-  defp children do
+  defp service_children do
     List.foldl(services(), [], fn {service, module}, acc ->
       pools_config = pools_config(service)
 
