@@ -43,6 +43,7 @@ defmodule MongoosePush.Mixfile do
       {:mix_docker, "~> 0.5"},
       {:uuid, "~> 1.1"},
       {:lager, ">= 3.7.0", override: true},
+      {:phoenix, "~> 1.4.16"},
 
       # Just overrides to make elixometer compile...
       {:exometer_core, github: "esl/exometer_core", override: true},
@@ -78,6 +79,7 @@ defmodule MongoosePush.Mixfile do
   defp dialyzer do
     [
       plt_core_path: ".dialyzer/",
+      plt_add_apps: [:ex_unit],
       flags: [
         "-Wunmatched_returns",
         "-Werror_handling",
@@ -125,5 +127,5 @@ defmodule MongoosePush.Mixfile do
 
   defp test_paths(:integration), do: ["test/integration", "test/common"]
 
-  defp test_paths(_), do: ["test/unit", "test/common"]
+  defp test_paths(_), do: ["test/unit", "test/common", "test/mongoose_push_web"]
 end

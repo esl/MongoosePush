@@ -61,3 +61,16 @@ config :mongoose_push,
       tls_opts: []
     ]
   ]
+
+config :mongoose_push, MongoosePushWeb.Endpoint,
+  http: [port: 8445],
+  https: [
+    port: 8446,
+    keyfile: "priv/ssl/fake_key.pem",
+    certfile: "priv/ssl/fake_cert.pem",
+    otp_app: :mongoose_push
+  ],
+  debug_errors: true,
+  code_reloader: false,
+  check_origin: false,
+  server: true

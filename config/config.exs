@@ -65,3 +65,5 @@ import_config "#{Mix.env()}.exs"
 # it will crash a release.
 # For test environment: for now it's not compatible.
 config :maru, :test, false
+
+config :phoenix, :json_library, Jason
