@@ -62,7 +62,7 @@ config :mongoose_push,
     ]
   ]
 
-  config :mongoose_push, MongoosePushWeb.Endpoint,
+config :mongoose_push, MongoosePushWeb.Endpoint,
   http: [port: 8445],
   https: [
     port: 8446,
