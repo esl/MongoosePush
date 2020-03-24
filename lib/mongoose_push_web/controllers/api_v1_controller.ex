@@ -24,7 +24,7 @@ defmodule MongoosePushWeb.APIv1Controller do
           required: true
         ),
       responses: %{
-        200 => Operation.response("PushNotification", "application/json", SchemasAPIv1Response)
+        200 => Operation.response("PushNotification", "application/json", Schemas.APIv1Response)
       }
     }
   end
