@@ -3,7 +3,7 @@ defmodule MongoosePushWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
-    plug OpenApiSpex.Plug.PutApiSpec, module: MongoosePushWeb.ApiSpec
+    plug(OpenApiSpex.Plug.PutApiSpec, module: MongoosePushWeb.ApiSpec)
   end
 
   scope "/api", MongoosePushWeb do

@@ -17,6 +17,7 @@ defmodule MongoosePushWeb.ApiSpec do
       # populate the paths from a phoenix router
       paths: Paths.from_router(Router)
     }
-    |> OpenApiSpex.resolve_schema_modules() # discover request/response schemas from path specs
+    # discover request/response schemas from path specs
+    |> OpenApiSpex.resolve_schema_modules()
   end
 end
