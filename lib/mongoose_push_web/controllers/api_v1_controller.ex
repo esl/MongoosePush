@@ -20,7 +20,10 @@ defmodule MongoosePushWeb.APIv1Controller do
         Operation.parameter(:id, :path, :string, "Device ID", example: "f53453455", required: true)
       ],
       requestBody:
-        Operation.request_body("The push notification attributes", "application/json", Schemas.APIv1Request,
+        Operation.request_body(
+          "The push notification attributes",
+          "application/json",
+          Schemas.APIv1Request,
           required: true
         ),
       responses: %{
@@ -33,4 +36,3 @@ defmodule MongoosePushWeb.APIv1Controller do
     json(conn, %{ok: "git"})
   end
 end
-
