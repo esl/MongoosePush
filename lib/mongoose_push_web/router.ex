@@ -3,6 +3,10 @@ defmodule MongoosePushWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+  end
+
+  pipeline :swagger_json do
+    plug(:accepts, ["json"])
     plug(OpenApiSpex.Plug.PutApiSpec, module: MongoosePushWeb.ApiSpec)
   end
 
@@ -12,10 +16,15 @@ defmodule MongoosePushWeb.Router do
     post("/dummy", DummyController, :handle)
   end
 
-  scope "/v1" do
-    pipe_through(:api)
+  scope "/" do
+    pipe_through(:swagger_json)
 
     get("/swagger.json", OpenApiSpex.Plug.RenderSpec, [])
-    post("/notification", MongoosePushWeb.APIv1Controller, :handle)
+  end
+
+  scope "/v1", MongoosePushWeb do
+    pipe_through(:api)
+
+    post("/notification", APIv1Controller, :handle)
   end
 end
