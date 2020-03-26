@@ -3,7 +3,7 @@ defmodule MongoosePushWeb.APIv1.PushController do
   alias OpenApiSpex.Operation
   use MongoosePushWeb, :controller
 
-use MongoosePushWeb.Schemas
+  use MongoosePushWeb.Schemas
 
   @spec send_operation() :: Operation.t()
   def send_operation() do
@@ -23,7 +23,8 @@ use MongoosePushWeb.Schemas
           required: true
         ),
       responses: %{
-        200 => Operation.response("PushNotification", "application/json", Schemas.APIv1.Response.Push)
+        200 =>
+          Operation.response("PushNotification", "application/json", Schemas.APIv1.Response.Push)
       }
     }
   end
