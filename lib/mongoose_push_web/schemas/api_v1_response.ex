@@ -1,4 +1,4 @@
-defmodule APIv1Response do
+defmodule MongoosePushWeb.Schemas.APIv1Response do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
