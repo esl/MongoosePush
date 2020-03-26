@@ -1,10 +1,10 @@
-defmodule MongoosePushWeb.Schemas.APIv1Request do
+defmodule MongoosePushWeb.Schemas.APIv1.Request.Push do
   require OpenApiSpex
   alias OpenApiSpex.Schema
 
   OpenApiSpex.schema(%{
-    title: "User",
-    description: "A user of the app",
+    title: "APIv1.Request.Push",
+    description: "Push notification request schema",
     type: :object,
     properties: %{
       service: %Schema{

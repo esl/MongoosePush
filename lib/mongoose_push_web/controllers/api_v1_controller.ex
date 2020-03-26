@@ -19,11 +19,11 @@ use MongoosePushWeb.Schemas
         Operation.request_body(
           "The push notification attributes",
           "application/json",
-          Schemas.APIv1Request,
+          Schemas.APIv1.Request.Push,
           required: true
         ),
       responses: %{
-        200 => Operation.response("PushNotification", "application/json", Schemas.APIv1Response)
+        200 => Operation.response("PushNotification", "application/json", Schemas.APIv1.Response.Push)
       }
     }
   end
