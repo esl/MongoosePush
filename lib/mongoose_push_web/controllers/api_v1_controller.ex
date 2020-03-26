@@ -3,11 +3,7 @@ defmodule MongoosePushWeb.APIv1Controller do
   alias OpenApiSpex.Operation
   use MongoosePushWeb, :controller
 
-  @spec open_api_operation(atom) :: Operation.t()
-  def open_api_operation(action) do
-    operation = String.to_existing_atom("#{action}_operation")
-    apply(__MODULE__, operation, [])
-  end
+use MongoosePushWeb.Schemas
 
   @spec handle_operation() :: Operation.t()
   def handle_operation() do
