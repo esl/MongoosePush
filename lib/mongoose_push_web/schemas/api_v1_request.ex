@@ -7,7 +7,12 @@ defmodule APIv1Request do
     description: "A user of the app",
     type: :object,
     properties: %{
-      service: %Schema{type: :string, description: "Push notification service", format: :string},
+      service: %Schema{
+        type: :string,
+        description: "Push notification service",
+        format: :string,
+        enum: ["fcm", "apns"]
+      },
       body: %Schema{type: :string, description: "Body of the notification", format: :string},
       title: %Schema{type: :string, description: "Title of the notification", format: :string}
     },
