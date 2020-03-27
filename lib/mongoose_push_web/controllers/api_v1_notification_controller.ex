@@ -19,12 +19,12 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
         Operation.request_body(
           "The push notification attributes",
           "application/json",
-          Schemas.APIv1.Request.Push,
+          Schemas.Request.SendNotification.Flat,
           required: true
         ),
       responses: %{
         200 =>
-          Operation.response("PushNotification", "application/json", Schemas.APIv1.Response.Push)
+          Operation.response("PushNotification", "application/json", Schemas.Response.SendNotification.PayloadOnly)
       }
     }
   end

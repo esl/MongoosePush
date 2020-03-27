@@ -1,4 +1,4 @@
-defmodule MongoosePushWeb.Schemas.APIv1.Request.Push do
+defmodule MongoosePushWeb.Schemas.Request.SendNotification.Flat do
   require OpenApiSpex
   alias OpenApiSpex.Schema
 

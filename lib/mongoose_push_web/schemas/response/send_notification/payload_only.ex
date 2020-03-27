@@ -1,4 +1,4 @@
-defmodule MongoosePushWeb.Schemas.APIv1.Response.Push do
+defmodule MongoosePushWeb.Schemas.Response.SendNotification.PayloadOnly do
   require OpenApiSpex
 
   OpenApiSpex.schema(%{
