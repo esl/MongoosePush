@@ -1,4 +1,4 @@
-defmodule MongoosePushWeb.APIv1.PushController do
+defmodule MongoosePushWeb.APIv1.NotificationController do
   alias MongoosePushWeb.Schemas
   alias OpenApiSpex.Operation
   use MongoosePushWeb, :controller
@@ -11,7 +11,7 @@ defmodule MongoosePushWeb.APIv1.PushController do
       tags: ["apiv1"],
       summary: "sends a push",
       description: "performs the sending of push notification",
-      operationId: "APIv1.PushController.send",
+      operationId: "APIv1.NotificationController.send",
       parameters: [
         Operation.parameter(:id, :path, :string, "Device ID", example: "f53453455", required: true)
       ],
