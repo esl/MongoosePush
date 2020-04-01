@@ -19,7 +19,8 @@ defmodule MongoosePushWeb.Router do
   scope "/" do
     pipe_through(:swagger_json)
 
-    get("/swagger.json", OpenApiSpex.Plug.RenderSpec, [])
+    get "/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/openapi"
+    get("/openapi", OpenApiSpex.Plug.RenderSpec, [])
   end
 
   scope "/v1", MongoosePushWeb.APIv1 do
