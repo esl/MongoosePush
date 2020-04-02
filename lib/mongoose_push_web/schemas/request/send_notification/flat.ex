@@ -20,7 +20,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Flat do
       tag: %Schema{type: :string},
       topic: %Schema{type: :string},
       data: %Schema{type: :string},
-      mode: %Schema{type: :string, enum: [:prod, :dev]}
+      mode: %Schema{type: :string, enum: ["prod", "dev"]}
     },
     required: [:service, :body, :title],
     example: %{

@@ -13,11 +13,11 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
         format: :string,
         enum: ["fcm", "apns"]
       },
-      mode: %Schema{type: :string, enum: [:prod, :dev]},
-      priority: %Schema{type: :string, enum: [:normal, :high]},
+      mode: %Schema{type: :string, enum: ["prod", "dev"]},
+      priority: %Schema{type: :string, enum: ["normal", "high"]},
       time_to_live: %Schema{type: :integer, format: :int32},
       mutable_content: %Schema{type: :boolean, default: false},
-      tags: %Schema{type: &Deep.tags_helper/1, default: []},
+      tags: %Schema{type: :string},
       # Only for APNS, alert/data independent
       topic: %Schema{type: :string},
       alert: %Schema{
@@ -40,6 +40,4 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
       "alert" => %{"body" => "A message from someone", "title" => "Notification title"}
     }
   })
-
-  def tags_helper(tags), do: Enum.map(tags, &String.to_existing_atom(&1))
 end

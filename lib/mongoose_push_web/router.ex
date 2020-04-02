@@ -28,4 +28,10 @@ defmodule MongoosePushWeb.Router do
 
     post("/notification", NotificationController, :send)
   end
+
+  scope "/v2", MongoosePushWeb.APIv2 do
+    pipe_through(:api)
+
+    post("/notification", NotificationController, :send)
+  end
 end
