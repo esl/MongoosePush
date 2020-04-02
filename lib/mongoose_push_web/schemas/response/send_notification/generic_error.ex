@@ -15,7 +15,7 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.GenericError do
       }
     },
     example: %{
-      "details" => "{\"details\":\"Parsing Param Error: body\"}"
+      "details" => "Parsing Param Error: body"
     }
   })
 end
