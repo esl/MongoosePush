@@ -3,7 +3,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Flat do
   alias OpenApiSpex.Schema
 
   OpenApiSpex.schema(%{
-    title: "APIv1.Request.Push",
+    title: "Request.SendNotification.Flat",
     description: "Push notification request schema",
     type: :object,
     properties: %{
