@@ -27,7 +27,19 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
           Operation.response(
             "PushNotification",
             "application/json",
-            Schemas.Response.SendNotification.PayloadOnly
+            nil
+          ),
+        400 =>
+          Operation.response(
+            "PushNotification",
+            "application/json",
+            Schemas.Response.SendNotification.GenericError
+          ),
+        500 =>
+          Operation.response(
+            "PushNotification",
+            "application/json",
+            Schemas.Response.SendNotification.GenericError
           )
       }
     }
