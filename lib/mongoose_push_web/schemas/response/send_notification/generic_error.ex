@@ -14,6 +14,8 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.GenericError do
             "not for any client usage, as it may change in time without prior notice."
       }
     },
-    example: %{}
+    example: %{
+      "details" => "{\"details\":\"Parsing Param Error: body\"}"
+    }
   })
 end
