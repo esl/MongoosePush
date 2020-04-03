@@ -14,10 +14,10 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
         enum: ["fcm", "apns"]
       },
       mode: %Schema{type: :string, enum: ["prod", "dev"]},
-      priority: %Schema{type: :string, enum: ["normal", "high"]},
+      priority: %Schema{type: :string, description: "The default one is chosen based on the service being used", enum: ["normal", "high"]},
       time_to_live: %Schema{type: :integer, format: :int32},
       mutable_content: %Schema{type: :boolean, default: false},
-      tags: %Schema{type: :string},
+      tags: %Schema{type: :array, description: "Used when choosing pool to match request tags when sending a notification"},
       # Only for APNS, alert/data independent
       topic: %Schema{type: :string},
       alert: %Schema{
@@ -32,9 +32,9 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
         },
         required: [:body, :title]
       },
-      data: %Schema{type: :string}
+      data: %Schema{type: :object}
     },
-    required: [:service, :alert],
+    required: [:service, :alert, :data],
     example: %{
       "service" => "apns",
       "alert" => %{"body" => "A message from someone", "title" => "Notification title"}
