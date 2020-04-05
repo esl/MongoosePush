@@ -100,13 +100,10 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     error =
       case not File.exists?(cert_path) or not File.exists?(key_path) do
         true ->
-          Logger.error(
-            fn ->
-              "authenticate_cert"
-            end,
+          Logger.error("Unable to find required files",
             result: :error,
-            log: :trace,
-            reason: "required_element_missing",
+            reason: :bad_auth,
+            mode: pool_config[:mode],
             cert_path: cert_path,
             key_path: key_path
           )
@@ -147,13 +144,10 @@ defmodule MongoosePush.Service.APNS.Supervisor do
     error =
       case is_nil(key) or is_nil(team) or not File.exists?(p8_file_path) do
         true ->
-          Logger.error(
-            fn ->
-              "authenticate_token"
-            end,
+          Logger.error("Required configuration missing",
             result: :error,
-            log: :trace,
-            reason: "requested_element_missing",
+            reason: :bad_auth,
+            mode: pool_config[:mode],
             key: key,
             team: team,
             p8_file: p8_file_path
