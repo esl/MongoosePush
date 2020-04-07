@@ -6,7 +6,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Alert do
     title: "Request.SendNotification.Deep.Alert",
     description: "In this request one can pass alert field only.",
     type: :object,
-    allOf: [MongoosePushWeb.Schemas.Request.SendNotification.Deep],
+    allOf: MongoosePushWeb.Schemas.Request.SendNotification.Deep,
     properties: %{
       alert: %Schema{
         type: :object,

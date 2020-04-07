@@ -6,7 +6,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Data do
     title: "Request.SendNotification.Deep.Data",
     description: "In this request one can pass data field only.",
     type: :object,
-    allOf: [MongoosePushWeb.Schemas.Request.SendNotification.Deep],
+    allOf: MongoosePushWeb.Schemas.Request.SendNotification.Deep,
     properties: %{
       data: %Schema{
         type: :object,
