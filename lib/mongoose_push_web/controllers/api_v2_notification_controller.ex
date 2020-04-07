@@ -1,6 +1,6 @@
 defmodule MongoosePushWeb.APIv2.NotificationController do
   alias MongoosePushWeb.Schemas
-  alias OpenApiSpex.{Operation, Schema}
+  alias OpenApiSpex.Operation
   use MongoosePushWeb, :controller
 
   use MongoosePushWeb.Schemas
@@ -19,13 +19,7 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
         Operation.request_body(
           "The push notification attributes",
           "application/json",
-          %Schema{
-            anyOf: [
-              Schemas.Request.SendNotification.Deep.Alert,
-              Schemas.Request.SendNotification.Deep.AlertAndData,
-              Schemas.Request.SendNotification.Deep.Data
-            ]
-          },
+          Schemas.Request.SendNotification.Deep,
           required: true
         ),
       responses: %{
