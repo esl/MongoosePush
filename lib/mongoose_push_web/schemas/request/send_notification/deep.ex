@@ -11,18 +11,8 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
     ]
   })
 
-  def merge(map1, map2) do
-    Map.merge(map1, map2, fn
-      k, v1, v2 when k in [:properties, :example] -> Map.merge(v1, v2)
-      :required, v1, v2 -> Enum.uniq(v1 ++ v2)
-      _k, _v1, v2 -> v2
-    end)
-  end
-
   def base() do
     %{
-      description: "Push notification request schema",
-      type: :object,
       properties: %{
         service: %Schema{
           type: :string,
@@ -46,13 +36,16 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
         },
         # Only for APNS, alert/data independent
         topic: %Schema{type: :string}
+      },
+      required: [:service],
+      example: %{
+        "service" => "apns"
       }
     }
   end
 
   def alert() do
     %{
-      title: "Request.SendNotification.Deep.Alert",
       properties: %{
         alert: %Schema{
           type: :object,
@@ -71,9 +64,8 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
           required: [:body, :title]
         }
       },
-      required: [:service, :alert],
+      required: [:alert],
       example: %{
-        "service" => "apns",
         "alert" => %{"body" => "A message from someone", "title" => "Notification title"}
       }
     }
@@ -81,7 +73,6 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
 
   def data() do
     %{
-      title: "Request.SendNotification.Deep.Data",
       properties: %{
         data: %Schema{
           type: :object,
@@ -90,21 +81,14 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
               "The FCM request with nested data can end up with error."
         }
       },
-      required: [:service, :data],
+      required: [:data],
       example: %{
-        "service" => "apns",
         "data" => %{
           "custom" => "data fields",
           "some_id" => 345_645_332,
           "nested" => %{"fields" => "allowed"}
         }
       }
-    }
-  end
-
-  def alert_and_data_info() do
-    %{
-      title: "Request.SendNotification.Deep.AlertAndData"
     }
   end
 end
