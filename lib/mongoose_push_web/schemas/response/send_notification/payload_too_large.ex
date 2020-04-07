@@ -9,7 +9,7 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.PayloadTooLarge do
     properties: %{
       reason: %Schema{
         type: :string,
-        format: :string,
+        format: :text,
         enum: ["payload_too_large"]
       }
     },

@@ -9,7 +9,7 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.UnknownError do
     properties: %{
       reason: %Schema{
         type: :string,
-        format: :string
+        format: :text
       }
     },
     required: [:reason],

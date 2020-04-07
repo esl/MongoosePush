@@ -11,7 +11,7 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.Gone do
     properties: %{
       reason: %Schema{
         type: :string,
-        format: :string,
+        format: :text,
         enum: ["unregistered"]
       }
     },

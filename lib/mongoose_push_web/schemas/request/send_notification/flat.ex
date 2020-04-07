@@ -10,11 +10,11 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Flat do
       service: %Schema{
         type: :string,
         description: "Push notification service",
-        format: :string,
+        format: :text,
         enum: ["fcm", "apns"]
       },
-      body: %Schema{type: :string, description: "Body of the notification", format: :string},
-      title: %Schema{type: :string, description: "Title of the notification", format: :string},
+      body: %Schema{type: :string, description: "Body of the notification", format: :text},
+      title: %Schema{type: :string, description: "Title of the notification", format: :text},
       badge: %Schema{type: :integer, format: :int32},
       click_action: %Schema{type: :string},
       tag: %Schema{type: :string},

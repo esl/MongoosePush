@@ -9,7 +9,7 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.ServiceUnavailable d
     properties: %{
       reason: %Schema{
         type: :string,
-        format: :string,
+        format: :text,
         enum: [
           "service_internal",
           "internal_config",

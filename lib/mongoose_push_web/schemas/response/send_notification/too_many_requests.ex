@@ -9,7 +9,7 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.TooManyRequests do
     properties: %{
       reason: %Schema{
         type: :string,
-        format: :string,
+        format: :text,
         enum: ["too_many_requests"]
       }
     },
