@@ -7,8 +7,8 @@ config :logger,
   handle_sasl_reports: false
 
 config :logger, :console,
-  format: "\n$dateT$time [$level] $metadata$levelpad$message\n",
-  metadata: [:pid]
+  format: {MongoosePush.LoggerFmt, :format},
+  metadata: :all
 
 # Stop lager redirecting :error_logger messages
 config :lager, :error_logger_redirect, false

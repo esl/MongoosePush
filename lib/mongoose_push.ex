@@ -69,7 +69,17 @@ defmodule MongoosePush do
 
     {time, push_result} =
       if pool == nil do
-        Logger.error(~s"No pool matching mode=#{mode} and tags=#{inspect(tags)}")
+        Logger.error("Unable to choose pool",
+          what: :pool_selection,
+          result: :error,
+          category: :generic,
+          reason: :no_matching_pool,
+          device_id: device_id,
+          service: service,
+          mode: mode,
+          tags: tags
+        )
+
         {0, {:error, {:generic, :no_matching_pool}}}
       else
         request =
@@ -85,23 +95,46 @@ defmodule MongoosePush do
 
     emit_telemetry_event(time, push_result, service, mode)
 
-    maybe_log(push_result)
+    maybe_log(push_result, device_id, request)
   end
 
-  defp maybe_log(:ok), do: :ok
+  defp maybe_log(:ok, _device_id, _request), do: :ok
 
-  defp maybe_log({:error, {type, reason}} = return_value) do
-    Logger.warn(
-      ~s"Unable to complete push request due to service error: #{inspect(reason)} in category: #{
-        type
-      }"
+  defp maybe_log({:error, {category, reason}} = return_value, device_id, request) do
+    %{:service => service} = request
+    mode = Map.get(request, :mode, :prod)
+    tags = Map.get(request, :tags, [])
+
+    Logger.warn("Unable to send the push notification",
+      what: :sending_notification,
+      result: :error,
+      category: category,
+      reason: reason,
+      device_id: device_id,
+      service: service,
+      mode: mode,
+      tags: tags
     )
 
     return_value
   end
 
-  defp maybe_log({:error, reason} = return_value) do
-    Logger.warn(~s"Unable to complete push request due to #{inspect(reason)}")
+  defp maybe_log({:error, reason} = return_value, device_id, request) do
+    %{:service => service} = request
+    mode = Map.get(request, :mode, :prod)
+    tags = Map.get(request, :tags, [])
+
+    Logger.warn("Unable to send the push notification",
+      what: :sending_notification,
+      result: :error,
+      category: :unknown,
+      reason: reason,
+      device_id: device_id,
+      service: service,
+      mode: mode,
+      tags: tags
+    )
+
     return_value
   end
 
