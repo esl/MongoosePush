@@ -101,6 +101,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
       case not File.exists?(cert_path) or not File.exists?(key_path) do
         true ->
           Logger.error("Unable to find required files",
+            what: :configuration,
             result: :error,
             reason: :bad_auth,
             mode: pool_config[:mode],
@@ -145,6 +146,7 @@ defmodule MongoosePush.Service.APNS.Supervisor do
       case is_nil(key) or is_nil(team) or not File.exists?(p8_file_path) do
         true ->
           Logger.error("Required configuration missing",
+            what: :configuration,
             result: :error,
             reason: :bad_auth,
             mode: pool_config[:mode],

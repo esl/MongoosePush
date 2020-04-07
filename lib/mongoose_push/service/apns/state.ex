@@ -72,6 +72,7 @@ defmodule MongoosePush.Service.APNS.State do
           default_topic = all_topics[:topic]
 
           Logger.info("Using certificate-extracted default APNS topic",
+            what: :default_apns_topic,
             result: :ok,
             mode: config[:mode],
             topic: default_topic
@@ -81,6 +82,7 @@ defmodule MongoosePush.Service.APNS.State do
 
         default_topic ->
           Logger.info("Using configured default APNS topic",
+            what: :default_apns_topic,
             result: :ok,
             mode: config[:mode],
             topic: default_topic
@@ -91,6 +93,7 @@ defmodule MongoosePush.Service.APNS.State do
     catch
       _, reason ->
         Logger.warn("Unable to find default APNS topic",
+          what: :default_apns_topic,
           result: :error,
           mode: config[:mode],
           reason: reason

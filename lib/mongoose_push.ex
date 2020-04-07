@@ -70,6 +70,7 @@ defmodule MongoosePush do
     {time, push_result} =
       if pool == nil do
         Logger.error("Unable to choose pool",
+          what: :pool_selection,
           result: :error,
           category: :generic,
           reason: :no_matching_pool,
@@ -105,6 +106,7 @@ defmodule MongoosePush do
     tags = Map.get(request, :tags, [])
 
     Logger.warn("Unable to send the push notification",
+      what: :sending_notification,
       result: :error,
       category: category,
       reason: reason,
@@ -123,6 +125,7 @@ defmodule MongoosePush do
     tags = Map.get(request, :tags, [])
 
     Logger.warn("Unable to send the push notification",
+      what: :sending_notification,
       result: :error,
       category: :unknown,
       reason: reason,

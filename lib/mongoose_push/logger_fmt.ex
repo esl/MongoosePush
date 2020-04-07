@@ -7,18 +7,21 @@ defmodule MongoosePush.LoggerFmt do
     time_f = Logger.Formatter.format_time(time)
 
     # Change format of a logging place for readability and compatibility with `:logger` standard
-    module = Keyword.fetch!(metadata, :module)
-    function = Keyword.fetch!(metadata, :function)
-    line = Keyword.fetch!(metadata, :line)
-    pid = Keyword.fetch!(metadata, :pid)
+    module = Keyword.get(metadata, :module)
+    function = Keyword.get(metadata, :function)
+    line = Keyword.get(metadata, :line)
+    pid = Keyword.get(metadata, :pid)
+    what = Keyword.get(metadata, :what)
 
-    custom_metadata = Keyword.drop(metadata, [:module, :function, :line, :pid, :mfa, :time, :gl])
+    custom_metadata =
+      Keyword.drop(metadata, [:module, :function, :line, :pid, :mfa, :time, :gl, :what])
 
     meta_f =
       [
         when: "#{date_f}T#{time_f}",
         severity: level,
-        what: message,
+        what: what,
+        text: message,
         at: "#{module}.#{function}:#{line}",
         pid: pid
       ]
@@ -43,6 +46,10 @@ defmodule MongoosePush.LoggerFmt do
 
   defp flatten_metadata_elem({key, value}) when is_tuple(value) do
     flatten_metadata_elem({key, Tuple.to_list(value)})
+  end
+
+  defp flatten_metadata_elem({key, value}) when is_function(value) do
+    flatten_metadata_elem({key, "#{inspect(value)}"})
   end
 
   defp flatten_metadata_elem({key, value}) when is_list(value) do
