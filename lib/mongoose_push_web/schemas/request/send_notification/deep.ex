@@ -45,7 +45,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
         "time_to_live" => 3600,
         "mutable_content" => false,
         "tags" => ["some", "tags", "for", "pool", "selection"],
-        "topic" => "The notification you are waiting for"
+        "topic" => "com.someapp"
       }
     }
   end
