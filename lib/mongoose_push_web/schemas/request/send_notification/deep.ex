@@ -39,7 +39,13 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
       },
       required: [:service],
       example: %{
-        "service" => "apns"
+        "service" => "apns",
+        "mode" => "prod",
+        "priority" => "normal",
+        "time_to_live" => 3600,
+        "mutable_content" => false,
+        "tags" => ["some", "tags", "for", "pool", "selection"],
+        "topic" => "The notification you are waiting for"
       }
     }
   end
@@ -66,7 +72,14 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
       },
       required: [:alert],
       example: %{
-        "alert" => %{"body" => "A message from someone", "title" => "Notification title"}
+        "alert" => %{
+          "body" => "A message from someone",
+          "title" => "Notification title",
+          "badge" => 7,
+          "click_action" => ".SomeApp.Handler.action",
+          "tag" => "info",
+          "sound" => "standard.mp3"
+        }
       }
     }
   end
