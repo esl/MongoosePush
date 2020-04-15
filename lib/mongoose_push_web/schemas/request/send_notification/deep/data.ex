@@ -8,6 +8,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Data do
     type: :object,
     properties: Map.merge(Deep.base()[:properties], Deep.data()[:properties]),
     required: Deep.base()[:required] ++ Deep.data()[:required],
-    example: Map.merge(Deep.base()[:example], Deep.data()[:example])
+    example: Map.merge(Deep.base()[:example], Deep.data()[:example]),
+    additionalProperties: false
   })
 end

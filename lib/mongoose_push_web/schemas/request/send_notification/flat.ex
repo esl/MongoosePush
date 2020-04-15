@@ -27,6 +27,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Flat do
       "service" => "apns",
       "body" => "A message from someone",
       "title" => "Notification title"
-    }
+    },
+    additionalProperties: false
   })
 end

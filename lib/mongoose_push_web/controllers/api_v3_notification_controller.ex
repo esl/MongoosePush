@@ -5,6 +5,8 @@ defmodule MongoosePushWeb.APIv3.NotificationController do
 
   use MongoosePushWeb.Schemas
 
+  plug(OpenApiSpex.Plug.CastAndValidate)
+
   @spec send_operation() :: Operation.t()
   def send_operation() do
     %Operation{
@@ -13,7 +15,10 @@ defmodule MongoosePushWeb.APIv3.NotificationController do
       description: "performs the sending of push notification",
       operationId: "APIv3.NotificationController.send",
       parameters: [
-        Operation.parameter(:id, :path, :string, "Device ID", example: "f53453455", required: true)
+        Operation.parameter(:device_id, :path, :string, "Device ID",
+          example: "f53453455",
+          required: true
+        )
       ],
       requestBody:
         Operation.request_body(
@@ -73,5 +78,32 @@ defmodule MongoosePushWeb.APIv3.NotificationController do
           )
       }
     }
+  end
+
+  def send(conn = %{body_params: %Schemas.Request.SendNotification.Deep.Data{} = params}, %{
+        device_id: _device_id
+      }) do
+    json(conn, %{200 => :ok})
+  end
+
+  def send(conn = %{body_params: %Schemas.Request.SendNotification.Deep.Alert{} = params}, %{
+        device_id: _device_id
+      }) do
+    json(conn, %{200 => :ok})
+  end
+
+  def send(
+        conn = %{body_params: %Schemas.Request.SendNotification.Deep.AlertAndData{} = params},
+        %{
+          device_id: _device_id
+        }
+      ) do
+    json(conn, %{200 => :ok})
+  end
+
+  def send(conn = %{body_params: %Schemas.Request.SendNotification.Flat{} = params}, %{
+        device_id: _device_id
+      }) do
+    json(conn, %{200 => :ok})
   end
 end

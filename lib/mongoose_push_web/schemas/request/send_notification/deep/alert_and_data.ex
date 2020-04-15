@@ -17,6 +17,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertAndData do
     example:
       Deep.base()[:example]
       |> Map.merge(Deep.alert()[:example])
-      |> Map.merge(Deep.data()[:example])
+      |> Map.merge(Deep.data()[:example]),
+    additionalProperties: false
   })
 end
