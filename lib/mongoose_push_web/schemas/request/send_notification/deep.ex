@@ -6,7 +6,6 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
     title: "Request.SendNotification.Deep",
     oneOf: [
       MongoosePushWeb.Schemas.Request.SendNotification.Deep.Alert,
-      MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertAndData,
       MongoosePushWeb.Schemas.Request.SendNotification.Deep.Data
     ]
   })
@@ -14,6 +13,28 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
   def base() do
     %{
       properties: %{
+        alert: %Schema{
+          type: :object,
+          properties: %{
+            body: %Schema{type: :string, description: "Body of the notification", format: :text},
+            title: %Schema{
+              type: :string,
+              description: "Title of the notification",
+              format: :text
+            },
+            badge: %Schema{type: :integer, format: :int32},
+            click_action: %Schema{type: :string},
+            tag: %Schema{type: :string},
+            sound: %Schema{type: :string}
+          },
+          required: [:body, :title]
+        },
+        data: %Schema{
+          type: :object,
+          description:
+            "Custom key-values pairs of the message's payload. " <>
+              "The FCM request with nested data can end up with error."
+        },
         service: %Schema{
           type: :string,
           description: "Push notification service",
@@ -52,24 +73,6 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
 
   def alert() do
     %{
-      properties: %{
-        alert: %Schema{
-          type: :object,
-          properties: %{
-            body: %Schema{type: :string, description: "Body of the notification", format: :text},
-            title: %Schema{
-              type: :string,
-              description: "Title of the notification",
-              format: :text
-            },
-            badge: %Schema{type: :integer, format: :int32},
-            click_action: %Schema{type: :string},
-            tag: %Schema{type: :string},
-            sound: %Schema{type: :string}
-          },
-          required: [:body, :title]
-        }
-      },
       required: [:alert],
       example: %{
         "alert" => %{
@@ -86,14 +89,6 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
 
   def data() do
     %{
-      properties: %{
-        data: %Schema{
-          type: :object,
-          description:
-            "Custom key-values pairs of the message's payload. " <>
-              "The FCM request with nested data can end up with error."
-        }
-      },
       required: [:data],
       example: %{
         "data" => %{

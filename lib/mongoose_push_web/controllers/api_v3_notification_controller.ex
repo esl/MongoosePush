@@ -92,15 +92,6 @@ defmodule MongoosePushWeb.APIv3.NotificationController do
     json(conn, %{200 => :ok})
   end
 
-  def send(
-        conn = %{body_params: %Schemas.Request.SendNotification.Deep.AlertAndData{} = params},
-        %{
-          device_id: _device_id
-        }
-      ) do
-    json(conn, %{200 => :ok})
-  end
-
   def send(conn = %{body_params: %Schemas.Request.SendNotification.Flat{} = params}, %{
         device_id: _device_id
       }) do
