@@ -7,6 +7,8 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
 
   plug(OpenApiSpex.Plug.CastAndValidate)
 
+  def mongoose_push, do: Application.get_env(:mongoose_push, :mongoose_push)
+
   @spec send_operation() :: Operation.t()
   def send_operation() do
     %Operation{
@@ -50,9 +52,12 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
     }
   end
 
-  def send(conn = %{body_params: %Schemas.Request.SendNotification.Flat{} = params}, %{
-        device_id: device_id
-      }) do
-    json(conn, %{200 => :ok})
+  def send(conn = %{body_params: params}, %{device_id: device_id}) do
+    result = mongoose_push().push(device_id, params)
+    {status, payload} = MongoosePush.API.V1.ResponseEncoder.to_status(result)
+
+    conn
+    |> Plug.Conn.put_status(status)
+    |> json(payload)
   end
 end
