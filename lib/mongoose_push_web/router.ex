@@ -11,12 +11,6 @@ defmodule MongoosePushWeb.Router do
     plug(OpenApiSpex.Plug.PutApiSpec, module: MongoosePushWeb.ApiSpec)
   end
 
-  scope "/api", MongoosePushWeb do
-    pipe_through(:api)
-
-    post("/dummy", DummyController, :handle)
-  end
-
   scope "/" do
     pipe_through(:swagger_json)
 
