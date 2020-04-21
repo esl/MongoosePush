@@ -45,6 +45,7 @@ defmodule MongoosePush.Mixfile do
       {:lager, ">= 3.7.0", override: true},
       {:phoenix, "~> 1.4.16"},
       {:open_api_spex, "~> 3.6"},
+      {:mox, "~> 0.5.2"},
 
       # Just overrides to make elixometer compile...
       {:exometer_core, github: "esl/exometer_core", override: true},
