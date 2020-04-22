@@ -70,6 +70,8 @@ defmodule MongoosePush.Application do
     ]
   end
 
+  def backend_module, do: Application.fetch_env!(:mongoose_push, :backend_module)
+
   defp service_children do
     List.foldl(services(), [], fn {service, module}, acc ->
       pools_config = pools_config(service)

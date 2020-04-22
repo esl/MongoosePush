@@ -11,7 +11,7 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
   end
 
   test "correct Request.SendNotification.Flat schema", %{conn: conn} do
-    expect(MongoosePushBehaviourMock, :push, fn _id, _req -> :ok end)
+    expect(MongoosePush.Notification.MockImpl, :push, fn _id, _req -> :ok end)
 
     conn = post(conn, "/v1/notification/666", Jason.encode!(ControllersHelper.flat_request()))
     assert json_response(conn, 200) == nil

@@ -11,7 +11,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
   end
 
   test "correct Request.SendNotification.Deep.Alert schema", %{conn: conn} do
-    expect(MongoosePushBehaviourMock, :push, fn _id, _req -> :ok end)
+    expect(MongoosePush.Notification.MockImpl, :push, fn _id, _req -> :ok end)
 
     conn = post(conn, "/v2/notification/654321", Jason.encode!(ControllersHelper.alert_request()))
     assert json_response(conn, 200) == nil
@@ -65,7 +65,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
   end
 
   test "correct Request.SendNotification.Deep.Data schema", %{conn: conn} do
-    expect(MongoosePushBehaviourMock, :push, fn _id, _req -> :ok end)
+    expect(MongoosePush.Notification.MockImpl, :push, fn _id, _req -> :ok end)
 
     conn = post(conn, "/v2/notification/654321", Jason.encode!(ControllersHelper.data_request()))
     assert json_response(conn, 200) == nil

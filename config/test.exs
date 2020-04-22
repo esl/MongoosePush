@@ -1,7 +1,7 @@
 use Mix.Config
 
 config :mongoose_push, loglevel: :debug
-config :mongoose_push, mongoose_push: MongoosePushBehaviourMock
+config :mongoose_push, backend_module: MongoosePush.Notification.MockImpl
 
 config :elixometer,
   reporter: :exometer_report_tty,
