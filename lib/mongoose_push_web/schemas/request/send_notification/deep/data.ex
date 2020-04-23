@@ -4,10 +4,11 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Data do
 
   OpenApiSpex.schema(%{
     title: "Request.SendNotification.Deep.Data",
-    description: "In this request one can pass data field only.",
+    description: "In this request data field is mandatory.",
     type: :object,
-    properties: Map.merge(Deep.base()[:properties], Deep.data()[:properties]),
+    properties: Deep.base()[:properties],
     required: Deep.base()[:required] ++ Deep.data()[:required],
-    example: Map.merge(Deep.base()[:example], Deep.data()[:example])
+    example: Map.merge(Deep.base()[:example], Deep.data()[:example]),
+    additionalProperties: false
   })
 end

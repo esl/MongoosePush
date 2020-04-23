@@ -5,6 +5,8 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
 
   use MongoosePushWeb.Schemas
 
+  plug(OpenApiSpex.Plug.CastAndValidate)
+
   @spec send_operation() :: Operation.t()
   def send_operation() do
     %Operation{
@@ -13,7 +15,10 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
       description: "performs the sending of push notification",
       operationId: "APIv2.NotificationController.send",
       parameters: [
-        Operation.parameter(:id, :path, :string, "Device ID", example: "f53453455", required: true)
+        Operation.parameter(:device_id, :path, :string, "Device ID",
+          example: "f53453455",
+          required: true
+        )
       ],
       requestBody:
         Operation.request_body(
@@ -43,5 +48,14 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
           )
       }
     }
+  end
+
+  def send(conn = %{body_params: params}, %{device_id: device_id}) do
+    result = MongoosePush.Application.backend_module().push(device_id, params)
+    {status, payload} = MongoosePush.API.V2.ResponseEncoder.to_status(result)
+
+    conn
+    |> Plug.Conn.put_status(status)
+    |> json(payload)
   end
 end

@@ -19,14 +19,30 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Flat do
       click_action: %Schema{type: :string},
       tag: %Schema{type: :string},
       topic: %Schema{type: :string},
-      data: %Schema{type: :string},
+      data: %Schema{
+        type: :object,
+        description:
+          "Custom key-values pairs of the message's payload. " <>
+            "The FCM request with nested data can end up with error."
+      },
       mode: %Schema{type: :string, enum: ["prod", "dev"]}
     },
     required: [:service, :body, :title],
     example: %{
       "service" => "apns",
       "body" => "A message from someone",
-      "title" => "Notification title"
-    }
+      "title" => "Notification title",
+      "badge" => 7,
+      "click_action" => ".SomeApp.Handler.action",
+      "tag" => "info",
+      "topic" => "com.someapp",
+      "data" => %{
+        "custom" => "data fields",
+        "some_id" => 345_645_332,
+        "nested" => %{"fields" => "allowed"}
+      },
+      "mode" => "prod"
+    },
+    additionalProperties: false
   })
 end
