@@ -8,7 +8,7 @@ config :elixometer,
   metric_prefix: "mongoose_push"
 
 config :mongoose_push, loglevel: :debug
-config :goth, endpoint: "http://fcm-mock:4001"
+config :goth, endpoint: "http://localhost:4001"
 
 config :maru, MongoosePush.Router,
   versioning: [

@@ -33,6 +33,8 @@ defmodule MongoosePush.Service.FCM do
     # Setup non-silent notification
     alert = request.alert
 
+
+
     android =
       Android.new()
       |> Android.add_title(alert.title)
@@ -43,6 +45,8 @@ defmodule MongoosePush.Service.FCM do
       |> maybe(:add_click_action, alert[:click_action])
       |> maybe(:add_tag, alert[:tag])
       |> maybe(:add_sound, alert[:sound])
+
+      IO.inspect(android)
 
     Notification.new(:token, device_id)
     |> Notification.add_android(android)

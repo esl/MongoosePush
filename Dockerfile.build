@@ -1,4 +1,4 @@
-FROM elixir:1.6
+FROM elixir:1.9
 
 ENV HOME=/opt/app/ TERM=xterm
 ENV LANG en_US.UTF-8
