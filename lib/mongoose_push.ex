@@ -13,6 +13,8 @@ defmodule MongoosePush do
   require Logger
   alias MongoosePush.Service
 
+  @behaviour MongoosePush.Notification
+
   @typedoc "Available keys in `request` map"
   @type req_key ::
           :service
