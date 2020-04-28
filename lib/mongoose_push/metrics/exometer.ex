@@ -1,8 +1,10 @@
 defmodule MongoosePush.Metrics.Exometer do
   @moduledoc """
-  This module provides some utility functions that simplify the use of Elixometer.
+  This module provides an Elixometer implementation to the `MongoosePush.Metrics` behaviour
   """
   use Elixometer
+
+  @behaviour MongoosePush.Metrics
 
   @doc """
   Updates metric (spiral) by given value. The metrics name is
