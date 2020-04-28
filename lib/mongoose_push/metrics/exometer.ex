@@ -17,37 +17,33 @@ defmodule MongoosePush.Metrics.Exometer do
   `{:error, reason :: term}` as error `reason`.
   """
   def update_success(return_value, mtype, metric, value \\ 1) do
-    alias MongoosePush.Metrics.Exometer, as: Metrics
-
-    final_metrics = [Metrics.name(mtype, metric, [:success])]
+    final_metrics = [name(mtype, metric, [:success])]
 
     for final_metric <- final_metrics do
-      Metrics.update_metric(mtype, final_metric, value)
+      update_metric(mtype, final_metric, value)
     end
 
     return_value
   end
 
   def update_error(return_value, mtype, metric, value \\ 1) do
-    alias MongoosePush.Metrics.Exometer, as: Metrics
-
     {:error, reason} = return_value
 
-    general_metric = Metrics.name(mtype, metric, [:error, :all])
+    general_metric = name(mtype, metric, [:error, :all])
 
     main_metric =
       case is_atom(reason) do
         true ->
-          Metrics.name(mtype, metric, [:error, reason])
+          name(mtype, metric, [:error, reason])
 
         false ->
-          Metrics.name(mtype, metric, [:error, :unknown])
+          name(mtype, metric, [:error, :unknown])
       end
 
     final_metrics = [main_metric, general_metric]
 
     for final_metric <- final_metrics do
-      Metrics.update_metric(mtype, final_metric, value)
+      update_metric(mtype, final_metric, value)
     end
 
     return_value
@@ -61,7 +57,7 @@ defmodule MongoosePush.Metrics.Exometer do
     Elixometer.Updater.timer(metric, :microsecond, value)
   end
 
-  def name(type, prefix, suffix) do
+  defp name(type, prefix, suffix) do
     List.flatten([:mongoose_push, :"#{type}s", prefix, suffix])
     |> Enum.map(&Atom.to_string/1)
   end
