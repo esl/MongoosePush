@@ -1,7 +1,7 @@
 defmodule MongoosePushWeb.APIv1.RequestDecoder do
   alias MongoosePushWeb.Schemas.Request
 
-  @spec decode(%MongoosePushWeb.Schemas.Request.SendNotification.Flat{}) :: MongoosePush.request()
+  @spec decode(Request.SendNotification.Flat.t()) :: MongoosePush.request()
   def decode(%Request.SendNotification.Flat{} = schema) do
     _push_request =
       %{
