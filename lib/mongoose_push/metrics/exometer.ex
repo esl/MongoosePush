@@ -2,13 +2,7 @@ defmodule MongoosePush.Metrics.Exometer do
   @moduledoc """
   This module provides some utility functions that simplify the use of Elixometer.
   """
-
-  defmacro __using__(_opts) do
-    quote do
-      use Elixometer
-      require MongoosePush.Metrics.Exometer, as: Metrics
-    end
-  end
+  use Elixometer
 
   @doc """
   Updates metric (spiral) by given value. The metrics name is

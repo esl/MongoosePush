@@ -3,7 +3,6 @@ defmodule MongoosePush.Telemetry.APNSHandler do
   Module responsible for handling APNS telemetry events
   """
   alias MongoosePush.Metrics.Exometer, as: Metrics
-  use Metrics
 
   @behaviour MongoosePush.Telemetry
 

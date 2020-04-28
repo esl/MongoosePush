@@ -3,7 +3,6 @@ defmodule MongoosePush.Telemetry.FCMHandler do
   Module responsible for handling FCM telemetry events
   """
   alias MongoosePush.Metrics.Exometer, as: Metrics
-  use Metrics
 
   @behaviour MongoosePush.Telemetry
 
