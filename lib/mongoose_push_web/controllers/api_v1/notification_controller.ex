@@ -50,10 +50,12 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
     }
   end
 
-  def send(conn = %{body_params: params}, %{device_id: device_id}) do
+  def send(conn = %Plug.Conn{body_params: params}, %{device_id: device_id}) do
     request = MongoosePushWeb.APIv1.RequestDecoder.decode(params)
     result = MongoosePush.Application.backend_module().push(device_id, request)
     {status, payload} = MongoosePush.API.V1.ResponseEncoder.to_status(result)
+
+    conn = update_in(conn.body_params, & Map.from_struct(&1))
 
     conn
     |> Plug.Conn.put_status(status)
