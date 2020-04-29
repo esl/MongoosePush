@@ -29,7 +29,7 @@ defmodule RequestDecoderTest do
       data: %{"acme1" => "value1", "acme2" => "value2"}
     }
 
-    assert expected == MongoosePushWeb.APIv1.RequestDecoder.to_push_request(input)
+    assert expected == MongoosePushWeb.APIv1.RequestDecoder.decode(input)
   end
 
   test "decoder does not fail without optional alert fields" do
@@ -53,7 +53,7 @@ defmodule RequestDecoderTest do
       data: %{"acme1" => "value1", "acme2" => "value2"}
     }
 
-    assert expected == MongoosePushWeb.APIv1.RequestDecoder.to_push_request(input)
+    assert expected == MongoosePushWeb.APIv1.RequestDecoder.decode(input)
   end
 
   test "decoder does not fail without optional fields at all" do
@@ -71,6 +71,6 @@ defmodule RequestDecoderTest do
       }
     }
 
-    assert expected == MongoosePushWeb.APIv1.RequestDecoder.to_push_request(input)
+    assert expected == MongoosePushWeb.APIv1.RequestDecoder.decode(input)
   end
 end
