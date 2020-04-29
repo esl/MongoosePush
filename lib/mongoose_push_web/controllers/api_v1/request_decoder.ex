@@ -15,6 +15,7 @@ defmodule MongoosePushWeb.APIv1.RequestDecoder do
       |> add_optional_alert_fields(schema)
   end
 
+  @spec add_optional_fields(MongoosePush.request(), %Request.SendNotification.Flat{}) :: MongoosePush.request()
   defp add_optional_fields(push_request, schema) do
     opt_keys = [:data, :mode, :topic]
 
@@ -26,6 +27,7 @@ defmodule MongoosePushWeb.APIv1.RequestDecoder do
     end)
   end
 
+  @spec add_optional_alert_fields(MongoosePush.request(), %Request.SendNotification.Flat{}) :: MongoosePush.request()
   defp add_optional_alert_fields(push_request, schema) do
     opt_alert_keys = [:badge, :click_action, :tag]
 
@@ -37,6 +39,7 @@ defmodule MongoosePushWeb.APIv1.RequestDecoder do
     end)
   end
 
+  @spec maybe_convert_to_atom(atom(), (String.t() | map())) :: (atom() | String.t() | map())
   defp maybe_convert_to_atom(:mode, val), do: String.to_atom(val)
   defp maybe_convert_to_atom(_key, val), do: val
 end
