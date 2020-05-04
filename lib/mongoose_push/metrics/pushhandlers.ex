@@ -1,4 +1,4 @@
-defmodule MongoosePush.Telemetry.PushHandlers do
+defmodule MongoosePush.Metrics.PushHandlers do
   @moduledoc """
   TODO
   """

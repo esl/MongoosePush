@@ -11,7 +11,7 @@ defmodule MongoosePush.Telemetry do
   @callback handle_event(event_name, measurements, metadata, config) :: :ok
 
   @handlers [
-    MongoosePush.Telemetry.PushHandlers
+    MongoosePush.Metrics.PushHandlers
   ]
 
   def attach_all do
