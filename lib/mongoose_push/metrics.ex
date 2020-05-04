@@ -12,7 +12,7 @@ defmodule MongoosePush.Metrics do
 
   @type return_value :: :ok | {:error, any}
   @type metric_type :: :spiral | :timer
-  @callback update_success(return_value, metric_type, atom, any) :: :ok
+  @callback update_success(metric_type, atom, any) :: :ok
   @callback update_error(return_value, metric_type, atom, any) :: {:error, any}
   @callback update_metric(metric_type, atom, any) :: :ok
 end

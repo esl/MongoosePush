@@ -12,14 +12,14 @@ defmodule MongoosePush.Metrics.Exometer do
   Provided return value of `:ok` is counted as succeses, while
   `{:error, reason :: term}` as error `reason`.
   """
-  def update_success(return_value, mtype, metric, value \\ 1) do
+  def update_success(mtype, metric, value \\ 1) do
     final_metrics = [name(mtype, metric, [:success])]
 
     for final_metric <- final_metrics do
       update_metric(mtype, final_metric, value)
     end
 
-    return_value
+    :ok
   end
 
   def update_error(return_value, mtype, metric, value \\ 1) do

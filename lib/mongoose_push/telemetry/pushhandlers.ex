@@ -1,6 +1,6 @@
-defmodule MongoosePush.Telemetry.APNSHandler do
+defmodule MongoosePush.Telemetry.PushHandlers do
   @moduledoc """
-  Module responsible for handling APNS telemetry events
+  TODO
   """
   alias MongoosePush.Metrics.Exometer, as: Metrics
 
@@ -8,20 +8,23 @@ defmodule MongoosePush.Telemetry.APNSHandler do
 
   def event_names do
     [
-      [:mongoose_push, :apns, :push, :success],
-      [:mongoose_push, :apns, :push, :error],
+      [:mongoose_push, :push, :count],
+      [:mongoose_push, :supervisor, :init],
       [:mongoose_push, :apns, :state, :init],
       [:mongoose_push, :apns, :state, :terminate],
-      [:mongoose_push, :apns, :state, :get_default_topic],
-      [:mongoose_push, :apns, :supervisor, :init]
+      [:mongoose_push, :apns, :state, :get_default_topic]
     ]
   end
 
-  def handle_event([:mongoose_push, :apns, :push, :success], measurements, metadata, _) do
-    Metrics.update_success(:ok, :spiral, [:push, metadata.service, metadata.mode])
+  def handle_event(
+        [:mongoose_push, :push, :count],
+        measurements,
+        metadata = %{:status => :success},
+        _
+      ) do
+    Metrics.update_success(:spiral, [:push, metadata.service, metadata.mode])
 
     Metrics.update_success(
-      :ok,
       :timer,
       [:push, metadata.service, metadata.mode],
       measurements.time
@@ -32,7 +35,12 @@ defmodule MongoosePush.Telemetry.APNSHandler do
     :ok
   end
 
-  def handle_event([:mongoose_push, :apns, :push, :error], measurements, metadata, _) do
+  def handle_event(
+        [:mongoose_push, :push, :count],
+        measurements,
+        metadata = %{:status => :error},
+        _
+      ) do
     type = Map.get(metadata, :type)
 
     push_result =
@@ -49,6 +57,7 @@ defmodule MongoosePush.Telemetry.APNSHandler do
     |> Metrics.update_error(:timer, [:push, metadata.service, metadata.mode], measurements.time)
 
     Metrics.update_metric(:timer, "mongoose_push.push", measurements.time)
+
     :ok
   end
 
@@ -64,7 +73,7 @@ defmodule MongoosePush.Telemetry.APNSHandler do
     :ok
   end
 
-  def handle_event([:mongoose_push, :apns, :supervisor, :init], _, _, _) do
+  def handle_event([:mongoose_push, :supervisor, :init], _, _, _) do
     :ok
   end
 end
