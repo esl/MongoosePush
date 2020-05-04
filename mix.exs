@@ -65,6 +65,7 @@ defmodule MongoosePush.Mixfile do
       {:assert_eventually, "~> 0.2.0", only: [:test, :integration]},
       {:mox, "~> 0.5.2", only: [:test, :integration]},
       {:telemetry, "~>0.4.1"},
+      {:telemetry_metrics, "~> 0.4.2"},
       {:logfmt, "~>3.3"}
     ]
   end
