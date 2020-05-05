@@ -1,8 +1,8 @@
 defmodule MongoosePushWeb.APIv1.RequestDecoder do
   alias MongoosePushWeb.Schemas.Request
 
-  @spec decode(Request.SendNotification.Flat.t()) :: MongoosePush.request()
-  def decode(%Request.SendNotification.Flat{} = schema) do
+  @spec decode(Request.SendNotification.FlatNotification.t()) :: MongoosePush.request()
+  def decode(%Request.SendNotification.FlatNotification{} = schema) do
     _push_request =
       %{
         service: String.to_atom(schema.service),
@@ -15,7 +15,7 @@ defmodule MongoosePushWeb.APIv1.RequestDecoder do
       |> add_optional_alert_fields(schema)
   end
 
-  @spec add_optional_fields(MongoosePush.request(), %Request.SendNotification.Flat{}) ::
+  @spec add_optional_fields(MongoosePush.request(), %Request.SendNotification.FlatNotification{}) ::
           MongoosePush.request()
   defp add_optional_fields(push_request, schema) do
     opt_keys = [:data, :mode, :topic]
@@ -28,7 +28,10 @@ defmodule MongoosePushWeb.APIv1.RequestDecoder do
     end)
   end
 
-  @spec add_optional_alert_fields(MongoosePush.request(), %Request.SendNotification.Flat{}) ::
+  @spec add_optional_alert_fields(
+          MongoosePush.request(),
+          %Request.SendNotification.FlatNotification{}
+        ) ::
           MongoosePush.request()
   defp add_optional_alert_fields(push_request, schema) do
     opt_alert_keys = [:badge, :click_action, :tag]

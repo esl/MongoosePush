@@ -37,7 +37,7 @@ defmodule MongoosePushWeb.Support.ControllersHelper do
     }
   end
 
-  def data_request() do
+  def silent_request() do
     %{
       "service" => "apns",
       "mode" => "prod",

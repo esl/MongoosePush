@@ -24,7 +24,7 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
         Operation.request_body(
           "The push notification attributes",
           "application/json",
-          Schemas.Request.SendNotification.Flat,
+          Schemas.Request.SendNotification.FlatNotification,
           required: true
         ),
       responses: %{

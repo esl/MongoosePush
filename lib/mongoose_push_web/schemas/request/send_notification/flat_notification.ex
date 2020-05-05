@@ -1,9 +1,9 @@
-defmodule MongoosePushWeb.Schemas.Request.SendNotification.Flat do
+defmodule MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification do
   require OpenApiSpex
   alias OpenApiSpex.Schema
 
   OpenApiSpex.schema(%{
-    title: "Request.SendNotification.Flat",
+    title: "Request.SendNotification.FlatNotification",
     description: "Push notification request schema",
     type: :object,
     properties: %{

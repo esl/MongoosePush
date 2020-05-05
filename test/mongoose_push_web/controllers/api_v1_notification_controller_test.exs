@@ -10,14 +10,16 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
     %{spec: MongoosePushWeb.ApiSpec.spec(), conn: new_conn}
   end
 
-  test "correct Request.SendNotification.Flat schema", %{conn: conn} do
+  test "correct Request.SendNotification.FlatNotification schema", %{conn: conn} do
     expect(MongoosePush.Notification.MockImpl, :push, fn _id, _req -> :ok end)
 
     conn = post(conn, "/v1/notification/666", Jason.encode!(ControllersHelper.flat_request()))
     assert json_response(conn, 200) == nil
   end
 
-  test "Request.SendNotification.Flat schema without required service field", %{conn: conn} do
+  test "Request.SendNotification.FlatNotification schema without required service field", %{
+    conn: conn
+  } do
     conn =
       post(
         conn,
@@ -28,7 +30,9 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
     assert json_response(conn, 422) == ControllersHelper.missing_field_response("service")
   end
 
-  test "Request.SendNotification.Flat schema without required body field", %{conn: conn} do
+  test "Request.SendNotification.FlatNotification schema without required body field", %{
+    conn: conn
+  } do
     conn =
       post(
         conn,
@@ -39,7 +43,9 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
     assert json_response(conn, 422) == ControllersHelper.missing_field_response("body")
   end
 
-  test "Request.SendNotification.Flat schema with incorrect badge value", %{conn: conn} do
+  test "Request.SendNotification.FlatNotification schema with incorrect badge value", %{
+    conn: conn
+  } do
     conn =
       post(
         conn,
@@ -51,7 +57,7 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
              ControllersHelper.invalid_field_response("integer", "string", "badge")
   end
 
-  test "Request.SendNotification.Flat schema with unexpected field", %{conn: conn} do
+  test "Request.SendNotification.FlatNotification schema with unexpected field", %{conn: conn} do
     conn =
       post(
         conn,

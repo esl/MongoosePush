@@ -5,8 +5,8 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
   OpenApiSpex.schema(%{
     title: "Request.SendNotification.Deep",
     oneOf: [
-      MongoosePushWeb.Schemas.Request.SendNotification.Deep.Alert,
-      MongoosePushWeb.Schemas.Request.SendNotification.Deep.Data
+      MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification,
+      MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification
     ]
   })
 

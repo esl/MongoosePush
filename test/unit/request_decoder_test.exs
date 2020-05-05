@@ -3,7 +3,7 @@ defmodule RequestDecoderTest do
   alias MongoosePushWeb.Schemas.Request
 
   test "decoder does well with all-fields schema" do
-    input = %Request.SendNotification.Flat{
+    input = %Request.SendNotification.FlatNotification{
       badge: 7,
       body: "A message from someone",
       click_action: ".SomeApp.Handler.action",
@@ -33,7 +33,7 @@ defmodule RequestDecoderTest do
   end
 
   test "decoder does not fail without optional alert fields" do
-    input = %Request.SendNotification.Flat{
+    input = %Request.SendNotification.FlatNotification{
       body: "A message from someone",
       service: "apns",
       title: "Notification title",
@@ -57,7 +57,7 @@ defmodule RequestDecoderTest do
   end
 
   test "decoder does not fail without optional fields at all" do
-    input = %Request.SendNotification.Flat{
+    input = %Request.SendNotification.FlatNotification{
       body: "A message from someone",
       service: "apns",
       title: "Notification title"

@@ -1,9 +1,9 @@
-defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Alert do
+defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification do
   require OpenApiSpex
   alias MongoosePushWeb.Schemas.Request.SendNotification.Deep
 
   OpenApiSpex.schema(%{
-    title: "Request.SendNotification.Deep.Alert",
+    title: "Request.SendNotification.Deep.AlertNotification",
     description: "In this request alert field is mandatory.",
     type: :object,
     properties: Deep.base()[:properties],

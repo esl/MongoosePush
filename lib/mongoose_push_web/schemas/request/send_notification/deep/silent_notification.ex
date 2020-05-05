@@ -1,9 +1,9 @@
-defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Data do
+defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification do
   require OpenApiSpex
   alias MongoosePushWeb.Schemas.Request.SendNotification.Deep
 
   OpenApiSpex.schema(%{
-    title: "Request.SendNotification.Deep.Data",
+    title: "Request.SendNotification.Deep.SilentNotification",
     description: "In this request data field is mandatory.",
     type: :object,
     properties: Deep.base()[:properties],
