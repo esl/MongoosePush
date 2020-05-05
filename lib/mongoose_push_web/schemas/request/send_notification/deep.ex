@@ -1,14 +1,5 @@
 defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
-  require OpenApiSpex
   alias OpenApiSpex.Schema
-
-  OpenApiSpex.schema(%{
-    title: "Request.SendNotification.Deep",
-    oneOf: [
-      MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification,
-      MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification
-    ]
-  })
 
   def base() do
     %{
