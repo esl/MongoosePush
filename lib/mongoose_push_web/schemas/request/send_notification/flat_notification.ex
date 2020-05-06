@@ -1,5 +1,6 @@
 defmodule MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification do
   require OpenApiSpex
+  alias MongoosePushWeb.Schemas.Request
   alias OpenApiSpex.Schema
 
   OpenApiSpex.schema(%{
@@ -45,4 +46,45 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification do
     },
     additionalProperties: false
   })
+
+  defimpl MongoosePushWeb.Protocols.RequestDecoder,
+    for: Request.SendNotification.FlatNotification do
+    @spec decode(%Request.SendNotification.FlatNotification{}) :: MongoosePush.request()
+    def decode(schema) do
+      %{
+        service: String.to_atom(schema.service),
+        alert: %{
+          body: schema.body,
+          title: schema.title
+        }
+      }
+      |> add_optional_fields(schema)
+      |> add_optional_alert_fields(schema)
+    end
+
+    defp add_optional_fields(push_request, schema) do
+      opt_keys = [:data, :mode, :topic]
+
+      Enum.reduce(opt_keys, push_request, fn x, acc ->
+        case Map.get(schema, x) do
+          nil -> acc
+          val -> Map.put(acc, x, maybe_convert_to_atom(x, val))
+        end
+      end)
+    end
+
+    defp add_optional_alert_fields(push_request, schema) do
+      opt_alert_keys = [:badge, :click_action, :tag]
+
+      Enum.reduce(opt_alert_keys, push_request, fn x, acc ->
+        case Map.get(schema, x) do
+          nil -> acc
+          val -> Kernel.update_in(acc, [:alert, x], fn _ -> val end)
+        end
+      end)
+    end
+
+    defp maybe_convert_to_atom(:mode, val), do: String.to_atom(val)
+    defp maybe_convert_to_atom(_key, val), do: val
+  end
 end
