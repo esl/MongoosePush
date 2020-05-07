@@ -24,7 +24,13 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
         Operation.request_body(
           "The push notification attributes",
           "application/json",
-          Schemas.Request.SendNotification.Deep,
+          %OpenApiSpex.Schema{
+            oneOf: [
+              MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification,
+              MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification
+            ],
+            additionalProperties: false
+          },
           required: true
         ),
       responses: %{

@@ -37,7 +37,7 @@ defmodule MongoosePushWeb.Support.ControllersHelper do
     }
   end
 
-  def data_request() do
+  def silent_request() do
     %{
       "service" => "apns",
       "mode" => "prod",
@@ -95,6 +95,18 @@ defmodule MongoosePushWeb.Support.ControllersHelper do
       "errors" => [
         %{
           "message" => "Unexpected field: #{field}",
+          "source" => %{"pointer" => "/#{field}"},
+          "title" => "Invalid value"
+        }
+      ]
+    }
+  end
+
+  def invalid_value_for_enum(field) do
+    %{
+      "errors" => [
+        %{
+          "message" => "Invalid value for enum",
           "source" => %{"pointer" => "/#{field}"},
           "title" => "Invalid value"
         }

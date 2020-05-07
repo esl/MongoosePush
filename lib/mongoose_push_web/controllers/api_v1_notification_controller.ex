@@ -24,7 +24,7 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
         Operation.request_body(
           "The push notification attributes",
           "application/json",
-          Schemas.Request.SendNotification.Flat,
+          Schemas.Request.SendNotification.FlatNotification,
           required: true
         ),
       responses: %{
@@ -51,8 +51,12 @@ defmodule MongoosePushWeb.APIv1.NotificationController do
   end
 
   def send(conn = %{body_params: params}, %{device_id: device_id}) do
-    result = MongoosePush.Application.backend_module().push(device_id, params)
+    request = MongoosePushWeb.Protocols.RequestDecoder.decode(params)
+    result = MongoosePush.Application.backend_module().push(device_id, request)
     {status, payload} = MongoosePush.API.V1.ResponseEncoder.to_status(result)
+
+    # TODO remove the line below after the reimplementation of CastAndValidate plug
+    conn = update_in(conn.body_params, &Map.from_struct(&1))
 
     conn
     |> Plug.Conn.put_status(status)
