@@ -31,10 +31,10 @@ defmodule MongoosePush.Application do
 
     # Only used for attaching Elixometer handler, which builds metrics based on emitted events
     MongoosePush.Telemetry.attach_all()
-    metrics_supervisor = {TelemetryMetricsPrometheus.Core, [metrics: metrics()]}
 
     # Define workers and child supervisors to be supervised
-    children = service_children() ++ [MongoosePushWeb.Endpoint, metrics_supervisor]
+    children =
+      service_children() ++ [MongoosePushWeb.Endpoint, MongoosePush.Metrics.TelemetryMetrics]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
@@ -86,39 +86,6 @@ defmodule MongoosePush.Application do
           [module.supervisor_entry(pools_config) | acc]
       end
     end)
-  end
-
-  defp metrics do
-    [
-      # Summary is not yet supported in TelemetryMetricsPrometheus
-      Telemetry.Metrics.counter("mongoose_push.push.time",
-        tags: [:status, :service, :type, :reason],
-        tag_values: fn metadata ->
-          case metadata.status do
-            :success ->
-              Map.merge(
-                %{
-                  type: :success,
-                  reason: :success
-                },
-                metadata
-              )
-
-            :error ->
-              Map.merge(
-                %{type: :generic},
-                metadata
-              )
-          end
-        end
-      ),
-
-      # measurement is ignored in Counter metric
-      Telemetry.Metrics.counter("mongoose_push.supervisor.init.count", tags: [:service]),
-      Telemetry.Metrics.counter("mongoose_push.apns.state.init.count"),
-      Telemetry.Metrics.counter("mongoose_push.apns.state.terminate.count", tags: [:reason]),
-      Telemetry.Metrics.counter("mongoose_push.apns.state.get_default_topic.count")
-    ]
   end
 
   defp generate_pool_id(config, service, index) do
