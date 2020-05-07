@@ -9,7 +9,7 @@ defmodule MongoosePush.Metrics.ExometerHandlers do
 
   def event_names do
     [
-      [:mongoose_push, :push],
+      [:mongoose_push, :notification, :send],
       [:mongoose_push, :supervisor, :init],
       [:mongoose_push, :apns, :state, :init],
       [:mongoose_push, :apns, :state, :terminate],
@@ -18,7 +18,7 @@ defmodule MongoosePush.Metrics.ExometerHandlers do
   end
 
   def handle_event(
-        [:mongoose_push, :push],
+        [:mongoose_push, :notification, :send],
         measurements,
         metadata = %{:status => :success},
         _
@@ -37,7 +37,7 @@ defmodule MongoosePush.Metrics.ExometerHandlers do
   end
 
   def handle_event(
-        [:mongoose_push, :push],
+        [:mongoose_push, :notification, :send],
         measurements,
         metadata = %{:status => :error},
         _

@@ -140,7 +140,7 @@ defmodule MongoosePush do
 
   defp emit_telemetry_event(time, :ok, service, mode) do
     :telemetry.execute(
-      [:mongoose_push, :push],
+      [:mongoose_push, :notification, :send],
       %{time: time},
       %{
         status: :success,
@@ -152,7 +152,7 @@ defmodule MongoosePush do
 
   defp emit_telemetry_event(time, {:error, {type, reason}}, service, mode) do
     :telemetry.execute(
-      [:mongoose_push, :push],
+      [:mongoose_push, :notification, :send],
       %{time: time},
       %{
         status: :error,
@@ -166,7 +166,7 @@ defmodule MongoosePush do
 
   defp emit_telemetry_event(time, {:error, reason}, service, mode) do
     :telemetry.execute(
-      [:mongoose_push, :push],
+      [:mongoose_push, :notification, :send],
       %{time: time},
       %{
         status: :error,
