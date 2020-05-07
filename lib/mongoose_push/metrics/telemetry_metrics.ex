@@ -10,7 +10,8 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
   def metrics do
     [
       # Summary is not yet supported in TelemetryMetricsPrometheus
-      Telemetry.Metrics.counter("mongoose_push.push.time",
+      Telemetry.Metrics.distribution("mongoose_push.push.time",
+        buckets: [100, 250, 500, 1000],
         tags: [:status, :service, :type, :reason],
         tag_values: fn metadata ->
           case metadata.status do

@@ -18,13 +18,13 @@ defmodule MongoosePushTelemetryMetricsTest do
     metrics = TelemetryMetricsPrometheus.Core.scrape()
 
     fcm_regex =
-      ~r/mongoose_push_push_time{reason=\"success\",service=\"fcm\",status=\"success\",type=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_push_time_count{reason=\"success\",service=\"fcm\",status=\"success\",type=\"success\"} (?<count>[\d]+)/
 
     fcm_match = Regex.named_captures(fcm_regex, metrics)
     fcm_count = get_count(fcm_match)
 
     apns_regex =
-      ~r/mongoose_push_push_time{reason=\"success\",service=\"fcm\",status=\"success\",type=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_push_time_count{reason=\"success\",service=\"apns\",status=\"success\",type=\"success\"} (?<count>[\d]+)/
 
     apns_match = Regex.named_captures(apns_regex, metrics)
     apns_count = get_count(apns_match)
@@ -47,10 +47,10 @@ defmodule MongoosePushTelemetryMetricsTest do
       metrics = TelemetryMetricsPrometheus.Core.scrape()
 
       fcm_regex =
-        ~r/mongoose_push_push_time{reason=\"(?<reason>[^\s]+)\",service=\"fcm\",status=\"error\",type=\"(?<type>[^\s]+)\"} (?<count>[\d]+)/
+        ~r/mongoose_push_push_time_count{reason=\"(?<reason>[^\s]+)\",service=\"fcm\",status=\"error\",type=\"(?<type>[^\s]+)\"} (?<count>[\d]+)/
 
       apns_regex =
-        ~r/mongoose_push_push_time{reason=\"(?<reason>[^\s]+)\",service=\"apns\",status=\"error\",type=\"(?<type>[^\s]+)\"} (?<count>[\d]+)/
+        ~r/mongoose_push_push_time_count{reason=\"(?<reason>[^\s]+)\",service=\"apns\",status=\"error\",type=\"(?<type>[^\s]+)\"} (?<count>[\d]+)/
 
       fcm_matches =
         fcm_regex
