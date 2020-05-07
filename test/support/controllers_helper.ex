@@ -101,4 +101,16 @@ defmodule MongoosePushWeb.Support.ControllersHelper do
       ]
     }
   end
+
+  def invalid_value_for_enum(field) do
+    %{
+      "errors" => [
+        %{
+          "message" => "Invalid value for enum",
+          "source" => %{"pointer" => "/#{field}"},
+          "title" => "Invalid value"
+        }
+      ]
+    }
+  end
 end

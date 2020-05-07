@@ -68,6 +68,19 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
     assert json_response(conn, 422) == ControllersHelper.unexpected_field_response("field")
   end
 
+  test "Request.SendNotification.FlatNotification schema with unsupported mode value", %{
+    conn: conn
+  } do
+    conn =
+      post(
+        conn,
+        "/v1/notification/666",
+        Jason.encode!(%{ControllersHelper.flat_request() | "mode" => "test"})
+      )
+
+    assert json_response(conn, 422) == ControllersHelper.invalid_value_for_enum("mode")
+  end
+
   # Service.error() errors
 
   test "invalid request error", %{conn: conn} do
