@@ -23,4 +23,20 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert do
     example: Deep.alert()[:example]["alert"],
     additionalProperties: false
   })
+
+  defimpl MongoosePushWeb.Protocols.RequestDecoder,
+    for: MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert do
+    def decode(schema) do
+      %{
+        body: schema.body,
+        title: schema.title,
+        badge: schema.badge,
+        click_action: schema.click_action,
+        tag: schema.tag,
+        sound: schema.sound
+      }
+      |> Enum.filter(fn {_, v} -> v != nil end)
+      |> Enum.into(%{})
+    end
+  end
 end
