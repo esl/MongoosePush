@@ -1,7 +1,7 @@
 defmodule MongoosePushTelemetryMetricsTest do
   use ExUnit.Case, async: false
   use Quixir
-  import Mock
+  import Mox
   import MongoosePush
   import Regex
 
@@ -9,7 +9,10 @@ defmodule MongoosePushTelemetryMetricsTest do
   alias MongoosePush.Service.FCM
 
   setup do
-    TestHelper.reload_app()
+    Application.stop(:mongoose_push)
+    Application.load(:mongoose_push)
+    {:ok, _} = Application.ensure_all_started(:mongoose_push)
+    :ok
   end
 
   test "push success metrics" do
@@ -17,14 +20,15 @@ defmodule MongoosePushTelemetryMetricsTest do
 
     metrics = TelemetryMetricsPrometheus.Core.scrape()
 
+    # Distribution metric contains count as well as the buckets
     fcm_regex =
-      ~r/mongoose_push_notification_send_time_count{reason=\"success\",service=\"fcm\",status=\"success\",type=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_notification_send_time_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
 
     fcm_match = Regex.named_captures(fcm_regex, metrics)
     fcm_count = get_count(fcm_match)
 
     apns_regex =
-      ~r/mongoose_push_notification_send_time_count{reason=\"success\",service=\"apns\",status=\"success\",type=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_notification_send_time_count{error_category=\"\",error_reason=\"\",service=\"apns\",status=\"success\"} (?<count>[\d]+)/
 
     apns_match = Regex.named_captures(apns_regex, metrics)
     apns_count = get_count(apns_match)
@@ -46,11 +50,12 @@ defmodule MongoosePushTelemetryMetricsTest do
     test "metrics" do
       metrics = TelemetryMetricsPrometheus.Core.scrape()
 
+      # Distribution metric contains count as well as the buckets
       fcm_regex =
-        ~r/mongoose_push_notification_send_time_count{reason=\"(?<reason>[^\s]+)\",service=\"fcm\",status=\"error\",type=\"(?<type>[^\s]+)\"} (?<count>[\d]+)/
+        ~r/mongoose_push_notification_send_time_count{error_category=\"(?<type>[^\s]*)\",error_reason=\"(?<reason>[^\s]*)\",service=\"fcm\",status=\"error\"} (?<count>[\d]+)/
 
       apns_regex =
-        ~r/mongoose_push_notification_send_time_count{reason=\"(?<reason>[^\s]+)\",service=\"apns\",status=\"error\",type=\"(?<type>[^\s]+)\"} (?<count>[\d]+)/
+        ~r/mongoose_push_notification_send_time_count{error_category=\"(?<type>[^\s]*)\",error_reason=\"(?<reason>[^\s]*)\",service=\"apns\",status=\"error\"} (?<count>[\d]+)/
 
       fcm_matches =
         fcm_regex
@@ -96,21 +101,31 @@ defmodule MongoosePushTelemetryMetricsTest do
   end
 
   defp do_push(push_result, repeat_no) do
-    with_mock APNS, [:passthrough], push: fn _, _, _, _ -> push_result end do
-      with_mock FCM, [:passthrough], push: fn _, _, _, _ -> push_result end do
-        ptest [
-                mode: choose(from: [value(:dev), value(:prod)]),
-                service: choose(from: [value(:fcm), value(:apns)])
-              ],
-              repeat_for: repeat_no do
-          assert push_result =
-                   push(
-                     "device_id",
-                     %{service: service, title: "", body: "", mode: mode}
-                   )
-        end
-      end
+    Application.put_env(:mongoose_push, MongoosePush.Service,
+      fcm: MongoosePush.Service.Mock,
+      apns: MongoosePush.Service.Mock
+    )
+
+    MongoosePush.Service.Mock
+    |> expect(:push, repeat_no, fn _, _, _, _ -> push_result end)
+    |> stub_with(FCM)
+
+    ptest [
+            mode: choose(from: [value(:dev), value(:prod)]),
+            service: choose(from: [value(:fcm), value(:apns)])
+          ],
+          repeat_for: repeat_no do
+      assert push_result =
+               push(
+                 "device_id",
+                 %{service: service, title: "", body: "", mode: mode}
+               )
     end
+
+    Application.put_env(:mongoose_push, MongoosePush.Service,
+      fcm: MongoosePush.Service.FCM,
+      apns: MongoosePush.Service.APNS
+    )
   end
 
   defp get_count(match) do

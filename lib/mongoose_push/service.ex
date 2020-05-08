@@ -30,5 +30,5 @@ defmodule MongoosePush.Service do
   @callback prepare_notification(String.t(), MongoosePush.request(), Application.pool_name()) ::
               notification()
   @callback supervisor_entry([Application.pool_definition()] | nil) :: {module(), term()}
-  @callback choose_pool(MongoosePush.mode()) :: Application.pool_name() | nil
+  @callback choose_pool(MongoosePush.mode(), [atom]) :: Application.pool_name() | nil
 end

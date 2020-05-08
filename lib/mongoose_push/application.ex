@@ -65,17 +65,12 @@ defmodule MongoosePush.Application do
     end)
   end
 
-  def services do
-    [
-      fcm: MongoosePush.Service.FCM,
-      apns: MongoosePush.Service.APNS
-    ]
-  end
-
   def backend_module, do: Application.fetch_env!(:mongoose_push, :backend_module)
 
   defp service_children do
-    List.foldl(services(), [], fn {service, module}, acc ->
+    services = Application.get_env(:mongoose_push, MongoosePush.Service)
+
+    List.foldl(services, [], fn {service, module}, acc ->
       pools_config = pools_config(service)
 
       case pools_config do

@@ -63,7 +63,7 @@ defmodule MongoosePush do
           :ok | {:error, Service.error()} | {:error, MongoosePush.error()}
   def push(device_id, %{:service => service} = request) do
     mode = Map.get(request, :mode, :prod)
-    module = MongoosePush.Application.services()[service]
+    module = Application.get_env(:mongoose_push, MongoosePush.Service) |> Keyword.get(service)
     tags = Map.get(request, :tags, [])
     pool = module.choose_pool(mode, tags)
 
