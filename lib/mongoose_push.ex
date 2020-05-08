@@ -25,6 +25,7 @@ defmodule MongoosePush do
           | :priority
           | :time_to_live
           | :mutable_content
+          | :tags
   @type alert_key :: :title | :body | :tag | :badge | :click_action | :sound
   @type data_key :: atom | String.t()
 
