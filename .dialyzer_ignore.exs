@@ -1,4 +1,6 @@
 [
+  ~r/lib\/mongoose_push\/metrics\/telemetry_metrics\.ex.*child_spec.*no local return/,
+  ~r/lib\/mongoose_push\/metrics\/telemetry_metrics\.ex.*child_spec.*will not succeed/,
   ~r/unmatched_return/,
   ~r/Function :asn1ct.compile\/2 does not exist/,
   ~r/lib\/mix\//,
