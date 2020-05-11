@@ -57,7 +57,8 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
   end
 
   def send(conn = %{body_params: params}, %{device_id: device_id}) do
-    result = MongoosePush.Application.backend_module().push(device_id, params)
+    request = MongoosePushWeb.Protocols.RequestDecoder.decode(params)
+    result = MongoosePush.Application.backend_module().push(device_id, request)
     {status, payload} = MongoosePush.API.V2.ResponseEncoder.to_status(result)
 
     conn
