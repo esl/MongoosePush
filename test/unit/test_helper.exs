@@ -1,4 +1,5 @@
 ExUnit.start(capture_log: true)
+Mox.defmock(MongoosePush.Service.Mock, for: MongoosePush.Service)
 
 defmodule TestHelper do
   @fcm_http_port 4001
