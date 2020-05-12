@@ -42,15 +42,15 @@ defmodule MongoosePush.Metrics.ExometerHandlers do
         metadata = %{:status => :error},
         _
       ) do
-    type = Map.get(metadata, :type)
+    type = Map.get(metadata, :error_category)
 
     push_result =
       case type do
-        nil ->
-          {:error, metadata.reason}
+        :generic ->
+          {:error, metadata.error_reason}
 
         _ ->
-          {:error, {type, metadata.reason}}
+          {:error, {type, metadata.error_reason}}
       end
 
     push_result
