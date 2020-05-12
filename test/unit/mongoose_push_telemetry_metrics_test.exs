@@ -9,9 +9,13 @@ defmodule MongoosePushTelemetryMetricsTest do
   alias MongoosePush.Service.FCM
 
   setup do
-    Application.stop(:mongoose_push)
-    Application.load(:mongoose_push)
-    {:ok, _} = Application.ensure_all_started(:mongoose_push)
+    TestHelper.reload_app()
+
+    Application.put_env(:mongoose_push, MongoosePush.Service,
+      fcm: MongoosePush.Service.Mock,
+      apns: MongoosePush.Service.Mock
+    )
+
     :ok
   end
 
@@ -101,11 +105,6 @@ defmodule MongoosePushTelemetryMetricsTest do
   end
 
   defp do_push(push_result, repeat_no) do
-    Application.put_env(:mongoose_push, MongoosePush.Service,
-      fcm: MongoosePush.Service.Mock,
-      apns: MongoosePush.Service.Mock
-    )
-
     MongoosePush.Service.Mock
     |> expect(:push, repeat_no, fn _, _, _, _ -> push_result end)
     |> stub_with(FCM)
@@ -115,17 +114,12 @@ defmodule MongoosePushTelemetryMetricsTest do
             service: choose(from: [value(:fcm), value(:apns)])
           ],
           repeat_for: repeat_no do
-      assert push_result =
+      assert push_result ==
                push(
                  "device_id",
                  %{service: service, title: "", body: "", mode: mode}
                )
     end
-
-    Application.put_env(:mongoose_push, MongoosePush.Service,
-      fcm: MongoosePush.Service.FCM,
-      apns: MongoosePush.Service.APNS
-    )
   end
 
   defp get_count(match) do
