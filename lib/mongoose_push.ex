@@ -145,7 +145,9 @@ defmodule MongoosePush do
       %{
         status: :success,
         service: service,
-        mode: mode
+        mode: mode,
+        error_category: nil,
+        error_reason: nil
       }
     )
   end
@@ -156,8 +158,8 @@ defmodule MongoosePush do
       %{time: time},
       %{
         status: :error,
-        type: type,
-        reason: reason,
+        error_category: type,
+        error_reason: reason,
         service: service,
         mode: mode
       }
@@ -170,7 +172,8 @@ defmodule MongoosePush do
       %{time: time},
       %{
         status: :error,
-        reason: reason,
+        error_category: :generic,
+        error_reason: reason,
         service: service,
         mode: mode
       }
