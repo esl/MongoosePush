@@ -49,6 +49,8 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification do
 
   defimpl MongoosePushWeb.Protocols.RequestDecoder,
     for: Request.SendNotification.FlatNotification do
+    alias MongoosePushWeb.Protocols.RequestDecoderHelper
+
     @spec decode(%Request.SendNotification.FlatNotification{}) :: MongoosePush.request()
     def decode(schema) do
       %{
@@ -68,7 +70,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification do
       Enum.reduce(opt_keys, push_request, fn x, acc ->
         case Map.get(schema, x) do
           nil -> acc
-          val -> Map.put(acc, x, maybe_parse_to_atom(x, val))
+          val -> Map.put(acc, x, RequestDecoderHelper.maybe_parse_to_atom(x, val))
         end
       end)
     end
@@ -83,11 +85,5 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification do
         end
       end)
     end
-
-    defp maybe_parse_to_atom(:mode, val), do: parse_mode(val)
-    defp maybe_parse_to_atom(_key, val), do: val
-
-    defp parse_mode("prod"), do: :prod
-    defp parse_mode("dev"), do: :dev
   end
 end
