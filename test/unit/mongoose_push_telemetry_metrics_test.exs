@@ -8,6 +8,8 @@ defmodule MongoosePushTelemetryMetricsTest do
   alias MongoosePush.Service.APNS
   alias MongoosePush.Service.FCM
 
+  use MongoosePushWeb.ConnCase, async: false
+
   setup do
     TestHelper.reload_app()
 
@@ -112,6 +114,25 @@ defmodule MongoosePushTelemetryMetricsTest do
     assert 10 == count
   end
 
+  test "Metrics can be correctly received from Prometheus" do
+    for service <- [:fcm, :apns], do: do_push(:ok, service, 10)
+    metrics = get(build_conn(), "/metrics")
+
+    # 1. Status is 200
+    assert 200 == metrics.status
+
+    # 2. content type is text/plain
+    [resp] = get_resp_header(metrics, "content-type")
+    assert String.contains?(resp, "text/plain")
+
+    # 3. regex on the payload to make sure this is prometheus output
+    fcm_regex =
+      ~r/mongoose_push_notification_send_time_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
+
+    fcm_match = Regex.named_captures(fcm_regex, metrics.resp_body)
+    assert 0 != fcm_match
+  end
+
   defp do_push(push_result, service, repeat_no) do
     MongoosePush.Service.Mock
     |> expect(:push, repeat_no, fn _, _, _, _ -> push_result end)
@@ -119,7 +140,7 @@ defmodule MongoosePushTelemetryMetricsTest do
 
     for _ <- 1..repeat_no do
       assert push_result ==
-               push("device_id", %{service: service, title: "", body: "", mode: :dev})
+               MongoosePush.push("device_id", %{service: service, title: "", body: "", mode: :dev})
     end
 
     :ok
