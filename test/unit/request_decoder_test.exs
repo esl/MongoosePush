@@ -2,6 +2,7 @@ defmodule RequestDecoderTest do
   use ExUnit.Case, async: false
   alias MongoosePushWeb.Protocols.RequestDecoder
   alias MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification
+  alias MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification
   alias MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification
   alias MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert
   alias MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification
@@ -170,8 +171,7 @@ defmodule RequestDecoderTest do
         click_action: ".SomeApp.Handler.action",
         tag: "info",
         sound: "standard.mp3"
-      },
-      data: %{"acme1" => "value1", "acme2" => "value2"}
+      }
     }
 
     expected = %{
@@ -189,7 +189,6 @@ defmodule RequestDecoderTest do
         sound: "standard.mp3"
       },
       topic: "com.someapp",
-      data: %{"acme1" => "value1", "acme2" => "value2"},
       tags: ["some", "tags", "for", "pool", "selection"]
     }
 
@@ -228,6 +227,49 @@ defmodule RequestDecoderTest do
       mutable_content: true,
       tags: ["some", "tags", "for", "pool", "selection"],
       topic: "com.someapp",
+      data: %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected = %{
+      service: :apns,
+      mode: :prod,
+      priority: :normal,
+      time_to_live: 3600,
+      mutable_content: true,
+      tags: ["some", "tags", "for", "pool", "selection"],
+      topic: "com.someapp",
+      data: %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    assert expected == RequestDecoder.decode(input)
+  end
+
+  test "SilentNotification: minimum fields schema" do
+    input = %SilentNotification{
+      service: "fcm",
+      data: %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected = %{
+      service: :fcm,
+      mutable_content: false,
+      data: %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    assert expected == RequestDecoder.decode(input)
+  end
+
+  # MixedNotification
+
+  test "MixedNotification: decoder does well with all-fields schema" do
+    input = %MixedNotification{
+      service: "apns",
+      mode: "prod",
+      priority: "normal",
+      time_to_live: 3600,
+      mutable_content: true,
+      tags: ["some", "tags", "for", "pool", "selection"],
+      topic: "com.someapp",
       alert: %Alert{
         body: "A message from someone",
         title: "Notification title",
@@ -245,8 +287,6 @@ defmodule RequestDecoderTest do
       priority: :normal,
       time_to_live: 3600,
       mutable_content: true,
-      tags: ["some", "tags", "for", "pool", "selection"],
-      topic: "com.someapp",
       alert: %{
         body: "A message from someone",
         title: "Notification title",
@@ -255,21 +295,31 @@ defmodule RequestDecoderTest do
         click_action: ".SomeApp.Handler.action",
         sound: "standard.mp3"
       },
-      data: %{"acme1" => "value1", "acme2" => "value2"}
+      topic: "com.someapp",
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      tags: ["some", "tags", "for", "pool", "selection"]
     }
 
     assert expected == RequestDecoder.decode(input)
   end
 
-  test "SilentNotification: minimum fields schema" do
-    input = %SilentNotification{
+  test "MixedNotification: minimum fields schema" do
+    input = %MixedNotification{
       service: "fcm",
+      alert: %Alert{
+        body: "A message from someone",
+        title: "Notification title"
+      },
       data: %{"acme1" => "value1", "acme2" => "value2"}
     }
 
     expected = %{
       service: :fcm,
       mutable_content: false,
+      alert: %{
+        body: "A message from someone",
+        title: "Notification title"
+      },
       data: %{"acme1" => "value1", "acme2" => "value2"}
     }
 

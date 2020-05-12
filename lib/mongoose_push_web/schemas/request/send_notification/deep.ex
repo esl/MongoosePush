@@ -4,8 +4,6 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
   def base() do
     %{
       properties: %{
-        alert: MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert,
-        data: MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data,
         service: %Schema{
           type: :string,
           description: "Push notification service",
@@ -44,6 +42,9 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
 
   def alert() do
     %{
+      properties: %{
+        alert: MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert
+      },
       required: [:alert],
       example: %{
         "alert" => %{
@@ -60,6 +61,9 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep do
 
   def data() do
     %{
+      properties: %{
+        data: MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data
+      },
       required: [:data],
       example: %{
         "data" => %{

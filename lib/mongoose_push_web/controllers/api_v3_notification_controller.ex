@@ -27,6 +27,7 @@ defmodule MongoosePushWeb.APIv3.NotificationController do
           %OpenApiSpex.Schema{
             oneOf: [
               MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification,
+              MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification,
               MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification
             ],
             additionalProperties: false

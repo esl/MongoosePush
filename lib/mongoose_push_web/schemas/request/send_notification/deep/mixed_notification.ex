@@ -1,23 +1,30 @@
-defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification do
+defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification do
   require OpenApiSpex
   alias MongoosePushWeb.Protocols.RequestDecoder
   alias MongoosePushWeb.Schemas.Request.SendNotification.Deep
 
   OpenApiSpex.schema(%{
-    title: "Request.SendNotification.Deep.SilentNotification",
-    description: "In this request data field is mandatory.",
+    title: "Request.SendNotification.Deep.MixedNotification",
+    description: "In this request both alert and data fields are mandatory.",
     type: :object,
-    properties: Map.merge(Deep.base()[:properties], Deep.data()[:properties]),
-    required: Deep.base()[:required] ++ Deep.data()[:required],
-    example: Map.merge(Deep.base()[:example], Deep.data()[:example]),
+    properties:
+      Deep.base()[:properties]
+      |> Map.merge(Deep.alert()[:properties])
+      |> Map.merge(Deep.data()[:properties]),
+    required: Deep.base()[:required] ++ Deep.alert()[:required] ++ Deep.data()[:required],
+    example:
+      Deep.base()[:example]
+      |> Map.merge(Deep.alert()[:example])
+      |> Map.merge(Deep.data()[:example]),
     additionalProperties: false
   })
 
   defimpl RequestDecoder,
-    for: MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification do
+    for: MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification do
     def decode(schema) do
       %{
         service: String.to_atom(schema.service),
+        alert: RequestDecoder.decode(schema.alert),
         data: schema.data
       }
       |> add_optional_fields(schema)

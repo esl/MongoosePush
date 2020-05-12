@@ -202,7 +202,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
 
   # decoder end-to-end tests
 
-  test "AlertNotification/SilentNotification decoder test: all possible fields", %{conn: conn} do
+  test "AlertNotification decoder test: all possible fields", %{conn: conn} do
     device_id = "1"
     expected_device_id = "1"
 
@@ -221,8 +221,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         "click_action" => ".SomeApp.Handler.action",
         "tag" => "info",
         "sound" => "standard.mp3"
-      },
-      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+      }
     }
 
     expected_request = %{
@@ -234,7 +233,6 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         tag: "info",
         title: "Notification title"
       },
-      data: %{"acme1" => "value1", "acme2" => "value2"},
       mode: :prod,
       service: :apns,
       topic: "com.someapp",
@@ -310,8 +308,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         "title" => "Notification title",
         "tag" => "info",
         "sound" => "standard.mp3"
-      },
-      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+      }
     }
 
     expected_request = %{
@@ -321,7 +318,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         tag: "info",
         title: "Notification title"
       },
-      service: :apns,
+      service: :fcm,
       mutable_content: false
     }
 
@@ -439,29 +436,30 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
     post_and_assert(conn, device_id, expected_device_id, request, expected_request)
   end
 
-  test "AlertNotification decoder test: data + alert.badge field", %{conn: conn} do
+  test "SilentNotification decoder test: all possible fields", %{conn: conn} do
     device_id = "9"
     expected_device_id = "9"
 
     request = %{
       "service" => "apns",
-      "alert" => %{
-        "body" => "A message from someone",
-        "title" => "Notification title",
-        "badge" => 7
-      },
+      "mode" => "prod",
+      "priority" => "normal",
+      "time_to_live" => 3600,
+      "mutable_content" => false,
+      "tags" => ["some", "tags", "for", "pool", "selection"],
+      "topic" => "com.someapp",
       "data" => %{"acme1" => "value1", "acme2" => "value2"}
     }
 
     expected_request = %{
-      alert: %{
-        badge: 7,
-        body: "A message from someone",
-        title: "Notification title"
-      },
       data: %{"acme1" => "value1", "acme2" => "value2"},
+      mode: :prod,
       service: :apns,
-      mutable_content: false
+      topic: "com.someapp",
+      priority: :normal,
+      time_to_live: 3600,
+      mutable_content: false,
+      tags: ["some", "tags", "for", "pool", "selection"]
     }
 
     post_and_assert(conn, device_id, expected_device_id, request, expected_request)
@@ -565,6 +563,264 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
       mode: :dev,
       service: :apns,
       data: %{"acme1" => "value1", "acme2" => "value2"},
+      priority: :normal,
+      mutable_content: false
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: all possible fields", %{conn: conn} do
+    device_id = "15"
+    expected_device_id = "15"
+
+    request = %{
+      "service" => "fcm",
+      "mode" => "prod",
+      "priority" => "normal",
+      "time_to_live" => 3600,
+      "mutable_content" => false,
+      "tags" => ["some", "tags", "for", "pool", "selection"],
+      "topic" => "com.someapp",
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title",
+        "badge" => 7,
+        "click_action" => ".SomeApp.Handler.action",
+        "tag" => "info",
+        "sound" => "standard.mp3"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        badge: 7,
+        body: "A message from someone",
+        click_action: ".SomeApp.Handler.action",
+        sound: "standard.mp3",
+        tag: "info",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      mode: :prod,
+      service: :fcm,
+      topic: "com.someapp",
+      priority: :normal,
+      time_to_live: 3600,
+      mutable_content: false,
+      tags: ["some", "tags", "for", "pool", "selection"]
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: all required fields", %{conn: conn} do
+    device_id = "16"
+    expected_device_id = "16"
+
+    request = %{
+      "service" => "apns",
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title",
+        "badge" => 7,
+        "click_action" => ".SomeApp.Handler.action",
+        "tag" => "info",
+        "sound" => "standard.mp3"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        badge: 7,
+        body: "A message from someone",
+        click_action: ".SomeApp.Handler.action",
+        sound: "standard.mp3",
+        tag: "info",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      service: :apns,
+      mutable_content: false
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: alert.badge + alert.click_action fields", %{conn: conn} do
+    device_id = "17"
+    expected_device_id = "17"
+
+    request = %{
+      "service" => "fcm",
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title",
+        "badge" => 7,
+        "click_action" => ".SomeApp.Handler.action"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        badge: 7,
+        body: "A message from someone",
+        click_action: ".SomeApp.Handler.action",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      service: :fcm,
+      mutable_content: false
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: alert.tag + alert.sound fields", %{conn: conn} do
+    device_id = "18"
+    expected_device_id = "18"
+
+    request = %{
+      "service" => "apns",
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title",
+        "tag" => "info",
+        "sound" => "standard.mp3"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        body: "A message from someone",
+        sound: "standard.mp3",
+        tag: "info",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      service: :apns,
+      mutable_content: false
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: time_to_live + mutable_content fields", %{conn: conn} do
+    device_id = "19"
+    expected_device_id = "19"
+
+    request = %{
+      "service" => "fcm",
+      "time_to_live" => 3600,
+      "mutable_content" => true,
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        body: "A message from someone",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      service: :fcm,
+      time_to_live: 3600,
+      mutable_content: true
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: tags + topic fields", %{conn: conn} do
+    device_id = "20"
+    expected_device_id = "20"
+
+    request = %{
+      "service" => "apns",
+      "tags" => ["some", "tags", "for", "pool", "selection"],
+      "topic" => "com.someapp",
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        body: "A message from someone",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      service: :apns,
+      topic: "com.someapp",
+      mutable_content: false,
+      tags: ["some", "tags", "for", "pool", "selection"]
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: mode :prod + priority :high fields", %{conn: conn} do
+    device_id = "21"
+    expected_device_id = "21"
+
+    request = %{
+      "service" => "fcm",
+      "mode" => "prod",
+      "priority" => "high",
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        body: "A message from someone",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      mode: :prod,
+      service: :fcm,
+      priority: :high,
+      mutable_content: false
+    }
+
+    post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+  end
+
+  test "MixedNotification decoder test: mode :dev + priority :normal fields", %{conn: conn} do
+    device_id = "22"
+    expected_device_id = "22"
+
+    request = %{
+      "service" => "apns",
+      "mode" => "dev",
+      "priority" => "normal",
+      "alert" => %{
+        "body" => "A message from someone",
+        "title" => "Notification title"
+      },
+      "data" => %{"acme1" => "value1", "acme2" => "value2"}
+    }
+
+    expected_request = %{
+      alert: %{
+        body: "A message from someone",
+        title: "Notification title"
+      },
+      data: %{"acme1" => "value1", "acme2" => "value2"},
+      mode: :dev,
+      service: :apns,
       priority: :normal,
       mutable_content: false
     }

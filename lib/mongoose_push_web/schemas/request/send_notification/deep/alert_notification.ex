@@ -7,7 +7,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotificatio
     title: "Request.SendNotification.Deep.AlertNotification",
     description: "In this request alert field is mandatory.",
     type: :object,
-    properties: Deep.base()[:properties],
+    properties: Map.merge(Deep.base()[:properties], Deep.alert()[:properties]),
     required: Deep.base()[:required] ++ Deep.alert()[:required],
     example: Map.merge(Deep.base()[:example], Deep.alert()[:example]),
     additionalProperties: false
@@ -24,7 +24,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotificatio
     end
 
     defp add_optional_fields(push_request, schema) do
-      opt_keys = [:data, :mutable_content, :mode, :priority, :tags, :time_to_live, :topic]
+      opt_keys = [:mutable_content, :mode, :priority, :tags, :time_to_live, :topic]
 
       Enum.reduce(opt_keys, push_request, fn x, acc ->
         case Map.get(schema, x) do
