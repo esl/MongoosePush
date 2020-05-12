@@ -1,9 +1,8 @@
 defmodule MongoosePushTelemetryMetricsTest do
   use ExUnit.Case, async: false
-  use Quixir
+  require Integer
   import Mox
   import MongoosePush
-  import Regex
 
   alias MongoosePush.Service.APNS
   alias MongoosePush.Service.FCM
@@ -20,7 +19,7 @@ defmodule MongoosePushTelemetryMetricsTest do
   end
 
   test "push success metrics" do
-    do_push(:ok, 20)
+    for service <- [:fcm, :apns], do: do_push(:ok, service, 10)
 
     metrics = TelemetryMetricsPrometheus.Core.scrape()
 
@@ -42,13 +41,13 @@ defmodule MongoosePushTelemetryMetricsTest do
 
   describe "push error" do
     setup do
-      ptest [
-              reason: atom(min: 3, max: 15),
-              type: atom(min: 3, max: 15)
-            ],
-            repeat_for: 3 do
-        do_push({:error, {type, reason}}, 10)
+      for n <- 1..3 do
+        reason = String.to_atom("reason_" <> Integer.to_string(n))
+        type = String.to_atom("type_" <> Integer.to_string(n))
+        for service <- [:fcm, :apns], do: do_push({:error, {type, reason}}, service, 5)
       end
+
+      :ok
     end
 
     test "metrics" do
@@ -87,13 +86,11 @@ defmodule MongoosePushTelemetryMetricsTest do
   end
 
   test "APNS default topic extraction metrics" do
-    ptest [
-            pool_name: atom(min: 3, max: 15),
-            default_topic: string(min: 3, max: 15)
-          ],
-          repeat_for: 10 do
-      :ets.insert(:apns_state, {pool_name, default_topic})
-      APNS.State.get_default_topic(pool_name)
+    for n <- 1..10 do
+      pool_name = String.to_atom("pool_" <> Integer.to_string(n))
+      def_topic = "default_topic_" <> Integer.to_string(n)
+      :ets.insert(:apns_state, {pool_name, def_topic})
+      assert def_topic == APNS.State.get_default_topic(pool_name)
     end
 
     metrics = TelemetryMetricsPrometheus.Core.scrape()
@@ -104,22 +101,17 @@ defmodule MongoosePushTelemetryMetricsTest do
     assert 10 == count
   end
 
-  defp do_push(push_result, repeat_no) do
+  defp do_push(push_result, service, repeat_no) do
     MongoosePush.Service.Mock
     |> expect(:push, repeat_no, fn _, _, _, _ -> push_result end)
     |> stub_with(FCM)
 
-    ptest [
-            mode: choose(from: [value(:dev), value(:prod)]),
-            service: choose(from: [value(:fcm), value(:apns)])
-          ],
-          repeat_for: repeat_no do
+    for _ <- 1..repeat_no do
       assert push_result ==
-               push(
-                 "device_id",
-                 %{service: service, title: "", body: "", mode: mode}
-               )
+               push("device_id", %{service: service, title: "", body: "", mode: :dev})
     end
+
+    :ok
   end
 
   defp get_count(match) do
