@@ -26,10 +26,6 @@ config :mongoose_push, apns_enabled: {:system, :boolean, "PUSH_APNS_ENABLED", tr
 config :mongoose_push,
   tls_server_cert_validation: {:system, :boolean, "TLS_SERVER_CERT_VALIDATION", true}
 
-config :mongoose_push, MongoosePush.Service,
-  fcm: MongoosePush.Service.FCM,
-  apns: MongoosePush.Service.APNS
-
 config :mongoose_push,
   fcm: [
     default: [

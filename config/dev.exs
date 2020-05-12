@@ -22,10 +22,6 @@ config :maru, MongoosePush.Router,
     otp_app: :mongoose_push
   ]
 
-config :mongoose_push, MongoosePush.Service,
-  fcm: MongoosePush.Service.FCM,
-  apns: MongoosePush.Service.APNS
-
 config :mongoose_push,
   fcm: [
     default: [
