@@ -12,7 +12,7 @@ defmodule MongoosePushMetricsTest do
     TestHelper.reload_app()
   end
 
-  describe "sprial metric" do
+  describe "spiral metric" do
     test "'ok' increased by successful push" do
       test_metric(:spiral, "success", :ok)
     end

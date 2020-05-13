@@ -11,8 +11,7 @@ defmodule MongoosePush.Telemetry do
   @callback handle_event(event_name, measurements, metadata, config) :: :ok
 
   @handlers [
-    MongoosePush.Telemetry.APNSHandler,
-    MongoosePush.Telemetry.FCMHandler
+    MongoosePush.Metrics.ExometerHandlers
   ]
 
   def attach_all do

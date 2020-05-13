@@ -59,6 +59,10 @@ config :lager,
 
 config :sparrow, Sparrow.PoolsWarden, %{enabled: true}
 
+config :mongoose_push, MongoosePush.Service,
+  fcm: MongoosePush.Service.FCM,
+  apns: MongoosePush.Service.APNS
+
 import_config "#{Mix.env()}.exs"
 
 # Globally disable maru's "test mode". If we don't disable it explicitly
