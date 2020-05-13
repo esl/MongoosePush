@@ -12,9 +12,9 @@ defmodule MongoosePushTelemetryMetricsTest do
     TestHelper.reload_app()
 
     # TelemetryMetricsPrometheus starts asynchronously - we need to wait until metrics are
-    # registered, otherwise tests count run into race condition.
-    # Becasue of how TelemetryMetricsPrometheus startup is implemented right now, the following
-    # call alone will only return after the initialization (first one will be sucessful),
+    # registered, otherwise tests could run into a race condition.
+    # Because of how TelemetryMetricsPrometheus startup is implemented right now, the following
+    # call alone will only return after the initialization (first one will be successful),
     # but in case something would change in future we'll "wait" and retry until it returns
     # at least one metric.
     eventually(
