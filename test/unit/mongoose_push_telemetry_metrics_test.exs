@@ -1,5 +1,6 @@
 defmodule MongoosePushTelemetryMetricsTest do
   use ExUnit.Case, async: false
+  use AssertEventually
   require Integer
   import Mox
   import MongoosePush
@@ -9,6 +10,16 @@ defmodule MongoosePushTelemetryMetricsTest do
 
   setup do
     TestHelper.reload_app()
+
+    # TelemetryMetricsPrometheus starts asynchronously - we need to wait until metrics are
+    # registered, otherwise tests count run into race condition.
+    # Becasue of how TelemetryMetricsPrometheus startup is implemented right now, the following
+    # call alone will only return after the initialization (first one will be sucessful),
+    # but in case something would change in future we'll "wait" and retry until it returns
+    # at least one metric.
+    eventually(
+      assert [_ | _] = TelemetryMetricsPrometheus.Core.Registry.metrics(:prometheus_metrics)
+    )
 
     Application.put_env(:mongoose_push, MongoosePush.Service,
       fcm: MongoosePush.Service.Mock,
