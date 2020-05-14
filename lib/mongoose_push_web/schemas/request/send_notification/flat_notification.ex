@@ -54,7 +54,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification do
     @spec decode(%Request.SendNotification.FlatNotification{}) :: MongoosePush.request()
     def decode(schema) do
       %{
-        service: String.to_atom(schema.service),
+        service: RequestDecoderHelper.parse_service(schema.service),
         alert: %{
           body: schema.body,
           title: schema.title

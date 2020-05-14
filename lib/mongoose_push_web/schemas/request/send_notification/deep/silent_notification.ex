@@ -20,7 +20,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotificati
     @spec decode(%Deep.SilentNotification{}) :: MongoosePush.request()
     def decode(schema) do
       %{
-        service: String.to_atom(schema.service),
+        service: RequestDecoderHelper.parse_service(schema.service),
         data: schema.data
       }
       |> RequestDecoderHelper.add_optional_fields(schema)

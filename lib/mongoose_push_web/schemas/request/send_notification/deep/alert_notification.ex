@@ -20,7 +20,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotificatio
     @spec decode(%Deep.AlertNotification{}) :: MongoosePush.request()
     def decode(schema) do
       %{
-        service: String.to_atom(schema.service),
+        service: RequestDecoderHelper.parse_service(schema.service),
         alert: RequestDecoder.decode(schema.alert)
       }
       |> RequestDecoderHelper.add_optional_fields(schema)

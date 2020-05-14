@@ -26,7 +26,7 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotificatio
     @spec decode(%Deep.MixedNotification{}) :: MongoosePush.request()
     def decode(schema) do
       %{
-        service: String.to_atom(schema.service),
+        service: RequestDecoderHelper.parse_service(schema.service),
         alert: RequestDecoder.decode(schema.alert),
         data: schema.data
       }

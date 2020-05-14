@@ -10,6 +10,9 @@ defmodule MongoosePushWeb.Protocols.RequestDecoderHelper do
     end)
   end
 
+  def parse_service("apns"), do: :apns
+  def parse_service("fcm"), do: :fcm
+
   def maybe_parse_to_atom(:mode, val), do: parse_mode(val)
   def maybe_parse_to_atom(:priority, val), do: parse_priority(val)
   def maybe_parse_to_atom(_key, val), do: val
