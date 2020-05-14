@@ -28,6 +28,13 @@ defmodule MongoosePush.Support.API do
     }
   end
 
+  def get(path) do
+    %Response{status_code: status, headers: headers, body: body} =
+      HTTPoison.get!("https://localhost:8443" <> path)
+
+    {status, headers, body}
+  end
+
   def post(path, json) do
     %Response{status_code: status_code, body: body} =
       HTTPoison.post!(
