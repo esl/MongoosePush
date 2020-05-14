@@ -5,7 +5,7 @@ defmodule MongoosePush.API.V2.ResponseEncoder do
   @behaviour MongoosePush.API
   alias MongoosePush.Service
 
-  @spec to_status(:ok | {:error, Service.error() | {:error, MongoosePush.error()}}) ::
+  @spec to_status(:ok | {:error, Service.error()} | {:error, MongoosePush.error()}) ::
           {non_neg_integer, %{details: atom | String.t()} | nil}
   def to_status(:ok), do: {200, nil}
 

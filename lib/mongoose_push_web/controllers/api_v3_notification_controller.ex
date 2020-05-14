@@ -27,6 +27,7 @@ defmodule MongoosePushWeb.APIv3.NotificationController do
           %OpenApiSpex.Schema{
             oneOf: [
               MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification,
+              MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification,
               MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification
             ],
             additionalProperties: false
@@ -87,7 +88,8 @@ defmodule MongoosePushWeb.APIv3.NotificationController do
   end
 
   def send(conn = %{body_params: params}, %{device_id: device_id}) do
-    result = MongoosePush.Application.backend_module().push(device_id, params)
+    request = MongoosePushWeb.Protocols.RequestDecoder.decode(params)
+    result = MongoosePush.Application.backend_module().push(device_id, request)
     {status, payload} = MongoosePush.API.V3.ResponseEncoder.to_status(result)
 
     conn
