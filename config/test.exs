@@ -8,7 +8,7 @@ config :elixometer,
   env: Mix.env(),
   metric_prefix: "mongoose_push"
 
-  config :mongoose_push, MongoosePushWeb.Endpoint,
+config :mongoose_push, MongoosePushWeb.Endpoint,
   https: [
     port: 8443,
     keyfile: "priv/ssl/fake_key.pem",

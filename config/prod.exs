@@ -5,18 +5,18 @@ config :mix_docker, image: "mongoose_push"
 config :goth, endpoint: {:system, :string, "FCM_AUTH_ENDPOINT", "https://www.googleapis.com"}
 
 config :mongoose_push, MongoosePushWeb.Endpoint,
-  versioning: [
-    using: :path
-  ],
   https: [
     bind_addr: {:system, :string, "PUSH_HTTPS_BIND_ADDR", "127.0.0.1"},
     port: {:system, :integer, "PUSH_HTTPS_PORT", 8443},
     keyfile: {:system, :string, "PUSH_HTTPS_KEYFILE", "priv/ssl/fake_key.pem"},
     certfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
     cacertfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
-    acceptors: {:system, :integer, "PUSH_HTTPS_ACCEPTORS", 100},
     otp_app: :mongoose_push
-  ]
+  ],
+  debug_errors: false,
+  code_reloader: false,
+  check_origin: true,
+  server: true
 
 config :mongoose_push, loglevel: {:system, :atom, "PUSH_LOGLEVEL", :info}
 config :mongoose_push, fcm_enabled: {:system, :boolean, "PUSH_FCM_ENABLED", true}
