@@ -13,7 +13,7 @@ services:
             - "2197:2197"
 
     mongoose-push:
-        image: ${DOCKERHUB_REPOSITORY}/${DOCKER_IMAGE}:${DOCKER_TAG}
+        image: mpush
         container_name: mongoose-push
         environment:
             - PUSH_APNS_ENABLED=true
