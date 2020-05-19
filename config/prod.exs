@@ -8,11 +8,9 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
   https: [
     ip: {0, 0, 0, 0},
     port: {:system, :integer, "PUSH_HTTPS_PORT", 8443},
-
     keyfile: {:system, :string, "PUSH_HTTPS_KEYFILE", "priv/ssl/fake_key.pem"},
     certfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
     cacertfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
-
     protocol_options: [
       # https://ninenines.eu/docs/en/cowboy/2.5/manual/cowboy_http/
     ],
@@ -21,7 +19,6 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
       # https://ninenines.eu/docs/en/ranch/1.6/manual/ranch_ssl/
       num_acceptors: {:system, :integer, "PUSH_HTTPS_ACCEPTORS", 100}
     ],
-
     otp_app: :mongoose_push
   ],
   debug_errors: false,
