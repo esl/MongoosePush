@@ -7,7 +7,7 @@ config :elixometer,
   env: Mix.env(),
   metric_prefix: "mongoose_push"
 
-config :mongoose_push, loglevel: :error
+config :mongoose_push, loglevel: :debug
 config :goth, endpoint: "http://fcm-mock:4001"
 
 config :mongoose_push,
