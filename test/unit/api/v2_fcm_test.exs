@@ -6,7 +6,7 @@ defmodule MongoosePush.API.V2FCMTest do
 
   setup do
     Tools.reset(:fcm)
-    TestHelper.reload_app()
+    TestHelper.reload_app(backend_module: MongoosePush)
   end
 
   test "push to fcm with unregistered token fails" do

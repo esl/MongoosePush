@@ -8,17 +8,17 @@ config :elixometer,
   env: Mix.env(),
   metric_prefix: "mongoose_push"
 
-config :maru, MongoosePush.Router,
-  versioning: [
-    using: :path
-  ],
+config :mongoose_push, MongoosePushWeb.Endpoint,
   https: [
-    bind_addr: "0.0.0.0",
     port: 8443,
     keyfile: "priv/ssl/fake_key.pem",
     certfile: "priv/ssl/fake_cert.pem",
     otp_app: :mongoose_push
-  ]
+  ],
+  debug_errors: true,
+  code_reloader: false,
+  check_origin: false,
+  server: true
 
 config :mongoose_push, MongoosePush.Service,
   fcm: MongoosePush.Service.FCM,

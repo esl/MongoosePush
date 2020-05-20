@@ -10,18 +10,6 @@ config :elixometer,
 config :mongoose_push, loglevel: :debug
 config :goth, endpoint: "http://fcm-mock:4001"
 
-config :maru, MongoosePush.Router,
-  versioning: [
-    using: :path
-  ],
-  https: [
-    bind_addr: "127.0.0.1",
-    port: 8443,
-    keyfile: "priv/ssl/fake_key.pem",
-    certfile: "priv/ssl/fake_cert.pem",
-    otp_app: :mongoose_push
-  ]
-
 config :mongoose_push,
   fcm: [
     default: [
@@ -63,9 +51,8 @@ config :mongoose_push,
   ]
 
 config :mongoose_push, MongoosePushWeb.Endpoint,
-  http: [port: 8445],
   https: [
-    port: 8446,
+    port: 8443,
     keyfile: "priv/ssl/fake_key.pem",
     certfile: "priv/ssl/fake_cert.pem",
     otp_app: :mongoose_push

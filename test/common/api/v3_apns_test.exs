@@ -6,7 +6,7 @@ defmodule MongoosePush.API.V3APNSTest do
 
   setup do
     if Mix.env() == :test do
-      TestHelper.reload_app()
+      TestHelper.reload_app(backend_module: MongoosePush)
     end
 
     Tools.reset(:apns)

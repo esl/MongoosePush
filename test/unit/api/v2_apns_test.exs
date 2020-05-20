@@ -6,7 +6,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
   setup do
     Tools.reset(:apns)
-    TestHelper.reload_app()
+    TestHelper.reload_app(backend_module: MongoosePush)
   end
 
   test "push to apns with invalid token fails" do
