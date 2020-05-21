@@ -219,27 +219,12 @@ jobs:
       - run:
           name: Push docker image but do not tag it as the latest
           command: docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
-      - run:
-          name: Save Docker image layer cache
-          command: |
-            mkdir -p /tmp/caches
-            docker save -o /tmp/caches/mpush-image.tar $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
-      - save_cache:
-          key: docker-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - /tmp/caches/mpush-image.tar
 
   integration-tests:
     machine:
         image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - docker-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-      - run:
-          name: Load the MongoosePush Docker image
-          command: docker load -i /tmp/caches/mpush-image.tar
       - run:
           name: Install elixir
           command: |
@@ -262,22 +247,20 @@ jobs:
               - certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
       - run:
-          name: Setup mocks and MPush
-          command: |
-              export PRIV=$HOME/app/priv && \
-              docker-compose -f /home/circleci/project/test/docker/docker-compose.integration.yml up -d
+          name: Compile mix deps
+          command: MIX_ENV=integration mix do deps.get, deps.compile
       - run:
-          name: Wait for FCM mock
-          command: sudo dockerize -wait tcp://localhost:4001 -timeout 1m
+          name: Generate certificates
+          command: MIX_ENV=integration mix certs.dev
       - run:
-          name: Wait for APNS mock
-          command: sudo dockerize -wait tcp://localhost:2197 -timeout 1m
+          name: Setup MongoosePush and mocks
+          command: MIX_ENV=integration mix test.env.up
       - run:
-          name: Wait for MongoosePush
-          command: sudo dockerize -wait tcp://localhost:8443 -timeout 2m
+          name: Wait for MongoosePush and mocks
+          command: MIX_ENV=integration mix test.env.wait 60000
       - run:
           name: Run integration tests
-          command: MIX_ENV=integration mix do deps.get, deps.compile, test
+          command: MIX_ENV=integration mix test
 
   push-to-dockerhub:
     executor:
@@ -332,10 +315,6 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - build-dev-certs:
-          requires:
-            - pre-build
-          filters: *all_tags
       - build-docker-image:
           requires:
             - pre-build
@@ -343,12 +322,12 @@ workflows:
 
       - integration-tests:
           requires:
-            - build-docker-image
-            - build-dev-certs
+            - pre-build
           filters: *all_tags
 
       - push-to-dockerhub:
           requires:
             - integration-tests
+            - build-docker-image
             - test-erlang-22_elixir-1-9
           filters: *all_tags
