@@ -176,25 +176,27 @@ The whole configuration is contained in file `config/{prod|dev|test}.exs` depend
 ### RESTful API configuration
 
 ```elixir
-config :maru, MongoosePush.Router,
-    versioning: [
-        using: :path
+config :mongoose_push, MongoosePushWeb.Endpoint,
+  https: [
+    ip: {0, 0, 0, 0},
+    port: {:system, :integer, "PUSH_HTTPS_PORT", 8443},
+    keyfile: {:system, :string, "PUSH_HTTPS_KEYFILE", "priv/ssl/fake_key.pem"},
+    certfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
+    cacertfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
+    protocol_options: [
     ],
-    https: [
-        ip: {127, 0, 0, 1},
-        port: 8443,
-        keyfile: "priv/ssl/fake_key.pem",
-        certfile: "priv/ssl/fake_cert.pem",
-        otp_app: :mongoose_push
-    ]
+    transport_options: [
+      num_acceptors: {:system, :integer, "PUSH_HTTPS_ACCEPTORS", 100}
+    ],
+    otp_app: :mongoose_push
+  ]
 ```
+This part of configuration relates only to `HTTP` endpoints exposed by `MongoosePush`. Here you can set a bind IP adress (option: `ip`), port and paths to your `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
 
-This part of configuration relates only to `HTTP` endpoints exposed by `MongoosePush`. Here you can set a bind IP adress (option: `ip`), port and paths to your `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing (to learn more, explore [maru's documentation](https://maru.readme.io/docs)).
-
-You may entirely skip the `maru` config entry to disable `HTTP` API and just use this project as an `Elixir` library.
+You may entirely skip the `mongoose_push` config entry to disable `HTTP` API and just use this project as an `Elixir` library.
 
 ### FCM configuration
-Lets take a look at sample `FCM` service configuration:
+Let's take a look at sample `FCM` service configuration:
 ```elixir
 config :mongoose_push, fcm: [
     default: [
