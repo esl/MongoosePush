@@ -29,9 +29,6 @@ defmodule MongoosePush.Application do
     loglevel = Application.get_env(:mongoose_push, :loglevel, :info)
     set_loglevel(loglevel)
 
-    # Only used for attaching Elixometer handler, which builds metrics based on emitted events
-    MongoosePush.Telemetry.attach_all()
-
     # Define workers and child supervisors to be supervised
     children =
       service_children() ++ [MongoosePushWeb.Endpoint, MongoosePush.Metrics.TelemetryMetrics]
