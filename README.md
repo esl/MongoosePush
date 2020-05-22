@@ -178,20 +178,14 @@ The whole configuration is contained in file `config/{prod|dev|test}.exs` depend
 ```elixir
 config :mongoose_push, MongoosePushWeb.Endpoint,
   https: [
-    ip: {0, 0, 0, 0},
-    port: {:system, :integer, "PUSH_HTTPS_PORT", 8443},
-    keyfile: {:system, :string, "PUSH_HTTPS_KEYFILE", "priv/ssl/fake_key.pem"},
-    certfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
-    cacertfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
-    protocol_options: [
-    ],
-    transport_options: [
-      num_acceptors: {:system, :integer, "PUSH_HTTPS_ACCEPTORS", 100}
-    ],
+    ip: {127, 0, 0, 1},
+    port: 8443,
+    keyfile: "priv/ssl/fake_key.pem",
+    certfile: "priv/ssl/fake_cert.pem",
     otp_app: :mongoose_push
   ]
 ```
-This part of configuration relates only to `HTTP` endpoints exposed by `MongoosePush`. Here you can set a bind IP adress (option: `ip`), port and paths to your `HTTP` `TLS` certificates. You should ignore other options unless you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
+This part of configuration relates only to `HTTPS` endpoints exposed by `MongoosePush`. Here you can set a bind IP adress (option: `ip`), port and paths to your `HTTPS` `TLS` certificates. You should ignore other options unless you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
 
 You may entirely skip the `mongoose_push` config entry to disable `HTTP` API and just use this project as an `Elixir` library.
 
