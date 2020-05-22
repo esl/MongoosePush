@@ -187,7 +187,7 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
 ```
 This part of configuration relates only to `HTTPS` endpoints exposed by `MongoosePush`. Here you can set a bind IP adress (option: `ip`), port and paths to your `HTTPS` `TLS` certificates. You should ignore other options unless you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
 
-You may entirely skip the `mongoose_push` config entry to disable `HTTP` API and just use this project as an `Elixir` library.
+You may entirely skip the `mongoose_push` config entry to disable `HTTPS` API and just use this project as an `Elixir` library.
 
 ### FCM configuration
 Let's take a look at sample `FCM` service configuration:
