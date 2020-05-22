@@ -344,12 +344,14 @@ If you use dockerized MongoosePush, you need to do the following:
 ### Available metrics
 
 The following metrics are available:
-* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.all`
-* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.${REASON}`
-* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.success`
 
+* `mongoose_push_apns_state_get_default_topic_count`
+* `mongoose_push_notification_send_time_bucket{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS},le=${LENGTH}}`
+* `mongoose_push_notification_send_time_sum{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}`
+* `mongoose_push_notification_send_time_count{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status="${STATUS}}`
 Where:
-* **METRIC_TYPE** is either `timers` or `spirals`
+* **CATEGORY** is an arbitrary error category term or empty string
+* **REASON** is an arbitrary error reason term or empty string
 * **SERVICE** is either `fcm` or `apns`
-* **MODE** is either `prod` or `dev`
-* **REASON** is an arbitrary error reason term
+* **STATUS** is either `success` or `error`
+* **LENGTH** is either `100` or `250` or `500` or `1000` or `+Inf`
