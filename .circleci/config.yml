@@ -118,6 +118,28 @@ jobs:
     steps:
       - test
 
+  build-dev-certs:
+    executor:
+      name: elixir-builder
+      env: dev
+      erlang_version: "22.0"
+      elixir_version: "1.9"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Generate dev certs
+          command: mix certs.dev
+      - save_cache:
+          key: certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - priv
+
   test-erlang-22_elixir-1-8:
     executor:
       name: elixir-builder
@@ -173,7 +195,7 @@ jobs:
             - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: mix format --check-formatted
 
-  build-tar-and-docker-image:
+  build-docker-image:
     executor:
       name: elixir-builder
       env: prod
@@ -184,32 +206,40 @@ jobs:
       - restore_cache:
           keys:
             - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-      - run:
-          name: Mix build release
-          command: mix do certs.dev, distillery.release
-      - save_cache:
-          key: certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - "priv"
-      - run:
-          name : Build tar archive
-          command: tar -czf mongoose_push.tar.gz -C _build/${MIX_ENV}/rel/mongoose_push .
       - run: *DOCKER_TAGS
       - run:
           name: Login to DockerHub
           command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
       - run:
           name: Build docker image
-          command: docker build -f Dockerfile.release --build-arg MIX_ENV=prod -t $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG .
+          command: docker build -f Dockerfile --build-arg MIX_ENV=prod -t mpush:latest .
+      - run:
+          name: Push docker image but do not tag it as the latest
+          command: docker tag mpush:latest $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
       - run:
           name: Push docker image but do not tag it as the latest
           command: docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /tmp/caches
+            docker save -o /tmp/caches/mpush-image.tar $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+      - save_cache:
+          key: docker-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - /tmp/caches/mpush-image.tar
 
   integration-tests:
     machine:
         image: ubuntu-1604:201903-01
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - docker-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Load the MongoosePush Docker image
+          command: docker load -i /tmp/caches/mpush-image.tar
       - run:
           name: Install elixir
           command: |
@@ -235,7 +265,7 @@ jobs:
           name: Setup mocks and MPush
           command: |
               export PRIV=$HOME/app/priv && \
-              docker-compose -f /home/circleci/project/test/docker/integration.yml up -d
+              docker-compose -f /home/circleci/project/test/docker/docker-compose.integration.yml up -d
       - run:
           name: Wait for FCM mock
           command: sudo dockerize -wait tcp://localhost:4001 -timeout 1m
@@ -302,14 +332,19 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - build-tar-and-docker-image:
+      - build-dev-certs:
+          requires:
+            - pre-build
+          filters: *all_tags
+      - build-docker-image:
           requires:
             - pre-build
           filters: *all_tags
 
       - integration-tests:
           requires:
-            - build-tar-and-docker-image
+            - build-docker-image
+            - build-dev-certs
           filters: *all_tags
 
       - push-to-dockerhub:

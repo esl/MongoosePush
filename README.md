@@ -45,13 +45,13 @@ docker run -v `pwd`/priv:/opt/app/priv \
 Building docker is really easy, just type:
 
 ```bash
-MIX_ENV=prod mix do deps.get, certs.dev, docker.build, docker.release
+docker build . -t mpush:latest
 ```
 
-As a result of this command you get access to `mongoose_push:release` docker image. You may run it by typing:
+As a result of this command you get access to `mpush:latest` docker image. You may run it by typing:
 
 ```bash
-docker run -it --rm mongoose_push:release foreground
+docker run -it --rm mpush:latest foreground
 ```
 
 The docker image that you have just built, exposes the port `8443` for the HTTP API of MongoosePush. It contains a `VOLUME` for path */opt/app* - it is handy for injecting `APNS` and `HTTP API` certificates since by default the docker image comes with test, self-signed certificates.
@@ -138,7 +138,7 @@ Development release is by default configured to connect to local APNS / FCM mock
 in `config/dev.exs` file.
 For now, let's just start those mocks so that we can use default dev configuration:
 ```bash
-docker-compose -f test/docker/docker-compose.yml up -d
+docker-compose -f test/docker/docker-compose.unit.yml up -d
 ```
 
 After this step you may try to run the service via:
@@ -151,7 +151,7 @@ _build/dev/rel/mongoose_push/bin/mongoose_push console
 
 Setup FCM and APNS mocks first:
 ```bash
-$ docker-compose -f test/docker/docker-compose.yml up -d
+$ docker-compose -f test/docker/docker-compose.unit.yml up -d
 ```
 
 Generate certificates. This step is needed to be run only once:
@@ -166,7 +166,7 @@ $ mix test
 
 You can cleanup docker after tests by calling:
 ```bash
-$ docker-compose -f test/docker/docker-compose.yml down
+$ docker-compose -f test/docker/docker-compose.unit.yml down
 ```
 
 ## Configuration
@@ -329,7 +329,7 @@ If you specify both **alert** and **data**, target device will receive both noti
 * **429** `{"reason" : "too_many_requests"}` - there were too many requests to the server.
 * **503** `{"reason" : "service_internal"|"internal_config"|"unspecified"}` - the internal service or configuration error occured.
 * **520** `{"reason" : "unspecified"}` - the unknown error occured.
-* **500** `{"reason" : reason}` - the server internal error occured, 
+* **500** `{"reason" : reason}` - the server internal error occured,
   specified by **reason**.
 
 ## Metrics
