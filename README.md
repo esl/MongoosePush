@@ -332,36 +332,6 @@ If you specify both **alert** and **data**, target device will receive both noti
 * **500** `{"reason" : reason}` - the server internal error occured, 
   specified by **reason**.
 
-## Metrics
-
-MongoosePush supports metrics based on `elixometer`. In order to enable metrics, you need to add an `elixometer` configuration in the config file matching your release type (or simply `sys.config` when you need this on already released MongoosePush). The following example config will enable simplest reporter - TTY (already enabled in `:dev` environment):
-
-```elixir
-config :exometer_core, report: [reporters: [{:exometer_report_tty, []}]]
-config :elixometer, reporter: :exometer_report_tty,
-     env: Mix.env,
-     metric_prefix: "mongoose_push"
-```
-
-The example below on the other hand will enable `graphite` reporter (replace GRAPHITE_OPTIONS with a list of options for `graphite`):
-
-Before making a release:
-```elixir
-config :exometer_core, report: [reporters: [{:exometer_report_graphite, GRAPHITE_OPTIONS}]]
-config :elixometer, reporter: :exometer_report_graphite,
-      env: Mix.env,
-      metric_prefix: "mongoose_push"
-```
-
-or if you modify an existing release (`sys.config`):
-```erlang
-{exometer_core,[{report, [{reporters, [{exometer_report_graphite, GRAPHITE_OPTIONS}]}]}]},
-{elixometer,
-    [{reporter, exometer_report_graphite},
-     {env, prod},
-     {metric_prefix, <<"mongoose_push">>}]},
-```
-
 ### I use MongoosePush docker, where do I find `sys.config`?
 
 If you use dockerized MongoosePush, you need to do the following:
