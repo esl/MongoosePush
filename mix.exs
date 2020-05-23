@@ -32,12 +32,10 @@ defmodule MongoosePush.Mixfile do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
       {:sparrow, github: "esl/sparrow", ref: "78ad18c"},
-      {:maru, github: "rslota/maru", ref: "54fc038", override: true},
       {:plug_cowboy, "~> 2.0"},
       {:cowboy, "~> 2.3", override: true},
       {:jason, "~> 1.0"},
       {:poison, "~> 3.0"},
-      {:maru_swagger, github: "elixir-maru/maru_swagger"},
       {:distillery, "~> 2.0", override: true},
       {:confex, "~> 3.2", override: true},
       {:mix_docker, "~> 0.5"},
