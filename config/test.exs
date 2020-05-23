@@ -3,11 +3,6 @@ use Mix.Config
 config :mongoose_push, loglevel: :debug
 config :mongoose_push, backend_module: MongoosePush.Notification.MockImpl
 
-config :elixometer,
-  reporter: :exometer_report_tty,
-  env: Mix.env(),
-  metric_prefix: "mongoose_push"
-
 config :mongoose_push, MongoosePushWeb.Endpoint,
   https: [
     port: 8443,

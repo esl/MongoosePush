@@ -44,11 +44,6 @@ defmodule MongoosePush.Mixfile do
       {:phoenix, "~> 1.4.16"},
       {:open_api_spex, "~> 3.6"},
 
-      # Just overrides to make elixometer compile...
-      {:exometer_core, github: "esl/exometer_core", override: true},
-      {:exometer_report_graphite, github: "esl/exometer_report_graphite"},
-      {:elixometer, github: "esl/elixometer"},
-
       # Below only :dev / :test deps
       {:mock, "~> 0.3", only: :test},
       # Until eproxus/meck  #fcc551e3 is in a release, we need to use master version

@@ -1,12 +1,5 @@
 use Mix.Config
 
-config :exometer_core, report: [reporters: [{:exometer_report_tty, []}]]
-
-config :elixometer,
-  reporter: :exometer_report_tty,
-  env: Mix.env(),
-  metric_prefix: "mongoose_push"
-
 config :mongoose_push, loglevel: :debug
 config :goth, endpoint: "http://fcm-mock:4001"
 

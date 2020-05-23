@@ -328,36 +328,6 @@ If you specify both **alert** and **data**, target device will receive both noti
 * **500** `{"reason" : reason}` - the server internal error occured,
   specified by **reason**.
 
-## Metrics
-
-MongoosePush supports metrics based on `elixometer`. In order to enable metrics, you need to add an `elixometer` configuration in the config file matching your release type (or simply `sys.config` when you need this on already released MongoosePush). The following example config will enable simplest reporter - TTY (already enabled in `:dev` environment):
-
-```elixir
-config :exometer_core, report: [reporters: [{:exometer_report_tty, []}]]
-config :elixometer, reporter: :exometer_report_tty,
-     env: Mix.env,
-     metric_prefix: "mongoose_push"
-```
-
-The example below on the other hand will enable `graphite` reporter (replace GRAPHITE_OPTIONS with a list of options for `graphite`):
-
-Before making a release:
-```elixir
-config :exometer_core, report: [reporters: [{:exometer_report_graphite, GRAPHITE_OPTIONS}]]
-config :elixometer, reporter: :exometer_report_graphite,
-      env: Mix.env,
-      metric_prefix: "mongoose_push"
-```
-
-or if you modify an existing release (`sys.config`):
-```erlang
-{exometer_core,[{report, [{reporters, [{exometer_report_graphite, GRAPHITE_OPTIONS}]}]}]},
-{elixometer,
-    [{reporter, exometer_report_graphite},
-     {env, prod},
-     {metric_prefix, <<"mongoose_push">>}]},
-```
-
 ### I use MongoosePush docker, where do I find `sys.config`?
 
 If you use dockerized MongoosePush, you need to do the following:
@@ -370,12 +340,14 @@ If you use dockerized MongoosePush, you need to do the following:
 ### Available metrics
 
 The following metrics are available:
-* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.all`
-* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.${REASON}`
-* `mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.success`
 
+* `mongoose_push_apns_state_get_default_topic_count`
+* `mongoose_push_notification_send_time_bucket{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS},le=${LENGTH}}`
+* `mongoose_push_notification_send_time_sum{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}`
+* `mongoose_push_notification_send_time_count{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status="${STATUS}}`
 Where:
-* **METRIC_TYPE** is either `timers` or `spirals`
+* **CATEGORY** is an arbitrary error category term or empty string
+* **REASON** is an arbitrary error reason term or empty string
 * **SERVICE** is either `fcm` or `apns`
-* **MODE** is either `prod` or `dev`
-* **REASON** is an arbitrary error reason term
+* **STATUS** is either `success` or `error`
+* **LENGTH** is either `100` or `250` or `500` or `1000` or `+Inf`
