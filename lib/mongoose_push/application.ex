@@ -118,11 +118,11 @@ defmodule MongoosePush.Application do
 
   defp check_paths(config, path_keys) do
     Enum.map(config, fn {key, value} ->
-      case Enum.member?(path_keys, key) do
-        true ->
-          {key, Application.app_dir(:mongoose_push, value)}
-
-        false ->
+      with true <- Enum.member?(path_keys, key),
+           :relative <- Path.type(value) do
+        {key, Application.app_dir(:mongoose_push, value)}
+      else
+        _ ->
           {key, value}
       end
     end)
