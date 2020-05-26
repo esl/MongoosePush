@@ -1,6 +1,7 @@
 use Mix.Config
 
 config :mongoose_push, loglevel: :debug
+config :mongoose_push, enable_swagger: true
 config :goth, endpoint: "http://fcm-mock:4001"
 
 config :mongoose_push,
