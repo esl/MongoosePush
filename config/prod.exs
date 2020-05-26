@@ -6,7 +6,13 @@ config :goth, endpoint: {:system, :string, "FCM_AUTH_ENDPOINT", "https://www.goo
 
 config :mongoose_push, MongoosePushWeb.Endpoint,
   https: [
-    ip: {0, 0, 0, 0},
+    ip: {
+      :system,
+      # Custom type parser (Phoenix needs erlang-inet-style IP address)
+      {MongoosePush.Config.ConfexProvider, :parse_bind_addr, []},
+      "PUSH_HTTPS_BIND_ADDR",
+      {127, 0, 0, 1}
+    },
     port: {:system, :integer, "PUSH_HTTPS_PORT", 8443},
     keyfile: {:system, :string, "PUSH_HTTPS_KEYFILE", "priv/ssl/fake_key.pem"},
     certfile: {:system, :string, "PUSH_HTTPS_CERTFILE", "priv/ssl/fake_cert.pem"},
