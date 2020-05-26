@@ -11,7 +11,6 @@ defmodule MongoosePush.API.PrometheusEndpointTest do
     :ok
   end
 
-  @tag :skip
   test "Metrics can be correctly received from Prometheus" do
     # Push some notification to trigger metrics
     notification = %{

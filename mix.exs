@@ -77,7 +77,7 @@ defmodule MongoosePush.Mixfile do
   defp dialyzer do
     [
       plt_core_path: ".dialyzer/",
-      plt_add_apps: [:ex_unit],
+      plt_add_apps: [:ex_unit, :mix],
       flags: [
         "-Wunmatched_returns",
         "-Werror_handling",
@@ -96,7 +96,8 @@ defmodule MongoosePush.Mixfile do
       coveralls: :test,
       "coveralls.detail": :test,
       "coveralls.travis": :test,
-      "coveralls.html": :test
+      "coveralls.html": :test,
+      "test.integration": :integration
     ]
   end
 
@@ -109,7 +110,9 @@ defmodule MongoosePush.Mixfile do
   end
 
   defp aliases do
-    [test: "test --no-start"]
+    [
+      test: ["test.env.wait 5000", "test --no-start"]
+    ]
   end
 
   # All mix tasks are redundant in runtime, but we still need to compile `lib/mix/tasks/compile_asn1.ex`
@@ -119,7 +122,9 @@ defmodule MongoosePush.Mixfile do
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
 
-  defp elixirc_paths(:integration), do: ["test/support"]
+  defp elixirc_paths(:integration), do: ["test/support", "lib/mix"]
+
+  defp elixirc_paths(:dev), do: ["lib", "test/support/mix"]
 
   defp elixirc_paths(_), do: ["lib"]
 
