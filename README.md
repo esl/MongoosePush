@@ -149,7 +149,7 @@ _build/dev/rel/mongoose_push/bin/mongoose_push console
 
 ### Running tests
 
-One common things that you need to do *once* before running any tests is generating fake certificates for APNS/HTTPS (it doesn't matter which MIX_ENV you run this in):
+One thing that you need to do *once* before running any tests is generating fake certificates for APNS/HTTPS (it doesn't matter which MIX_ENV you run this in):
 
 ```bash
 mix certs.dev
