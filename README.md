@@ -161,7 +161,7 @@ Also, you'll need to have `docker-compose` installed and present in path to run 
 
 ```bash
 # Unit tests
-mix do test.env.up, test, test.env.down
+MIX_ENV=test mix do test.env.up, test, test.env.down
 
 # Integration tests
 MIX_ENV=integration mix do test.env.up, test, test.env.down
