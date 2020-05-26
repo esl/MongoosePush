@@ -38,6 +38,10 @@ defmodule MongoosePush.LoggerFmt do
     Enum.flat_map(metadata, &flatten_metadata_elem/1)
   end
 
+  defp flatten_metadata_elem({key, %_{} = value}) do
+    flatten_metadata_elem({key, Map.from_struct(value)})
+  end
+
   defp flatten_metadata_elem({key, value}) when is_map(value) do
     Enum.flat_map(value, fn {sub_key, sub_value} ->
       flatten_metadata_elem({"#{key}.#{sub_key}", sub_value})
