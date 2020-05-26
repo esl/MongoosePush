@@ -17,6 +17,7 @@ defmodule MongoosePush.Service.FCM do
     # Setup silent notification
     Notification.new(device_id, nil, request[:data])
     |> Notification.put_ttl(request[:time_to_live])
+    |> Notification.put_mutable_content(request[:mutable_content])
     |> Notification.put_priority(@priority_mapping[request[:priority]])
   end
   def prepare_notification(device_id, request) do
@@ -32,6 +33,7 @@ defmodule MongoosePush.Service.FCM do
     Notification.new(device_id, msg, request[:data])
     |> Notification.put_priority(@priority_mapping[request[:priority]])
     |> Notification.put_ttl(request[:time_to_live])
+    |> Notification.put_mutable_content(request[:mutable_content])
   end
 
   @spec push(Service.notification(), String.t(), atom(), Service.options()) ::
