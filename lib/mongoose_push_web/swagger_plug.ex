@@ -16,6 +16,7 @@ defmodule MongoosePushWeb.SwaggerPlug do
     |> put_status(404)
     |> halt()
   end
+
   def call(conn, opts) do
     OpenApiSpex.Plug.PutApiSpec.call(conn, opts)
   end
