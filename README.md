@@ -169,7 +169,7 @@ MIX_ENV=integration mix do test.env.up, test, test.env.down
 
 #### Basic tests (non-release)
 
-Basic tests require FCM and APNS mock services to be present at time of running the tests:
+Basic tests require FCM and APNS mock services to be present at the time of running the tests:
 
 ```bash
 # We start the mocks
@@ -178,30 +178,30 @@ mix test.env.up
 # Now we can just run tests
 mix test
 
-# Optionally we can shutdown the mocks. If you want to rerun tests, you may skip this step do that
-# you don't need to re-invoke `mix test.env.up`. Mocks are being resetted by each test separatly,
+# Optionally we can shut the mocks down. If you want to rerun the tests, you may skip this step do that
+# you don't need to re-invoke `mix test.env.up`. Mocks are being reset by each test separately,
 # so you don't need to worry about their state.
 mix test.env.down
 ```
 
 #### Integration tests (using production-grade release)
 
-Integrations test can be run in exactly the same way as described above for "basic" tests, with one exception:
+Integration tests can be run in exactly the same way as described above for "basic" tests, with one exception:
 All Mix commands need to be invoked in `MIX_ENV=integration` environment:
 
 ```bash
 # We start the mocks AND MongoosePush docker container.
-# This may take a few minutes on first run, as the MongoosePush docker image needs
+# This may take a few minutes on the first run, as the MongoosePush docker image needs
 # to build from scratch. Subsequent runs should be much faster.
 # You need to call each time you make changes in the app code, as MongoosePush
-# needs to be rebuilded and redeployed!
+# needs to be rebuilt and redeployed!
 MIX_ENV=integration mix test.env.up
 
 # Now we can just run tests
 MIX_ENV=integration mix test
 
-# Optionally we can shutdown the mocks. If you want to rerun tests, you may skip this step do that
-# you don't need to re-invoke `mix test.env.up`. Mocks are being resetted by each test separatly,
+# Optionally we can shut the mocks down. If you want to rerun tests, you may skip this step do that
+# you don't need to re-invoke `mix test.env.up`. Mocks are being reset by each test separately,
 # so you don't need to worry about their state.
 MIX_ENV=integration mix test.env.down
 ```
