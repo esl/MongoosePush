@@ -24,7 +24,7 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-      {:pigeon, github: "rslota/pigeon", ref: "2860eee35b58e2d8674f805f1151f57b9faeca21"},
+      {:pigeon, github: "rslota/pigeon", ref: "d710879"},
       {:chatterbox, github: "joedevivo/chatterbox", ref: "ff0c2e0", override: true},
       {:maru, github: "rslota/maru", ref: "54fc038", override: true},
       {:cowboy, "~> 2.3", override: true},
@@ -47,7 +47,7 @@ defmodule MongoosePush.Mixfile do
       # Until eproxus/meck  #fcc551e3 is in a release, we need to use master version
       # to include this commit (fixes mocking in Erlang 20.x + Elixir 1.5.x)
       {:meck, github: "eproxus/meck", override: true},
-      {:httpoison, "~> 0.13"},
+      {:httpoison, "~> 1.4"},
       {:excoveralls, "~> 0.7", only: :test},
       {:dialyxir, "~> 1.0.0-rc.7", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.5", only: [:dev, :test]},
