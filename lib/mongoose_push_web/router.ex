@@ -8,14 +8,14 @@ defmodule MongoosePushWeb.Router do
 
   pipeline :swagger_json do
     plug(:accepts, ["json"])
-    plug(MongoosePushWeb.SwaggerPlug, module: MongoosePushWeb.ApiSpec)
+    plug(OpenApiSpex.Plug.PutApiSpec, module: MongoosePushWeb.ApiSpec)
   end
 
   scope "/" do
     pipe_through(:swagger_json)
 
-    get("/swaggerui", OpenApiSpex.Plug.SwaggerUI, path: "/swagger.json")
-    get("/swagger.json", OpenApiSpex.Plug.RenderSpec, [])
+    get("/swaggerui", MongoosePushWeb.Plug.MaybePutSwaggerUI, path: "/swagger.json")
+    get("/swagger.json", MongoosePushWeb.Plug.MaybeRenderSpec, [])
   end
 
   scope "/" do
