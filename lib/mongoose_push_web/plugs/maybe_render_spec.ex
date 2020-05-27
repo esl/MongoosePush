@@ -15,7 +15,7 @@ defmodule MongoosePushWeb.Plug.MaybeRenderSpec do
   end
 
   @impl Plug
-  def call(conn, %{enabled: enable, opts: opts}) when enable == false or opts == nil do
+  def call(conn, %{enabled: false}) do
     conn
     |> send_resp(404, "swagger.json access disabled")
     |> halt()

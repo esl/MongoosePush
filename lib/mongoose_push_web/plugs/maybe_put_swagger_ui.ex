@@ -17,7 +17,7 @@ defmodule MongoosePushWeb.Plug.MaybePutSwaggerUI do
   end
 
   @impl Plug
-  def call(conn, %{enabled: enable, opts: opts}) when enable == false or opts == nil do
+  def call(conn, %{enabled: false}) do
     conn
     |> send_resp(404, "swaggerUI disabled")
     |> halt()
