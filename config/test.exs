@@ -1,6 +1,6 @@
 use Mix.Config
 
-config :mongoose_push, loglevel: :error
+config :mongoose_push, :logging, level: :error
 config :mongoose_push, backend_module: MongoosePush.Notification.MockImpl
 
 config :mongoose_push, MongoosePushWeb.Endpoint,

@@ -21,7 +21,7 @@ defmodule MongoosePush.LoggerFmt do
         when: "#{date_f}T#{time_f}",
         severity: level,
         what: what,
-        text: message,
+        text: "#{message}",
         at: "#{module}.#{function}:#{line}",
         pid: pid
       ]

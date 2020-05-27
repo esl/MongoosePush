@@ -30,7 +30,10 @@ end
 environment :prod do
   set(
     config_providers: [
-      {MongoosePush.Config.ConfexProvider, ["${RELEASE_ROOT_DIR}/config/prod.exs"]}
+      # Stage #1 - apply environmental variables config
+      {MongoosePush.Config.Provider.Confex, []},
+      # State #2 - override with optional TOML config
+      {MongoosePush.Config.Provider.Toml, [path: "var/config.toml"]}
     ]
   )
 

@@ -56,7 +56,7 @@ docker run -it --rm mpush:latest foreground
 
 The docker image that you have just built, exposes the port `8443` for the HTTP API of MongoosePush. It contains a `VOLUME` for path */opt/app* - it is handy for injecting `APNS` and `HTTP API` certificates since by default the docker image comes with test, self-signed certificates.
 
-#### Configuring
+#### Configuration (basic)
 
 The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via system environmental variables. Below there's a full list of the variables you may set while running docker (via `docker -e` switch), but if there's something you feel, you need to change other then that, then you need to prepare your own `config/prod.exs` before image build.
 
@@ -64,8 +64,8 @@ Environmental variables to configure production release:
 ##### Settings for HTTP endpoint:
 * `PUSH_HTTPS_BIND_ADDR` - Bind IP address of the HTTP endpoint. Default value in prod release is "127.0.0.1", but docker overrides this with "0.0.0.0"
 * `PUSH_HTTPS_PORT` - The port of the MongoosePush HTTP endpoint. Please note that docker exposes only `8443` port, so changing this setting is not recommended
-* `PUSH_HTTPS_KEYFILE` - Path to a PEM keyfile used for HTTP endpoint
-* `PUSH_HTTPS_CERTFILE` - Path to a PEM certfile used for HTTP endpoint
+* `PUSH_HTTPS_KEYFILE` - Path to a PEM keyfile used for HTTP endpoint. This path should be either absolute or relative to root of the release (in the Docker container that's `/opt/app`). Default: `priv/ssl/fake_key.pem`.
+* `PUSH_HTTPS_CERTFILE` - Path to a PEM certfile used for HTTP endpoint. This path should be either absolute or relative to root of the release (in the Docker container that's `/opt/app`). Default: `priv/ssl/fake_cert.pem`.
 * `PUSH_HTTPS_ACCEPTORS` - Number of TCP acceptors to start
 
 ##### General settings:
@@ -74,6 +74,8 @@ Environmental variables to configure production release:
 * `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
 * `TLS_SERVER_CERT_VALIDATION` - `true`/`false` - Enable or distable TLS
   options for both FCM and APNS.
+* `PUSH_OPENAPI_EXPOSE_SPEC` - `true`/`false` - Enable or disable OpenAPI specification endpoint support. If enabled, it will be available on `/swagger.json` HTTP path. Disabled by default
+* `PUSH_OPENAPI_EXPOSE_UI` - `true`/`false` - Enable or disable SwaggerUI. If enabled, it will be available on `/swaggerui`. Disabled by default. Requires `PUSH_OPENAPI_EXPOSE_SPEC` to also be enabled.
 
 ##### Settings for FCM service:
 * `PUSH_FCM_ENDPOINT` - Hostname of `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
@@ -101,6 +103,119 @@ Environmental variables to configure production release:
 * `PUSH_APNS_PROD_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in production mode. Disabled by default
 * `PUSH_APNS_PROD_POOL_SIZE` - Connection pool size for `APNS` service in production mode
 * `PUSH_APNS_PROD_DEFAULT_TOPIC` - Default `APNS` topic to be set if the client app doesn't specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default)
+
+#### Configuration (advanced)
+
+Alternatively, the configuration can be done with a TOML configuration file. The file has to be present within the MongoosePush release as `var/config.toml`. In the Docker Container, this means you need to mount this file under: `/opt/app/var/config.toml`. Whenever this file is present, the "basic" configuration based on environmental variables is mostly disregarded. Some options may fall back to env variables when the default is needed - if so, this is gonna be explicitly stated in field description. Most importantly, whenever you use TOML configuration, the entire FCM/APNS service configuration has to be made with TOML - environmental variables will be completely disregarded, as this replaces all pool definitions.
+Using a TOML configuration file enables some features that are hard to represent with environmental variables. Most notable example of that is having multiple connection pools per service, with different auth methods/files.
+
+##### TOML schema
+
+###### General keys
+
+* `general.logging.level` (*string*, *optional*) - One of: `debug`/`info`/`warn`/`error`. If not set, falls back to the environmental variable `PUSH_LOGLEVEL` or its default.
+* `general.https.bind.addr` (*string*, *optional*) - Bind IP address of the HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_BIND_ADDR` or its default.
+* `general.https.bind.port` (*integer*, *optional*) - Port of the HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_PORT` or its default.
+* `general.https.num_acceptors` (*integer*, *optional*) - Number of TCP acceptors to start. If not set, falls back to the environmental variable `PUSH_HTTPS_ACCEPTORS` or its default.
+* `general.https.certfile` (*string*, *optional*) - Path to a PEM certfile used for HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_CERTFILE` or its default. See `PUSH_HTTPS_CERTFILE` documentation for more details.
+* `general.https.keyfile` (*string*, *optional*) - Path to a PEM keyfile used for HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_KEYFILE` or its default. See `PUSH_HTTPS_KEYFILE` documentation for more details.
+* `general.https.cacertfile` (*string*, *optional*) - Path to a PEM cacertfile used for HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_CERTFILE` or its default. See `PUSH_HTTPS_CERTFILE` documentation for more details.
+* `general.openapi.expose_spec` (*boolean*, *optional*) - Enable or disable OpenAPI specification endpoint. If enabled, it will be available on `/swagger.json` HTTP path. If not set, falls back to the environmental variable `PUSH_OPENAPI_EXPOSE_SPEC` or its default.
+* `general.openapi.expose_ui` (*boolean*, *optional*) - Enable or disable SwaggerUI. If enabled, it will be available on `/swaggerui` HTTP path.  If not set, falls back to the environmental variable `PUSH_OPENAPI_EXPOSE_UI` or its default.
+
+###### FCM keys
+
+`[[service.fcm]]` (*array*, *optional*) - TOML Array representing a single FCM connection pool. Can have its own connection details like auth, and can be defined with a unique set of `tags` that can be later used when sending notifications to find a proper connection pool. If no `service.fcm` array entry is provided, FCM will be disabled. All following TOML keys are valid for any `service.fcm` array entry:
+
+* `service.fcm.tags` (*list(string)*, *optional*) - List of tags to identify this connection pool. When sending push notifications, you can provide a similar list of tags to "select" a correct connection pool. Notifications will be send only via a connection pool that defines all tags provided along with a notification request.
+* `service.fcm.connection.endpoint` (*string*, *optional*) - Domain/Host of the FCM server. You should leave this not set to use official FCM servers.
+* `service.fcm.connection.port` (*integer*, *optional*) - Port of the FCM server. You should leave this not set to use official FCM servers.
+* `service.fcm.connection.count` (*integer*, *optional*) - Number of connections to open. Default is 5.
+* `service.fcm.auth.appfile` (*string*, *optional*) - Path to the FCM "app file" from the FCM admin console. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`). Default: `priv/fcm/token.json`.
+
+###### APNS keys
+
+`[[service.apns]]` (*array*, *optional*) - TOML Array representing a single APNS connection pool. Can have its own connection details like auth, and can be defined with a unique set of `tags` that can be later used when sending notifications to find a proper connection pool. If no `service.apns` array entry is provided, APNS will be disabled. All following TOML keys are valid for any `service.apns` array entry:
+
+* `service.apns.tags` (*list(string)*, *optional*) - List of tags to identify this connection pool. When sending push notifications, you can provide a similar list of tags to "select" a correct connection pool. Notifications will be send only via a connection pool that defines all tags provided along with the notification request.
+* `service.apns.connection.endpoint` (*string*, *optional*) - Domain/Host of APNS server. You should leave this not set to use official APNS servers.
+* `service.apns.connection.use_2197` (*boolean*, *optional*) - Port of APNS server (2197 or default). You should leave this not set to use official APNS servers.
+* `service.apns.connection.count` (*integer*, *optional*) - Number of connections to open. Default is 5.
+
+If token authentication is to be used:
+
+* `service.apns.auth.token.key_id` (*string*, *required*) - "Key ID" for this APNS token. See APNS documentation for more details.
+* `service.apns.auth.token.team_id` (*string*, *required*) - "Team ID" for this APNS token. See APNS documentation for more details.
+* `service.apns.auth.token.tokenfile` (*string*, *required*) - Path to this APNS token P8 file. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`).
+
+If the certificate authentication is to be used:
+
+* `service.apns.auth.certificate.keyfile` (*string*, *required*) - Path to the PEM encoded keyfile. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`).
+* `service.apns.auth.certificate.certfile` (*string*, *required*) - Path to the PEM encoded certfile. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`).
+
+Please note that only one method of authentication can be used for any given pool. This means that setting `service.apns.auth.certificate` excludes `service.apns.auth.token` and vice versa. Providing both will result in a configuration error.
+
+
+###### Example configuration
+
+```toml
+[general]
+  [general.logging]
+    level = "info"
+  [general.https]
+    bind = { addr = "0.0.0.0", port = 8443 }
+    num_acceptors = 100
+    certfile = "priv/ssl/fake_cert.pem"
+    keyfile = "priv/ssl/fake_key.pem"
+    cacertfile = "priv/ssl/fake_cert.pem"
+  [general.openapi]
+    expose_spec = true
+    expose_ui = false
+
+[[service.fcm]]
+  tags = ["tag1", "tag2"]
+  [service.fcm.connection]
+    endpoint = "localhost"
+    port = 443
+    count = 10
+  [service.fcm.auth]
+    appfile = "priv/fcm/token.json"
+
+[[service.fcm]]
+  tags = ["another1", "another2"]
+  [service.fcm.connection]
+    endpoint = "localhost"
+    port = 443
+    count = 10
+  [service.fcm.auth]
+    appfile = "priv/fcm/token.json"
+
+[[service.apns]]
+  mode = "dev"
+  default_topic = "some.topic"
+  tags = ["tag1", "tag2"]
+  [service.apns.connection]
+    endpoint = "localhost"
+    use_2197 = true
+    count = 10
+  [service.apns.auth.token]
+    key_id = "some id"
+    team_id = "my team"
+    tokenfile = "priv/apns/token.p8"
+
+
+[[service.apns]]
+  mode = "prod"
+  default_topic = "some.topic"
+  tags = ["tag1", "tag2"]
+  [service.apns.connection]
+    endpoint = "localhost"
+    use_2197 = false
+    count = 10
+  [service.apns.auth.certificate]
+    keyfile = "priv/apns/dev_key.pem"
+    certfile = "priv/apns/dev_cert.pem"
+```
 
 ### Local build
 
