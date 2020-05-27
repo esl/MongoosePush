@@ -1,22 +1,16 @@
+# This file needs to be used along with `docker-compose.mocks.yml`:
+# docker-compose -f test/docker/docker-compose.mocks.yml -f test/docker/docker-compose.mpush.yml ...
 version: '3'
 
 services:
-  fcm-mock:
-    image: mongooseim/fcm-mock-server
-    container_name:  fcm-mock
-    ports:
-      - "4001:4001"
-  apns-mock:
-    image: mobify/apns-http2-mock-server
-    container_name: apns-mock
-    ports:
-      - "2197:2197"
-
   mongoose-push:
-    image: mpush:latest
     build:
       context: ../../
       dockerfile: Dockerfile
+
+    depends_on:
+      - apns-mock
+      - fcm-mock
 
     container_name: mongoose-push
     environment:

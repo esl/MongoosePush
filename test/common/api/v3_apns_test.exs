@@ -104,8 +104,6 @@ defmodule MongoosePush.API.V3APNSTest do
 
   @tag integration: true
   test "push to apns succeeds" do
-    desc = "OK"
-
     Tools.reset(:apns)
 
     assert {200, _} = Tools.post(@url, Tools.sample_notification(:apns))
