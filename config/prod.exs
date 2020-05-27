@@ -84,3 +84,9 @@ config :mongoose_push,
       default_topic: {:system, :string, "PUSH_APNS_PROD_DEFAULT_TOPIC", nil}
     ]
   ]
+
+config :mongoose_push,
+  openapi: [
+    expose_spec: {:system, :boolean, "PUSH_OPENAPI_EXPOSE_SPEC", false},
+    expose_ui: {:system, :boolean, "PUSH_OPENAPI_EXPOSE_UI", false}
+  ]

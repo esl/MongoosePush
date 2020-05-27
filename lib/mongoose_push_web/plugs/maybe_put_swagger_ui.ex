@@ -4,9 +4,8 @@ defmodule MongoosePushWeb.Plug.MaybePutSwaggerUI do
 
   @impl Plug
   def init(opts) do
-    enable =
-      Application.get_env(:mongoose_push, :openapi)[:expose_spec] &&
-        Application.get_env(:mongoose_push, :openapi)[:expose_ui]
+    config = Application.get_env(:mongoose_push, :openapi)
+    enable = config[:expose_spec] && config[:expose_ui]
 
     opts =
       if enable do

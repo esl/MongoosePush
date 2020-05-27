@@ -17,7 +17,8 @@ defmodule MongoosePushWeb.Plug.MaybeRenderSpec do
   @impl Plug
   def call(conn, %{enabled: false}) do
     conn
-    |> send_resp(404, "swagger.json access disabled")
+    |> put_resp_content_type("application/json")
+    |> send_resp(404, "{\"error\":\"swagger.json disabled\"}")
     |> halt()
   end
 

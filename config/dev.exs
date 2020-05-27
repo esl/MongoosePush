@@ -5,7 +5,7 @@ config :mongoose_push, loglevel: :debug
 config :mongoose_push,
   openapi: [
     expose_spec: true,
-    expose_ui: false
+    expose_ui: true
   ]
 
 config :goth, endpoint: "http://fcm-mock:4001"
