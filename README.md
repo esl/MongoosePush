@@ -150,8 +150,8 @@ If token authentication is to be used:
 
 If the certificate authentication is to be used:
 
-* `service.apns.auth.certificate.keyfile` (*string*, *required*) - Path to the PEM encoded keyfile. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`).
-* `service.apns.auth.certificate.certfile` (*string*, *required*) - Path to the PEM encoded certfile. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`).
+* `service.apns.auth.certificate.keyfile` (*string*, *required*) - Path to the PEM encoded keyfile. This path should be either absolute, or relative to root dir of the release (in the Docker container that would be `/opt/app`).
+* `service.apns.auth.certificate.certfile` (*string*, *required*) - Path to the PEM encoded certfile. This path should be either absolute, or relative to root dir of the release (in the Docker container that would be `/opt/app`).
 
 Please note that only one method of authentication can be used for any given pool. This means that setting `service.apns.auth.certificate` excludes `service.apns.auth.token` and vice versa. Providing both will result in a configuration error.
 

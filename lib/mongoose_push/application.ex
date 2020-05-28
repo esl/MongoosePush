@@ -185,7 +185,7 @@ defmodule MongoosePush.Application do
         )
 
       nil ->
-        Logger.info("Skipping TOML configuration die to non-release boot",
+        Logger.info("Skipping TOML configuration due to non-release boot",
           what: :toml_configuration,
           status: :error,
           reason: :no_release
