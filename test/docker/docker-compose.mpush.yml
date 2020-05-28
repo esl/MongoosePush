@@ -25,8 +25,8 @@ services:
       - PUSH_FCM_ENDPOINT=fcm-mock
       - TLS_SERVER_CERT_VALIDATION=false
       - FCM_AUTH_ENDPOINT=http://fcm-mock:4001
-      - PUSH_OPENAPI_EXPOSE_SPEC=false
-      - PUSH_OPENAPI_EXPOSE_UI=false
+      - PUSH_OPENAPI_EXPOSE_SPEC=true
+      - PUSH_OPENAPI_EXPOSE_UI=true
     ports:
       - "8443:8443"
     volumes:
