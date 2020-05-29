@@ -43,6 +43,7 @@ defmodule MongoosePush.Mixfile do
       {:lager, ">= 3.7.0", override: true},
       {:phoenix, "~> 1.4.16"},
       {:open_api_spex, "~> 3.6"},
+      {:toml, "~> 0.6.1"},
 
       # Below only :dev / :test deps
       {:mock, "~> 0.3", only: :test},

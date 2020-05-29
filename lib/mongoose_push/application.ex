@@ -26,8 +26,11 @@ defmodule MongoosePush.Application do
   @spec start(atom, list(term)) :: {:ok, pid}
   def start(_type, _args) do
     # Logger setup
-    loglevel = Application.get_env(:mongoose_push, :loglevel, :info)
+    loglevel = Application.get_env(:mongoose_push, :logging)[:level] || :info
     set_loglevel(loglevel)
+
+    # Mostly status logging
+    _ = check_runtime_configuration_status()
 
     # Define workers and child supervisors to be supervised
     children =
@@ -151,6 +154,42 @@ defmodule MongoosePush.Application do
 
       false ->
         :ok
+    end
+  end
+
+  defp check_runtime_configuration_status() do
+    toml_configuration = Application.get_env(:mongoose_push, :toml_configuration)
+
+    case toml_configuration[:status] do
+      {:ok, :loaded} ->
+        Logger.info("Loaded TOML configuration",
+          what: :toml_configuration,
+          status: :loaded,
+          path: toml_configuration[:path]
+        )
+
+      {:ok, :skipped} ->
+        Logger.info("Skipping TOML configuration due to file not present",
+          what: :toml_configuration,
+          status: :skipped,
+          reason: :enoent,
+          path: toml_configuration[:path]
+        )
+
+      {:error, reason} ->
+        Logger.error("Unable to parse TOML config file",
+          what: :toml_configuration,
+          status: :error,
+          reason: inspect(reason),
+          path: toml_configuration[:path]
+        )
+
+      nil ->
+        Logger.info("Skipping TOML configuration due to non-release boot",
+          what: :toml_configuration,
+          status: :error,
+          reason: :no_release
+        )
     end
   end
 end

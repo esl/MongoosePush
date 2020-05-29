@@ -9,7 +9,7 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
     ip: {
       :system,
       # Custom type parser (Phoenix needs erlang-inet-style IP address)
-      {MongoosePush.Config.ConfexProvider, :parse_bind_addr, []},
+      {MongoosePush.Config.Utils, :parse_bind_addr, []},
       "PUSH_HTTPS_BIND_ADDR",
       {127, 0, 0, 1}
     },
@@ -32,7 +32,8 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
   check_origin: true,
   server: true
 
-config :mongoose_push, loglevel: {:system, :atom, "PUSH_LOGLEVEL", :info}
+config :mongoose_push, :logging, level: {:system, :atom, "PUSH_LOGLEVEL", :info}
+
 config :mongoose_push, fcm_enabled: {:system, :boolean, "PUSH_FCM_ENABLED", true}
 
 config :mongoose_push, apns_enabled: {:system, :boolean, "PUSH_APNS_ENABLED", true}
