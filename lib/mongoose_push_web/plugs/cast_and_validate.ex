@@ -1,4 +1,9 @@
 defmodule MongoosePushWeb.Plug.CastAndValidate do
+  @moduledoc """
+  Module plug that serves as a wrapper for OpenApiSpex.Plug.CastAndValidate plug,
+  to overcome difficulties with proper message validating. For more details, 
+  please refer to update_schema_and_do_call/2 function comment.
+  """
   @behaviour Plug
 
   @impl Plug
@@ -84,30 +89,26 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
          conn = %{params: %{"data" => _}},
          opts = %{operation_id: operation_id}
        ) do
-    conn =
-      Kernel.update_in(
-        conn,
-        [
-          Access.key(:private),
-          :open_api_spex,
-          :operation_lookup,
-          operation_id,
-          Access.key(:requestBody),
-          Access.key(:content),
-          "application/json",
-          Access.key(:schema)
-        ],
-        fn %OpenApiSpex.Schema{oneOf: _listOfSchemas} ->
-          %OpenApiSpex.Reference{
-            "$ref": "#/components/schemas/Request.SendNotification.Deep.SilentNotification"
-          }
-        end
-      )
+    new_schema = %OpenApiSpex.Reference{
+      "$ref": "#/components/schemas/Request.SendNotification.Deep.SilentNotification"
+    }
 
-    OpenApiSpex.Plug.CastAndValidate.call(conn, opts)
+    conn
+    |> update_schema(operation_id, new_schema)
+    |> OpenApiSpex.Plug.CastAndValidate.call(opts)
   end
 
   defp update_schema_and_do_call(conn, opts = %{operation_id: operation_id}) do
+    new_schema = %OpenApiSpex.Reference{
+      "$ref": "#/components/schemas/Request.SendNotification.Deep.AlertNotification"
+    }
+
+    conn
+    |> update_schema(operation_id, new_schema)
+    |> OpenApiSpex.Plug.CastAndValidate.call(opts)
+  end
+
+  defp update_schema(conn, operation_id, new_schema) do
     conn =
       Kernel.update_in(
         conn,
@@ -121,13 +122,7 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
           "application/json",
           Access.key(:schema)
         ],
-        fn %OpenApiSpex.Schema{oneOf: _listOfSchemas} ->
-          %OpenApiSpex.Reference{
-            "$ref": "#/components/schemas/Request.SendNotification.Deep.AlertNotification"
-          }
-        end
+        fn %OpenApiSpex.Schema{oneOf: _listOfSchemas} -> new_schema end
       )
-
-    OpenApiSpex.Plug.CastAndValidate.call(conn, opts)
   end
 end
