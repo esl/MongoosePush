@@ -135,6 +135,24 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
     assert json_response(conn, 422) == ControllersHelper.no_schemas_provided_response()
   end
 
+  test "empty request", %{
+    conn: conn
+  } do
+    conn =
+      post(
+        conn,
+        "/v2/notification/654321",
+        Jason.encode!(%{})
+      )
+
+    assert json_response(conn, 422) ==
+             Map.merge(
+               ControllersHelper.missing_field_response("service"),
+               ControllersHelper.missing_field_response("alert"),
+               fn _k, v1, v2 -> v1 ++ v2 end
+             )
+  end
+
   # Service.error() errors
 
   test "invalid request error", %{conn: conn} do

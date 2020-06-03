@@ -37,6 +37,11 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
   end
 
   @impl Plug
+  def call(conn = %{params: %{}}, opts = %{operation_id: _}) do
+    update_schema_and_do_call(conn, opts)
+  end
+
+  @impl Plug
   def call(
         conn = %{
           private: %{
