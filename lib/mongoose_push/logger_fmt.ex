@@ -21,7 +21,7 @@ defmodule MongoosePush.LoggerFmt do
         when: "#{date_f}T#{time_f}",
         severity: level,
         what: what,
-        text: message,
+        text: "#{message}",
         at: "#{module}.#{function}:#{line}",
         pid: pid
       ]
@@ -31,7 +31,7 @@ defmodule MongoosePush.LoggerFmt do
 
     "#{meta_f}\n"
   rescue
-    reason -> "unable to format (#{inspect(reason)}): #{inspect({level, message, metadata})}"
+    reason -> "unable to format (#{inspect(reason)}): #{inspect({level, message, metadata})}\n"
   end
 
   defp flatten_metadata(metadata) do
