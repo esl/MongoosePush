@@ -1,4 +1,4 @@
-defmodule MongoosePushWeb.Plug.CastAndValidateStubAdapter do
+defmodule MongoosePushWeb.Plug.CastAndValidate.StubAdapter do
   @behaviour Plug.Conn.Adapter
 
   @impl true

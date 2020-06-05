@@ -15,7 +15,7 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
   def call(conn, opts) do
     stub_conn = %Plug.Conn{
       conn
-      | adapter: {MongoosePushWeb.Plug.CastAndValidateStubAdapter, %{}}
+      | adapter: {MongoosePushWeb.Plug.CastAndValidate.StubAdapter, %{}}
     }
 
     # Just a dry run with stub adapter so that response can't be sent
