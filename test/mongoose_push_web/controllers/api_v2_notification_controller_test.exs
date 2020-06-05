@@ -56,7 +56,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         })
       )
 
-    assert json_response(conn, 422) == ControllersHelper.no_schemas_provided_response()
+    assert json_response(conn, 422) == ControllersHelper.invalid_value_for_enum("priority")
   end
 
   test "Request.SendNotification.Deep.AlertNotification schema with unexpected field", %{
@@ -69,7 +69,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         Jason.encode!(Map.put(ControllersHelper.alert_request(), "field", "peek-a-boo"))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.no_schemas_provided_response()
+    assert json_response(conn, 422) == ControllersHelper.unexpected_field_response("field")
   end
 
   test "correct Request.SendNotification.Deep.SilentNotification schema", %{conn: conn} do
@@ -119,7 +119,8 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         Jason.encode!(%{ControllersHelper.silent_request() | "time_to_live" => "infinity"})
       )
 
-    assert json_response(conn, 422) == ControllersHelper.no_schemas_provided_response()
+    assert json_response(conn, 422) ==
+             ControllersHelper.invalid_field_response("integer", "string", "time_to_live")
   end
 
   test "Request.SendNotification.Deep.SilentNotification schema with unexpected field", %{
@@ -132,7 +133,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
         Jason.encode!(Map.put(ControllersHelper.silent_request(), "field", "peek-a-boo"))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.no_schemas_provided_response()
+    assert json_response(conn, 422) == ControllersHelper.unexpected_field_response("field")
   end
 
   test "empty request", %{
