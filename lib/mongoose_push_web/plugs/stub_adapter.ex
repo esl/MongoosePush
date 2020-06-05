@@ -2,7 +2,7 @@ defmodule MongoosePushWeb.Plug.CastAndValidateStubAdapter do
   @behaviour Plug.Conn.Adapter
 
   @impl true
-  def chunk(conn, _chunk) do
+  def chunk(_conn, _chunk) do
     :ok
   end
 
