@@ -119,7 +119,8 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
         Jason.encode!(%{ControllersHelper.silent_request() | "time_to_live" => "infinity"})
       )
 
-    assert json_response(conn, 422) == ControllersHelper.invalid_field_response("integer","string","time_to_live")
+    assert json_response(conn, 422) ==
+             ControllersHelper.invalid_field_response("integer", "string", "time_to_live")
   end
 
   test "Request.SendNotification.Deep.SilentNotification schema with unexpected field", %{
