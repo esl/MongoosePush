@@ -5,7 +5,7 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
 
   use MongoosePushWeb.Schemas
 
-  plug(OpenApiSpex.Plug.CastAndValidate)
+  plug(MongoosePushWeb.Plug.CastAndValidate)
 
   @spec send_operation() :: Operation.t()
   def send_operation() do
