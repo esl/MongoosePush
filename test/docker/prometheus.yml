@@ -1,0 +1,9 @@
+scrape_configs:
+  - job_name: 'mongoose-push'
+    scheme: 'https' #MongoosePush exposes encrypted endpoint - HTTPS
+    tls_config: #The default certs used by MongoosePush are self-signed
+      insecure_skip_verify: true #For checking purposes we can ignore certs verification
+    static_configs:
+      - targets: ['mongoose-push:8443']
+        labels:
+          group: 'production'
