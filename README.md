@@ -253,7 +253,7 @@ Development release is by default configured to connect to local APNS / FCM mock
 in `config/dev.exs` file.
 For now, let's just start those mocks so that we can use default dev configuration:
 ```bash
-docker-compose -f test/docker/docker-compose.unit.yml up -d
+docker-compose -f test/docker/docker-compose.mocks.yml up -d
 ```
 
 After this step you may try to run the service via:
