@@ -44,6 +44,10 @@ defmodule RequestsGenerator do
     })
   end
 
+  def mandatory_field() do
+    one_of_strings([:service, :title, :body])
+  end
+
   def optional_fields() do
     StreamData.optional_map(%{
       "alert" =>

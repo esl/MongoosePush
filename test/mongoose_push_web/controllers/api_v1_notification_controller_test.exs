@@ -27,7 +27,7 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
         Jason.encode!(Map.drop(ControllersHelper.flat_request(), ["service"]))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("service")
+    assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v1, "service")
   end
 
   test "Request.SendNotification.FlatNotification schema without required body field", %{
@@ -40,7 +40,7 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
         Jason.encode!(Map.drop(ControllersHelper.flat_request(), ["body"]))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("body")
+    assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v1, "body")
   end
 
   test "Request.SendNotification.FlatNotification schema with incorrect badge value", %{

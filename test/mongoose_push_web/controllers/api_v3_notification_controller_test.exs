@@ -29,7 +29,7 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
         Jason.encode!(Map.drop(ControllersHelper.alert_request(), ["service"]))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("service")
+    assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v3, "service")
   end
 
   test "Request.SendNotification.Deep.AlertNotification schema without required alert field", %{
@@ -42,7 +42,7 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
         Jason.encode!(Map.drop(ControllersHelper.alert_request(), ["alert"]))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("alert")
+    assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v3, "alert")
   end
 
   test "Request.SendNotification.Deep.AlertNotification schema with incorrect priority value", %{
@@ -94,7 +94,7 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
         Jason.encode!(Map.drop(ControllersHelper.silent_request(), ["service"]))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("service")
+    assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v3, "service")
   end
 
   test "Request.SendNotification.Deep.SilentNotification schema without required data field", %{
@@ -107,7 +107,7 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
         Jason.encode!(Map.drop(ControllersHelper.silent_request(), ["data"]))
       )
 
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("alert")
+    assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v3, "alert")
   end
 
   test "Request.SendNotification.Deep.SilentNotification schema with incorrect time_to_live value",
@@ -150,8 +150,8 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
 
     assert json_response(conn, 422) ==
              Map.merge(
-               ControllersHelper.missing_field_response("service"),
-               ControllersHelper.missing_field_response("alert"),
+               ControllersHelper.missing_field_response(:v3, "service"),
+               ControllersHelper.missing_field_response(:v3, "alert"),
                fn _k, v1, v2 -> v1 ++ v2 end
              )
   end
@@ -853,6 +853,21 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     end
   end
 
+  property "APIv3 notification with dropped mandatory field", %{conn: conn} do
+    check all(
+            mandatory <- mandatory_fields(),
+            optionals <- optional_fields(),
+            dropped <- mandatory_field()
+          ) do
+      request =
+        Map.merge(mandatory, optionals, fn _k, v1, v2 -> Map.merge(v1, v2) end)
+        |> drop_field(dropped)
+
+      conn = post(conn, "/v3/notification/123456", Jason.encode!(request))
+      assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v3, dropped)
+    end
+  end
+
   defp post_and_assert(conn, device_id, expected_device_id, request, expected_request) do
     expect(MongoosePush.Notification.MockImpl, :push, fn device_id, request ->
       assert request == expected_request
@@ -913,5 +928,13 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     map
     |> Enum.filter(fn {_, v} -> v != nil end)
     |> Map.new()
+  end
+
+  defp drop_field(map, field) when field in ["body", "title"] do
+    Kernel.update_in(map, ["alert"], fn _ -> Map.drop(map["alert"], [field]) end)
+  end
+
+  defp drop_field(map, field) do
+    Map.drop(map, [field])
   end
 end
