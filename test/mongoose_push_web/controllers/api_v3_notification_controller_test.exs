@@ -1,7 +1,9 @@
 defmodule MongoosePushWeb.APIv3NotificationControllerTest do
   alias MongoosePushWeb.Support.ControllersHelper
+  use ExUnitProperties
   use MongoosePushWeb.ConnCase, async: true
   import Mox
+  import RequestsGenerator
 
   setup :verify_on_exit!
 
@@ -838,6 +840,19 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     post_and_assert(conn, device_id, expected_device_id, request, expected_request)
   end
 
+  property "APIv3 notification decoder property-based test", %{conn: conn} do
+    check all(
+            mandatory <- mandatory_fields(),
+            optionals <- optional_fields(),
+            device_id <- nonempty_string()
+          ) do
+      request = Map.merge(mandatory, optionals, fn _k, v1, v2 -> Map.merge(v1, v2) end)
+      expected_device_id = device_id
+      expected_request = create_expected_request(request)
+      post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+    end
+  end
+
   defp post_and_assert(conn, device_id, expected_device_id, request, expected_request) do
     expect(MongoosePush.Notification.MockImpl, :push, fn device_id, request ->
       assert request == expected_request
@@ -859,5 +874,44 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     conn = post(conn, "/v3/notification/#{device_id}", Jason.encode!(request))
 
     assert json_response(conn, number) == %{"reason" => to_string(error_reason)}
+  end
+
+  defp create_expected_request(request) do
+    %{
+      alert: fetch_alert(request["alert"]),
+      data: request["data"],
+      mode: fetch_enum_field(request["mode"]),
+      service: fetch_enum_field(request["service"]),
+      priority: fetch_enum_field(request["priority"]),
+      mutable_content: fetch_mutable_content(request["mutable_content"]),
+      tags: request["tags"],
+      topic: request["topic"],
+      time_to_live: request["time_to_live"]
+    }
+    |> drop_nil_values()
+  end
+
+  defp fetch_alert(alert) do
+    %{
+      body: alert["body"],
+      title: alert["title"],
+      badge: alert["badge"],
+      click_action: alert["click_action"],
+      tag: alert["tag"],
+      sound: alert["sound"]
+    }
+    |> drop_nil_values()
+  end
+
+  defp fetch_enum_field(nil), do: nil
+  defp fetch_enum_field(string), do: String.to_existing_atom(string)
+
+  defp fetch_mutable_content(nil), do: false
+  defp fetch_mutable_content(val), do: val
+
+  defp drop_nil_values(map) do
+    map
+    |> Enum.filter(fn {_, v} -> v != nil end)
+    |> Map.new()
   end
 end
