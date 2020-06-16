@@ -499,6 +499,32 @@ Existing dashboards will need to be updated.
 
 #### Available metrics
 
+##### Histograms
+
+For more details about the histogram metric type please go to https://prometheus.io/docs/concepts/metric_types/#histogram
+
+###### Notification sent time
+
+`mongoose_push_notification_send_time_microsecond_bucket{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS},le=${LE}}`
+`mongoose_push_notification_send_time_microsecond_sum{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}`
+`mongoose_push_notification_send_time_microsecond_count{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}`
+
+Where:
+* `STATUS` is `"success"` for the successful notifications or `"error"` in all other cases
+* `SERVICE` is either `"apns"` or `"fcm"`
+* `CATEGORY` is an arbitrary error category term (in case of `status="error"`) or an empty string (when `status="success"`)
+* `REASON` is an arbitrary error reason term (in case of `status="error"`) or an empty string (when `status="success"`)
+* `LE` defines the `less or equal` values for buckets, currently `1000`, `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` or `+Inf`
+
+> **NOTE**
+> A mesurment of value 50_000 will be added to all buckets which are less or equal to 50_000.
+> In this case these are buckets `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` and `+Inf`
+
+This histogram metric shows the distribution of times needed to:
+1. Select a worker (this may include waiting time when all workers are busy).
+2. Send a request.
+3. Get a response from push notifications provider.
+
 #### How to quickly see all metrics
 
 ```bash
