@@ -12,6 +12,7 @@ defmodule MongoosePushWeb.APIv2.NotificationController do
     %Operation{
       tags: ["apiv2"],
       summary: "sends a push",
+      deprecated: true,
       description: "performs the sending of push notification",
       operationId: "APIv2.NotificationController.send",
       parameters: [
