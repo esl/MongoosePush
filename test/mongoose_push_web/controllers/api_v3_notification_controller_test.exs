@@ -1,9 +1,9 @@
 defmodule MongoosePushWeb.APIv3NotificationControllerTest do
   alias MongoosePushWeb.Support.ControllersHelper
+  alias MongoosePushWeb.Support.RequestsGenerator
   use ExUnitProperties
   use MongoosePushWeb.ConnCase, async: true
   import Mox
-  import RequestsGenerator
 
   setup :verify_on_exit!
 
@@ -842,9 +842,9 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
 
   property "APIv3 notification decoder property-based test", %{conn: conn} do
     check all(
-            mandatory <- mandatory_fields(),
-            optionals <- optional_fields(),
-            device_id <- nonempty_string()
+            mandatory <- RequestsGenerator.mandatory_fields(),
+            optionals <- RequestsGenerator.optional_fields(),
+            device_id <- RequestsGenerator.device_id()
           ) do
       request = Map.merge(mandatory, optionals, fn _k, v1, v2 -> Map.merge(v1, v2) end)
       expected_device_id = device_id
@@ -853,17 +853,18 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     end
   end
 
-  property "APIv3 notification with dropped mandatory field", %{conn: conn} do
+  property "APIv3 notification with dropped one mandatory field", %{conn: conn} do
     check all(
-            mandatory <- mandatory_fields(),
-            optionals <- optional_fields(),
-            dropped <- mandatory_field()
+            mandatory <- RequestsGenerator.mandatory_fields(),
+            optionals <- RequestsGenerator.optional_fields(),
+            device_id <- RequestsGenerator.device_id(),
+            dropped <- RequestsGenerator.mandatory_field()
           ) do
       request =
         Map.merge(mandatory, optionals, fn _k, v1, v2 -> Map.merge(v1, v2) end)
         |> drop_field(dropped)
 
-      conn = post(conn, "/v3/notification/123456", Jason.encode!(request))
+      conn = post(conn, "/v3/notification/#{device_id}", Jason.encode!(request))
       assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v3, dropped)
     end
   end
