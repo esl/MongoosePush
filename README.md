@@ -517,11 +517,13 @@ Where:
 * `SERVICE` is either `"apns"` or `"fcm"`
 * `CATEGORY` is an arbitrary error category term (in case of `status="error"`) or an empty string (when `status="success"`)
 * `REASON` is an arbitrary error reason term (in case of `status="error"`) or an empty string (when `status="success"`)
-* `LE` defines the `less or equal` values for buckets, currently `1000`, `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` or `+Inf`
+* `LE` defines the `upper inclusive bound` (`less than or equal`) values for buckets, currently `1000`, `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` or `+Inf`
 
 > **NOTE**
-> A mesurment of value 50_000 will be added to all buckets which are less or equal to 50_000.
-> In this case these are buckets `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` and `+Inf`
+>
+> A bucket of value 250_000 will keep the count of measurements that are less than or equal to 250_000.
+> A measurement of value 51_836 will be added to all the buckets where the upper bound is greater than 51_836.
+> In this case these are buckets `100_000`, `250_000`, `500_000`, `1000_000` and `+Inf`
 
 This histogram metric shows the distribution of times needed to:
 1. Select a worker (this may include waiting time when all workers are busy).
@@ -530,12 +532,12 @@ This histogram metric shows the distribution of times needed to:
 
 ##### Counters
 
-* `mongoose_push_supervisor_init_count{service=${SERVICE}}` - Counts number of push notification service supervisor starts.
+* `mongoose_push_supervisor_init_count{service=${SERVICE}}` - Counts the number of push notification service supervisor starts.
   The `SERVICE` variable can take `"apns"` or `"fcm"` as a value.
-  This metrics is update when MongoosePush starts or later when the underlying supervision tree is terminated and the error is propagate to the main application supervisor.
-* `mongoose_push_apns_state_init_count` - Counts number of APNS state initialisations.
-* `mongoose_push_apns_state_terminate_count` - Counts number of APNS state terminations.
-* `mongoose_push_apns_state_get_default_topic_count` - Counts number of default topic reads from cache.
+  This metric is updated when MongoosePush starts, and later on when the underlying supervision tree is terminated and the error is propagated to the main application supervisor.
+* `mongoose_push_apns_state_init_count` - Counts the number of APNS state initialisations.
+* `mongoose_push_apns_state_terminate_count` - Counts the number of APNS state terminations.
+* `mongoose_push_apns_state_get_default_topic_count` - Counts the number of default topic reads from cache.
 
 #### How to quickly see all metrics
 
@@ -544,7 +546,7 @@ curl -k https://127.0.0.1:8443/metrics
 ```
 
 The above command assumes that MongoosePush runs on `localhost` and listens on port `8443`.
-Please, mind the `HTTPS` protocol, metrics are hosted on the same port as other API.
+Please, mind the `HTTPS` protocol, metrics are hosted on the same port than all the other API endpoints.
 
 #### Prometheus configuration
 
@@ -564,5 +566,3 @@ scrape_configs:
           group: 'production'
 
 ```
-
-
