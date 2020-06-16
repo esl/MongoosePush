@@ -10,10 +10,12 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
   def metrics do
     [
       # Summary is not yet supported in TelemetryMetricsPrometheus
-      Telemetry.Metrics.distribution("mongoose_push.notification.send.time",
-        buckets: [100, 250, 500, 1000],
-        tags: [:status, :service, :error_category, :error_reason],
-        unit: {:native, :second}
+      Telemetry.Metrics.distribution(
+        "mongoose_push.notification.send.time.microsecond",
+        event_name: [:mongoose_push, :notification, :send],
+        measurement: :time,
+        buckets: [1000, 10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1000_000],
+        tags: [:status, :service, :error_category, :error_reason]
       ),
 
       # measurement is ignored in Counter metric
