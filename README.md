@@ -491,26 +491,40 @@ If you specify both **alert** and **data**, target device will receive both noti
 * **500** `{"reason" : reason}` - the server internal error occured,
   specified by **reason**.
 
-### I use MongoosePush docker, where do I find `sys.config`?
+### Metrics
 
-If you use dockerized MongoosePush, you need to do the following:
-* Start MongoosePush docker, let's assume its name is `mongoose_push`
-* Run: `docker cp mongoose_push:/opt/app/var/sys.config sys.config` on you docker host (this will get the current `sys.config` to your `${CWD}`)
-* Modify the `sys.config` as you see fit (for metrics, see above)
-* Stop MongoosePush docker container and restart it with the modified `sys.config` as volume in `/opt/app/sys.config` (yes, this is not the path we used to copy this file from, this is an override)
+MongoosePush 2.1 provides metrics in the Prometheus format on the `/metrics` endpoint.
+This is a breaking change compared to previous releases.
+Existing dashboards will need to be updated.
+
+#### Available metrics
+
+#### How to quickly see all metrics
+
+```bash
+curl -k https://127.0.0.1:8443/metrics
+```
+
+The above command assumes that MongoosePush runs on `localhost` and listens on port `8443`.
+Please, mind the `HTTPS` protocol, metrics are hosted on the same port as other API.
+
+#### Prometheus configuration
+
+When configuring Prometheus, it's important to:
+* set the `scheme` to `https` since MongoosePush exposes `/metrics` path encrypted endpoint (HTTPS)
+* set the `insecure_skip_verify` to `true` if the default self-signed certificates are used
+
+```yaml
+scrape_configs:
+  - job_name: 'mongoose-push'
+    scheme: 'https' #MongoosePush exposes encrypted endpoint - HTTPS
+    tls_config: #The default certs used by MongoosePush are self-signed
+      insecure_skip_verify: true #For checking purposes we can ignore certs verification
+    static_configs:
+      - targets: ['mongoose-push:8443']
+        labels:
+          group: 'production'
+
+```
 
 
-### Available metrics
-
-The following metrics are available:
-
-* `mongoose_push_apns_state_get_default_topic_count`
-* `mongoose_push_notification_send_time_bucket{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS},le=${LENGTH}}`
-* `mongoose_push_notification_send_time_sum{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}`
-* `mongoose_push_notification_send_time_count{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status="${STATUS}}`
-Where:
-* **CATEGORY** is an arbitrary error category term or empty string
-* **REASON** is an arbitrary error reason term or empty string
-* **SERVICE** is either `fcm` or `apns`
-* **STATUS** is either `success` or `error`
-* **LENGTH** is either `100` or `250` or `500` or `1000` or `+Inf`
