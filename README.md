@@ -497,6 +497,9 @@ MongoosePush 2.1 provides metrics in the Prometheus format on the `/metrics` end
 This is a breaking change compared to previous releases.
 Existing dashboards will need to be updated.
 
+It is important to know that metrics are created inside MongoosePush only when a certain event happens.
+This may mean that a freshly started MongoosePush node will not have all the possible metrics available yet.
+
 #### Available metrics
 
 ##### Histograms
@@ -524,6 +527,15 @@ This histogram metric shows the distribution of times needed to:
 1. Select a worker (this may include waiting time when all workers are busy).
 2. Send a request.
 3. Get a response from push notifications provider.
+
+##### Counters
+
+* `mongoose_push_supervisor_init_count{service=${SERVICE}}` - Counts number of push notification service supervisor starts.
+  The `SERVICE` variable can take `"apns"` or `"fcm"` as a value.
+  This metrics is update when MongoosePush starts or later when the underlying supervision tree is terminated and the error is propagate to the main application supervisor.
+* `mongoose_push_apns_state_init_count` - Counts number of APNS state initialisations.
+* `mongoose_push_apns_state_terminate_count` - Counts number of APNS state terminations.
+* `mongoose_push_apns_state_get_default_topic_count` - Counts number of default topic reads from cache.
 
 #### How to quickly see all metrics
 
