@@ -33,9 +33,9 @@ defmodule MongoosePush.API.PrometheusEndpointTest do
 
     # 3. regex on the payload to make sure this is prometheus output
     fcm_regex =
-      ~r/mongoose_push_notification_send_time_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_notification_send_time_microsecond_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
 
     fcm_match = Regex.named_captures(fcm_regex, metrics)
-    assert 0 != fcm_match
+    assert nil != fcm_match
   end
 end

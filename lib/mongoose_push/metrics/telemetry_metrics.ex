@@ -37,7 +37,16 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
       ),
       Telemetry.Metrics.counter("mongoose_push.apns.state.get_default_topic.count",
         description: "Counts the number of APNS default topic reads from the ETS cache"
-      )
+      ),
+
+      # sparrow events
+      Telemetry.Metrics.distribution(
+        "sparrow.h2_worker.handle.duration.microsecond",
+        event_name: [:sparrow, :h2_worker, :handle],
+        measurement: :time,
+        buckets: [10_000, 25_000, 50_000, 100_000, 200_000, 500_000, 1000_000],
+        description: "A histogram showing time it takes for h2_worker to handle request."
+      ),
     ]
   end
 end
