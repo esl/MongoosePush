@@ -3,7 +3,7 @@ defmodule MongoosePush.TomlTest do
 
   alias MongoosePush.Config.Provider.Toml, as: Provider
 
-  test "toml overries log level" do
+  test "toml overwrites log level" do
     for level <- [:debug, :info, :warn, :error] do
       sysconfig =
         Provider.update_sysconfig(
@@ -21,7 +21,25 @@ defmodule MongoosePush.TomlTest do
     end
   end
 
-  test "toml overries all endpoint settings" do
+  test "toml overwrites log format" do
+    for format <- [:fmt, :json] do
+      sysconfig =
+        Provider.update_sysconfig(
+          default_sysconfig(),
+          Toml.decode!(
+            """
+            [general.logging]
+            format = "#{format}"
+            """,
+            keys: :atoms
+          )
+        )
+
+      assert sysconfig[:logging][:format] == format
+    end
+  end
+
+  test "toml overwrites all endpoint settings" do
     sysconfig =
       Provider.update_sysconfig(
         default_sysconfig(),
@@ -48,7 +66,7 @@ defmodule MongoosePush.TomlTest do
     assert sysconfig[MongoosePushWeb.Endpoint][:server] == true
   end
 
-  test "toml overries openapi settings" do
+  test "toml overwrites openapi settings" do
     sysconfig =
       Provider.update_sysconfig(
         default_sysconfig(),
@@ -66,7 +84,7 @@ defmodule MongoosePush.TomlTest do
     assert sysconfig[:openapi][:expose_ui] == true
   end
 
-  test "toml overries some endpoint settings" do
+  test "toml overwrites some endpoint settings" do
     sysconfig =
       Provider.update_sysconfig(
         default_sysconfig(),
@@ -322,7 +340,7 @@ defmodule MongoosePush.TomlTest do
          check_origin: true,
          server: true
        ]},
-      {:logging, [level: :info]},
+      {:logging, [level: :info, format: :fmt]},
       {:fcm_enabled, true},
       {:apns,
        [
