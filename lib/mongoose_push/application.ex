@@ -27,7 +27,9 @@ defmodule MongoosePush.Application do
   def start(_type, _args) do
     # Logger setup
     loglevel = Application.get_env(:mongoose_push, :logging)[:level] || :info
+    logformat = Application.get_env(:mongoose_push, :logging)[:format] || :fmt
     set_loglevel(loglevel)
+    set_logformat(loglevel)
 
     # Mostly status logging
     _ = check_runtime_configuration_status()
@@ -157,6 +159,14 @@ defmodule MongoosePush.Application do
       false ->
         :ok
     end
+  end
+
+  defp set_logformat(:fmt), do: set_loglevel(MongoosePush.Logger.Fmt)
+
+  defp set_logformat(:json), do: set_loglevel(MongoosePush.Logger.JSON)
+
+  defp set_logformat(module) do
+    Logger.configure_backend(:console, format: {module, :format}, metadata: :all)
   end
 
   defp check_runtime_configuration_status() do

@@ -6,7 +6,9 @@ config :mongoose_push,
     expose_ui: true
   ]
 
-config :mongoose_push, :logging, level: :error
+config :mongoose_push, :logging,
+  level: :error,
+  format: :fmt
 
 config :goth, endpoint: "http://fcm-mock:4001"
 

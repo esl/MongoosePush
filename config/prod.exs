@@ -32,7 +32,9 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
   check_origin: true,
   server: true
 
-config :mongoose_push, :logging, level: {:system, :atom, "PUSH_LOGLEVEL", :info}
+config :mongoose_push, :logging,
+  level: {:system, :atom, "PUSH_LOGLEVEL", :info},
+  format: {:system, :atom, "PUSH_LOGFORMAT", :json}
 
 config :mongoose_push, fcm_enabled: {:system, :boolean, "PUSH_FCM_ENABLED", true}
 
