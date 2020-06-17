@@ -48,7 +48,9 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
         "sparrow.h2_worker.handle.duration.microsecond",
         event_name: [:sparrow, :h2_worker, :handle],
         measurement: :time,
-        buckets: [10_000, 25_000, 50_000, 100_000, 200_000, 500_000, 1000_000],
+        reporter_options: [
+          buckets: [10_000, 25_000, 50_000, 100_000, 200_000, 500_000, 1000_000]
+        ],
         description: "A histogram showing time it takes for h2_worker to handle request."
       ),
       Telemetry.Metrics.last_value(
