@@ -133,6 +133,29 @@ defmodule MongoosePushTelemetryMetricsTest do
     assert 0 != fcm_match
   end
 
+  test "sparrow periodic metrics" do
+    :telemetry.execute(
+      [:sparrow, :pools_warden, :workers],
+      %{count: 5},
+      %{pool: :periodic_pool}
+    )
+
+    :telemetry.execute(
+      [:sparrow, :pools_warden, :pools],
+      %{count: 3},
+      %{}
+    )
+
+    metrics = TelemetryMetricsPrometheus.Core.scrape()
+    workers_regex = ~r/sparrow_pools_warden_workers_count{pool=\"periodic_pool\"} 5/
+    workers_match = Regex.match?(workers_regex, metrics)
+    pools_regex = ~r/sparrow_pools_warden_pools_count [\d]+/
+    pools_match = Regex.match?(pools_regex, metrics)
+
+    assert true == workers_match
+    assert true == pools_match
+  end
+
   defp do_push(push_result, service, repeat_no) do
     MongoosePush.Service.Mock
     |> expect(:push, repeat_no, fn _, _, _, _ -> push_result end)

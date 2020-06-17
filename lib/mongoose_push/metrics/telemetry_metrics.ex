@@ -7,6 +7,10 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
     TelemetryMetricsPrometheus.Core.child_spec(metrics: metrics())
   end
 
+  def pooler do
+    [{:telemetry_poller, measurements: periodic_measurements(), period: 5_000}]
+  end
+
   def metrics do
     [
       # Summary is not yet supported in TelemetryMetricsPrometheus
@@ -47,6 +51,43 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
         buckets: [10_000, 25_000, 50_000, 100_000, 200_000, 500_000, 1000_000],
         description: "A histogram showing time it takes for h2_worker to handle request."
       ),
+      Telemetry.Metrics.last_value(
+        "sparrow.pools_warden.workers.count",
+        event_name: [:sparrow, :pools_warden, :workers],
+        measurement: :count,
+        tags: [:pool],
+        description: "Total count of workers handled by worker_pool."
+      ),
+      Telemetry.Metrics.last_value(
+        "sparrow.pools_warden.pools.count",
+        event_name: [:sparrow, :pools_warden, :pools],
+        measurement: :count,
+        description: "Total count of the connection pools."
+      )
     ]
+  end
+
+  def periodic_measurements do
+    [
+      {MongoosePush.Metrics.TelemetryMetrics, :running_pools, []}
+    ]
+  end
+
+  def running_pools do
+    stats = :wpool.stats()
+
+    Enum.map(stats, fn stat ->
+      :telemetry.execute(
+        [:sparrow, :pools_warden, :workers],
+        %{count: length(stat[:workers])},
+        %{pool: stat[:pool]}
+      )
+    end)
+
+    :telemetry.execute(
+      [:sparrow, :pools_warden, :pools],
+      %{count: length(stats)},
+      %{}
+    )
   end
 end
