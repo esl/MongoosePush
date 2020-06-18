@@ -1,6 +1,6 @@
 defmodule MongoosePush.Logger.Fmt do
   @moduledoc """
-  Module responsible for formatting logger output
+  Module responsible for FMT-specific logs formatting
   """
 
   import MongoosePush.Logger.Common

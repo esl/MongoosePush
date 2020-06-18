@@ -1,4 +1,7 @@
 defmodule MongoosePush.Logger.Common do
+  @moduledoc """
+  Common logs formatters' helper functions
+  """
   def flatten_metadata(metadata) do
     Enum.flat_map(metadata, &flatten_metadata_elem/1)
   end

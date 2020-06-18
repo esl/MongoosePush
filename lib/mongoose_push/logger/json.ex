@@ -1,6 +1,6 @@
 defmodule MongoosePush.Logger.JSON do
   @moduledoc """
-  JSON log formatter
+  Module responsible for JSON-specific logs formatting
   """
 
   import MongoosePush.Logger.Common
