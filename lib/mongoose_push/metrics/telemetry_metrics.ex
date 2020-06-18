@@ -14,7 +14,9 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
         "mongoose_push.notification.send.time.microsecond",
         event_name: [:mongoose_push, :notification, :send],
         measurement: :time,
-        buckets: [1000, 10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1000_000],
+        reporter_options: [
+          buckets: [1000, 10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1000_000]
+        ],
         tags: [:status, :service, :error_category, :error_reason],
         description:
           "A histogram showing push notification send times. Includes worker selection (with possible waiting if all are busy)"
