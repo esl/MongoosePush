@@ -161,9 +161,9 @@ defmodule MongoosePush.Application do
     end
   end
 
-  defp set_logformat(:fmt), do: set_loglevel(MongoosePush.Logger.Fmt)
+  defp set_logformat(:fmt), do: set_logformat(MongoosePush.Logger.Fmt)
 
-  defp set_logformat(:json), do: set_loglevel(MongoosePush.Logger.JSON)
+  defp set_logformat(:json), do: set_logformat(MongoosePush.Logger.JSON)
 
   defp set_logformat(module) do
     Logger.configure_backend(:console, format: {module, :format}, metadata: :all)
