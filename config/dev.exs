@@ -8,7 +8,7 @@ config :mongoose_push,
 
 config :mongoose_push, :logging,
   level: :error,
-  format: :fmt
+  format: :logfmt
 
 config :goth, endpoint: "http://fcm-mock:4001"
 

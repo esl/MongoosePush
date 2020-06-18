@@ -64,7 +64,7 @@ defmodule MongoosePush.Config.Provider.Toml do
   defp update_logging_format(sysconfig, toml) do
     format =
       case toml[:general][:logging][:format] do
-        "fmt" -> :fmt
+        "logfmt" -> :logfmt
         "json" -> :json
         nil -> sysconfig[:logging][:format]
         invalid -> raise "Invalid logformat: #{invalid}!"

@@ -2,7 +2,7 @@ use Mix.Config
 
 config :mongoose_push, :logging,
   level: :error,
-  format: :fmt
+  format: :logfmt
 
 config :mongoose_push, backend_module: MongoosePush.Notification.MockImpl
 

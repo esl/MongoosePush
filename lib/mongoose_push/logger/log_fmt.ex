@@ -1,4 +1,4 @@
-defmodule MongoosePush.Logger.Fmt do
+defmodule MongoosePush.Logger.LogFmt do
   @moduledoc """
   Module responsible for FMT-specific logs formatting
   """

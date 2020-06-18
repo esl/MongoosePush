@@ -7,7 +7,7 @@ config :logger,
   handle_sasl_reports: false
 
 config :logger, :console,
-  format: {MongoosePush.Logger.Fmt, :format},
+  format: {MongoosePush.Logger.LogFmt, :format},
   metadata: :all
 
 # Stop lager redirecting :error_logger messages

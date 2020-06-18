@@ -22,7 +22,7 @@ defmodule MongoosePush.TomlTest do
   end
 
   test "toml overwrites log format" do
-    for format <- [:fmt, :json] do
+    for format <- [:logfmt, :json] do
       sysconfig =
         Provider.update_sysconfig(
           default_sysconfig(),
@@ -340,7 +340,7 @@ defmodule MongoosePush.TomlTest do
          check_origin: true,
          server: true
        ]},
-      {:logging, [level: :info, format: :fmt]},
+      {:logging, [level: :info, format: :logfmt]},
       {:fcm_enabled, true},
       {:apns,
        [

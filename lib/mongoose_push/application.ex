@@ -27,7 +27,7 @@ defmodule MongoosePush.Application do
   def start(_type, _args) do
     # Logger setup
     loglevel = Application.get_env(:mongoose_push, :logging)[:level] || :info
-    logformat = Application.get_env(:mongoose_push, :logging)[:format] || :fmt
+    logformat = Application.get_env(:mongoose_push, :logging)[:format] || :logfmt
     set_loglevel(loglevel)
     set_logformat(loglevel)
 
@@ -161,7 +161,7 @@ defmodule MongoosePush.Application do
     end
   end
 
-  defp set_logformat(:fmt), do: set_logformat(MongoosePush.Logger.Fmt)
+  defp set_logformat(:logfmt), do: set_logformat(MongoosePush.Logger.LogFmt)
 
   defp set_logformat(:json), do: set_logformat(MongoosePush.Logger.JSON)
 
