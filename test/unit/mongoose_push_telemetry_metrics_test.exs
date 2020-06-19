@@ -38,13 +38,13 @@ defmodule MongoosePushTelemetryMetricsTest do
 
     # Distribution metric contains count as well as the buckets
     fcm_regex =
-      ~r/mongoose_push_notification_send_time_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_notification_send_time_microsecond_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
 
     fcm_match = Regex.named_captures(fcm_regex, metrics)
     fcm_count = get_count(fcm_match)
 
     apns_regex =
-      ~r/mongoose_push_notification_send_time_count{error_category=\"\",error_reason=\"\",service=\"apns\",status=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_notification_send_time_microsecond_count{error_category=\"\",error_reason=\"\",service=\"apns\",status=\"success\"} (?<count>[\d]+)/
 
     apns_match = Regex.named_captures(apns_regex, metrics)
     apns_count = get_count(apns_match)
@@ -68,10 +68,10 @@ defmodule MongoosePushTelemetryMetricsTest do
 
       # Distribution metric contains count as well as the buckets
       fcm_regex =
-        ~r/mongoose_push_notification_send_time_count{error_category=\"(?<type>[^\s]*)\",error_reason=\"(?<reason>[^\s]*)\",service=\"fcm\",status=\"error\"} (?<count>[\d]+)/
+        ~r/mongoose_push_notification_send_time_microsecond_count{error_category=\"(?<type>[^\s]*)\",error_reason=\"(?<reason>[^\s]*)\",service=\"fcm\",status=\"error\"} (?<count>[\d]+)/
 
       apns_regex =
-        ~r/mongoose_push_notification_send_time_count{error_category=\"(?<type>[^\s]*)\",error_reason=\"(?<reason>[^\s]*)\",service=\"apns\",status=\"error\"} (?<count>[\d]+)/
+        ~r/mongoose_push_notification_send_time_microsecond_count{error_category=\"(?<type>[^\s]*)\",error_reason=\"(?<reason>[^\s]*)\",service=\"apns\",status=\"error\"} (?<count>[\d]+)/
 
       fcm_matches =
         fcm_regex

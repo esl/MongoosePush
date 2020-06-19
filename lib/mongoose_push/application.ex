@@ -33,8 +33,10 @@ defmodule MongoosePush.Application do
     _ = check_runtime_configuration_status()
 
     # Define workers and child supervisors to be supervised
+    # The MongoosePush.Metrics.TelemetryMetrics child is started first to capture possible events
+    # when services start
     children =
-      service_children() ++ [MongoosePushWeb.Endpoint, MongoosePush.Metrics.TelemetryMetrics]
+      [MongoosePush.Metrics.TelemetryMetrics] ++ service_children() ++ [MongoosePushWeb.Endpoint]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

@@ -1,5 +1,5 @@
 # This file needs to be used along with `docker-compose.mocks.yml`:
-# docker-compose -f test/docker/docker-compose.mocks.yml -f test/docker/docker-compose.mpush.yml ...
+# PRIV=priv docker-compose -f test/docker/docker-compose.mocks.yml -f test/docker/docker-compose.mpush.yml ...
 version: '3'
 
 services:
