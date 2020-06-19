@@ -7,6 +7,6 @@
   ~r/Function :asn1ct.compile\/2 does not exist/,
   ~r/lib\/mix\//,
   ~r/test\/support\/mix\//,
-  ~r/test\/support\/request_generator\.ex,
+  ~r/test\/support\/request_generator\.ex/,
   {"test/support/api.ex"}
 ]
