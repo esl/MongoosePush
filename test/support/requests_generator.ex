@@ -40,7 +40,7 @@ defmodule MongoosePushWeb.Support.RequestsGenerator do
 
   # basic types
   defp nonempty_string() do
-    StreamData.string(:alphanumeric) |> StreamData.filter(fn x -> String.length(x) > 0 end)
+    StreamData.string(:alphanumeric, min_length: 1)
   end
 
   defp positive_integer() do
