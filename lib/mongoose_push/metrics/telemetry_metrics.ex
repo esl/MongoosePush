@@ -53,6 +53,34 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
         ],
         description: "A histogram showing time it takes for h2_worker to handle request."
       ),
+      Telemetry.Metrics.counter("sparrow.h2_worker.init.count",
+        event_name: [:sparrow, :h2_worker, :init],
+        description: "Counts the number of h2_worker starts."
+      ),
+      Telemetry.Metrics.counter("sparrow.h2_worker.terminate.count",
+        event_name: [:sparrow, :h2_worker, :terminate],
+        description: "Counts the number of h2_worker terminations."
+      ),
+      Telemetry.Metrics.counter("sparrow.h2_worker.conn_success.count",
+        event_name: [:sparrow, :h2_worker, :conn_success],
+        description: "Counts the number of successful h2_worker connections."
+      ),
+      Telemetry.Metrics.counter("sparrow.h2_worker.conn_fail.count",
+        event_name: [:sparrow, :h2_worker, :conn_fail],
+        description: "Counts the number of failed h2_worker connections."
+      ),
+      Telemetry.Metrics.counter("sparrow.h2_worker.conn_lost.count",
+        event_name: [:sparrow, :h2_worker, :conn_lost],
+        description: "Counts the number of lost h2_worker connections."
+      ),
+      Telemetry.Metrics.counter("sparrow.h2_worker.request_success.count",
+        event_name: [:sparrow, :h2_worker, :request_success],
+        description: "Counts the number of successful h2_worker requests."
+      ),
+      Telemetry.Metrics.counter("sparrow.h2_worker.request_error.count",
+        event_name: [:sparrow, :h2_worker, :request_error],
+        description: "Counts the number of failed h2_worker requests."
+      ),
       Telemetry.Metrics.last_value(
         "sparrow.pools_warden.workers.count",
         event_name: [:sparrow, :pools_warden, :workers],
