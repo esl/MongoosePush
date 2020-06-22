@@ -29,7 +29,7 @@ defmodule MongoosePush.Application do
     loglevel = Application.get_env(:mongoose_push, :logging)[:level] || :info
     logformat = Application.get_env(:mongoose_push, :logging)[:format] || :logfmt
     set_loglevel(loglevel)
-    set_logformat(loglevel)
+    set_logformat(logformat)
 
     # Mostly status logging
     _ = check_runtime_configuration_status()
