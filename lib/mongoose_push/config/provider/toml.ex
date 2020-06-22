@@ -38,14 +38,15 @@ defmodule MongoosePush.Config.Provider.Toml do
 
   def update_sysconfig(current_sysconfig, toml_config) do
     current_sysconfig
-    |> update_logging(toml_config)
+    |> update_logging_level(toml_config)
+    |> update_logging_format(toml_config)
     |> update_endpoint(toml_config)
     |> update_openapi(toml_config)
     |> update_service(toml_config, :fcm)
     |> update_service(toml_config, :apns)
   end
 
-  defp update_logging(sysconfig, toml) do
+  defp update_logging_level(sysconfig, toml) do
     level =
       case toml[:general][:logging][:level] do
         "debug" -> :debug
@@ -56,7 +57,21 @@ defmodule MongoosePush.Config.Provider.Toml do
         invalid -> raise "Invalid loglevel: #{invalid}!"
       end
 
-    Keyword.put(sysconfig, :logging, level: level)
+    logging = sysconfig[:logging]
+    Keyword.put(sysconfig, :logging, Keyword.put(logging, :level, level))
+  end
+
+  defp update_logging_format(sysconfig, toml) do
+    format =
+      case toml[:general][:logging][:format] do
+        "logfmt" -> :logfmt
+        "json" -> :json
+        nil -> sysconfig[:logging][:format]
+        invalid -> raise "Invalid logformat: #{invalid}!"
+      end
+
+    logging = sysconfig[:logging]
+    Keyword.put(sysconfig, :logging, Keyword.put(logging, :format, format))
   end
 
   defp update_endpoint(sysconfig, toml) do
