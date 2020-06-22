@@ -20,7 +20,7 @@ defmodule MongoosePush.Logger.JSON do
       metadata
       |> Keyword.drop([:module, :function, :line, :pid, :mfa, :time, :gl, :what])
       |> flatten_metadata()
-      |> Enum.reduce(%{}, fn {key, val}, acc -> Map.put(acc, key, val) end)
+      |> Enum.into(%{})
 
     meta_f =
       %{
