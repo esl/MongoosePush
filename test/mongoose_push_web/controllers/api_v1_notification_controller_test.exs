@@ -30,7 +30,7 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
       conn = post(conn, "/v1/notification/666", body)
 
       assert json_response(conn, 422) ==
-               ControllersHelper.missing_field_response(unquote(dropped))
+               ControllersHelper.missing_field_response(:v1, unquote(dropped))
     end
   end
 

@@ -66,7 +66,19 @@ defmodule MongoosePushWeb.Support.ControllersHelper do
     }
   end
 
-  def missing_field_response(field) do
+  def missing_field_response(api, field) when api in [:v2, :v3] and field in ["body", "title"] do
+    %{
+      "errors" => [
+        %{
+          "message" => "Missing field: #{field}",
+          "source" => %{"pointer" => "/alert/#{field}"},
+          "title" => "Invalid value"
+        }
+      ]
+    }
+  end
+
+  def missing_field_response(_api, field) do
     %{
       "errors" => [
         %{

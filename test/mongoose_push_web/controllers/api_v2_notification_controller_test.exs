@@ -30,7 +30,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
       conn = post(conn, "/v2/notification/654321", body)
 
       assert json_response(conn, 422) ==
-               ControllersHelper.missing_field_response(unquote(dropped))
+               ControllersHelper.missing_field_response(:v2, unquote(dropped))
     end
   end
 
@@ -81,7 +81,7 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
       conn = post(conn, "/v2/notification/654321", body)
 
       assert json_response(conn, 422) ==
-               ControllersHelper.missing_field_response(unquote(missing))
+               ControllersHelper.missing_field_response(:v2, unquote(missing))
     end
   end
 
@@ -124,8 +124,8 @@ defmodule MongoosePushWeb.APIv2NotificationControllerTest do
 
     assert json_response(conn, 422) ==
              Map.merge(
-               ControllersHelper.missing_field_response("service"),
-               ControllersHelper.missing_field_response("alert"),
+               ControllersHelper.missing_field_response(:v2, "service"),
+               ControllersHelper.missing_field_response(:v2, "alert"),
                fn _k, v1, v2 -> v1 ++ v2 end
              )
   end

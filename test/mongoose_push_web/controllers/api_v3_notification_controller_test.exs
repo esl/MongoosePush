@@ -1,5 +1,7 @@
 defmodule MongoosePushWeb.APIv3NotificationControllerTest do
   alias MongoosePushWeb.Support.ControllersHelper
+  alias MongoosePushWeb.Support.RequestsGenerator
+  use ExUnitProperties
   use MongoosePushWeb.ConnCase, async: true
   import Mox
 
@@ -31,7 +33,7 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
       conn = post(conn, "/v3/notification/123456", body)
 
       assert json_response(conn, 422) ==
-               ControllersHelper.missing_field_response(unquote(dropped))
+               ControllersHelper.missing_field_response(:v3, unquote(dropped))
     end
   end
 
@@ -83,7 +85,7 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
       conn = post(conn, "/v3/notification/123456", body)
 
       assert json_response(conn, 422) ==
-               ControllersHelper.missing_field_response(unquote(missing))
+               ControllersHelper.missing_field_response(:v3, unquote(missing))
     end
   end
 
@@ -126,8 +128,8 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
 
     assert json_response(conn, 422) ==
              Map.merge(
-               ControllersHelper.missing_field_response("service"),
-               ControllersHelper.missing_field_response("alert"),
+               ControllersHelper.missing_field_response(:v3, "service"),
+               ControllersHelper.missing_field_response(:v3, "alert"),
                fn _k, v1, v2 -> v1 ++ v2 end
              )
   end
@@ -816,6 +818,35 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     post_and_assert(conn, device_id, expected_device_id, request, expected_request)
   end
 
+  property "APIv3 notification decoder property-based test", %{conn: conn} do
+    check all(
+            mandatory <- RequestsGenerator.mandatory_fields(),
+            optionals <- RequestsGenerator.optional_fields(),
+            device_id <- RequestsGenerator.device_id()
+          ) do
+      request = Map.merge(mandatory, optionals, fn _k, v1, v2 -> Map.merge(v1, v2) end)
+      expected_device_id = device_id
+      expected_request = create_expected_request(request)
+      post_and_assert(conn, device_id, expected_device_id, request, expected_request)
+    end
+  end
+
+  property "APIv3 notification with dropped one mandatory field", %{conn: conn} do
+    check all(
+            mandatory <- RequestsGenerator.mandatory_fields(),
+            optionals <- RequestsGenerator.optional_fields(),
+            device_id <- RequestsGenerator.device_id(),
+            dropped <- RequestsGenerator.mandatory_field()
+          ) do
+      request =
+        Map.merge(mandatory, optionals, fn _k, v1, v2 -> Map.merge(v1, v2) end)
+        |> drop_field(dropped)
+
+      conn = post(conn, "/v3/notification/#{device_id}", Jason.encode!(request))
+      assert json_response(conn, 422) == ControllersHelper.missing_field_response(:v3, dropped)
+    end
+  end
+
   defp post_and_assert(conn, device_id, expected_device_id, request, expected_request) do
     expect(MongoosePush.Notification.MockImpl, :push, fn device_id, request ->
       assert request == expected_request
@@ -837,5 +868,52 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     conn = post(conn, "/v3/notification/#{device_id}", Jason.encode!(request))
 
     assert json_response(conn, number) == %{"reason" => to_string(error_reason)}
+  end
+
+  defp create_expected_request(request) do
+    %{
+      alert: fetch_alert(request["alert"]),
+      data: request["data"],
+      mode: fetch_enum_field(request["mode"]),
+      service: fetch_enum_field(request["service"]),
+      priority: fetch_enum_field(request["priority"]),
+      mutable_content: fetch_mutable_content(request["mutable_content"]),
+      tags: request["tags"],
+      topic: request["topic"],
+      time_to_live: request["time_to_live"]
+    }
+    |> drop_nil_values()
+  end
+
+  defp fetch_alert(alert) do
+    %{
+      body: alert["body"],
+      title: alert["title"],
+      badge: alert["badge"],
+      click_action: alert["click_action"],
+      tag: alert["tag"],
+      sound: alert["sound"]
+    }
+    |> drop_nil_values()
+  end
+
+  defp fetch_enum_field(nil), do: nil
+  defp fetch_enum_field(string), do: String.to_existing_atom(string)
+
+  defp fetch_mutable_content(nil), do: false
+  defp fetch_mutable_content(val), do: val
+
+  defp drop_nil_values(map) do
+    map
+    |> Enum.filter(fn {_, v} -> v != nil end)
+    |> Map.new()
+  end
+
+  defp drop_field(map, field) when field in ["body", "title"] do
+    Kernel.update_in(map, ["alert"], fn _ -> Map.drop(map["alert"], [field]) end)
+  end
+
+  defp drop_field(map, field) do
+    Map.drop(map, [field])
   end
 end

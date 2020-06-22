@@ -35,6 +35,19 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
   # Here we avoid it by manual modification of the pattern the request is matched against,
   # so the framework can serve us as expected.
   defp update_schema_and_do_call(
+         conn = %{params: %{"alert" => _, "data" => _}},
+         opts = %{operation_id: operation_id}
+       ) do
+    new_schema = %OpenApiSpex.Reference{
+      "$ref": "#/components/schemas/Request.SendNotification.Deep.MixedNotification"
+    }
+
+    conn
+    |> update_schema(operation_id, new_schema)
+    |> OpenApiSpex.Plug.CastAndValidate.call(opts)
+  end
+
+  defp update_schema_and_do_call(
          conn = %{params: %{"data" => _}},
          opts = %{operation_id: operation_id}
        ) do
