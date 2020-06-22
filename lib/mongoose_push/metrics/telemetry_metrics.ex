@@ -8,7 +8,7 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
   end
 
   def pooler do
-    [{:telemetry_poller, measurements: periodic_measurements(), period: 5_000}]
+    [{:telemetry_poller, measurements: periodic_measurements(), period: 30_000}]
   end
 
   def metrics do
