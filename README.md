@@ -499,6 +499,34 @@ If you use dockerized MongoosePush, you need to do the following:
 * Modify the `sys.config` as you see fit (for metrics, see above)
 * Stop MongoosePush docker container and restart it with the modified `sys.config` as volume in `/opt/app/sys.config` (yes, this is not the path we used to copy this file from, this is an override)
 
+### Healthcheck
+
+MongoosePush exposes `/healthcheck` endpoint, from which you can get information about current status of connections in a `JSON` format, grouped by connection pool. An example with 2 pools, one being connected to the service and the other one not would look like this:
+
+```json
+[
+{
+  "pool": "pool_name1",
+  "connection_status":
+    [
+      "connected",
+      "connected"
+    ]
+},
+{
+  "pool": "pool_name2",
+  "connection_status":
+  [
+    "disconnected",
+    "disconnected",
+    "disconnected"
+  ]
+}
+]
+```
+If all the connections are down the response status is `503` and in all the other cases it's `200`.
+
+Please note that it's not recommended to use this frequently as it puts an extra load on the worker processes.
 
 ### Available metrics
 
