@@ -519,16 +519,29 @@ Where:
 * `REASON` is an arbitrary error reason term (in case of `status="error"`) or an empty string (when `status="success"`)
 * `LE` defines the `upper inclusive bound` (`less than or equal`) values for buckets, currently `1000`, `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` or `+Inf`
 
+This histogram metric shows the distribution of times needed to:
+1. Select a worker (this may include waiting time when all workers are busy).
+2. Send a request.
+3. Get a response from push notifications provider.
+
+###### HTTP/2 requests
+
+`sparrow_h_worker_handle_duration_microsecond_bucket{le=${LE}}`
+`sparrow_h_worker_handle_duration_microsecond_sum{le=${LE}}`
+`sparrow_h_worker_handle_duration_microsecond_count{le=${LE}}`
+
+Where:
+* `LE` defines the `upper inclusive bound` (`less than or equal`) values for buckets, currently `1000`, `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` or `+Inf`
+
+This histogram metric shows the distribution of times needed to handle and send a request. This includes:
+1. Open a new stream within an already established channel.
+2. Send a request.
+
 > **NOTE**
 >
 > A bucket of value 250_000 will keep the count of measurements that are less than or equal to 250_000.
 > A measurement of value 51_836 will be added to all the buckets where the upper bound is greater than 51_836.
 > In this case these are buckets `100_000`, `250_000`, `500_000`, `1000_000` and `+Inf`
-
-This histogram metric shows the distribution of times needed to:
-1. Select a worker (this may include waiting time when all workers are busy).
-2. Send a request.
-3. Get a response from push notifications provider.
 
 ##### Counters
 
@@ -538,6 +551,15 @@ This histogram metric shows the distribution of times needed to:
 * `mongoose_push_apns_state_init_count` - Counts the number of APNS state initialisations.
 * `mongoose_push_apns_state_terminate_count` - Counts the number of APNS state terminations.
 * `mongoose_push_apns_state_get_default_topic_count` - Counts the number of default topic reads from cache.
+* `sparrow_pools_warden_pools_count` - Counts the number of worker pools.
+* `sparrow_pools_warden_workers_count{pool=${POOL}}` - Counts the number of workers operated by a given worker `POOL`.
+* `sparrow_h_worker_init_count` - Counts the number of h2_worker starts.
+* `sparrow_h_worker_terminate_count` - Counts the number of h2_worker terminations.
+* `sparrow_h_worker_conn_success_count` - Counts the number of successful h2_worker connections.
+* `sparrow_h_worker_conn_fail_count` - Counts the number of failed h2_worker connections.
+* `sparrow_h_worker_conn_lost_count` - Counts the number of lost h2_worker connections.
+* `sparrow_h_worker_request_success_count` - Counts the number of successful h2_worker requests.
+* `sparrow_h_worker_request_error_count` - Counts the number of failed h2_worker requests.
 
 #### How to quickly see all metrics
 
