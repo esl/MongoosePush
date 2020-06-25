@@ -2,6 +2,7 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
   @moduledoc """
   Module responsible for updating `Telemetry` metrics
   """
+  import Telemetry.Metrics
 
   def child_spec(_) do
     TelemetryMetricsPrometheus.Core.child_spec(metrics: metrics())
@@ -14,7 +15,7 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
   def metrics do
     [
       # Summary is not yet supported in TelemetryMetricsPrometheus
-      Telemetry.Metrics.distribution(
+      distribution(
         "mongoose_push.notification.send.time.microsecond",
         event_name: [:mongoose_push, :notification, :send],
         measurement: :time,
@@ -26,25 +27,25 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
           "A histogram showing push notification send times. Includes worker selection (with possible waiting if all are busy)"
       ),
 
-      # measurement is ignored in Counter metric
-      Telemetry.Metrics.counter("mongoose_push.supervisor.init.count",
+      # Measurement is ignored in Counter metric
+      counter("mongoose_push.supervisor.init.count",
         tags: [:service],
         description: "Counts the number of push notification service supervisor starts"
       ),
-      Telemetry.Metrics.counter("mongoose_push.apns.state.init.count",
+      counter("mongoose_push.apns.state.init.count",
         description: "Counts the number of APNS state initialisations"
       ),
-      Telemetry.Metrics.counter("mongoose_push.apns.state.terminate.count",
+      counter("mongoose_push.apns.state.terminate.count",
         tags: [:error_reason],
         tag_values: fn metadata -> %{metadata | error_reason: metadata.reason} end,
         description: "Counts the number of APNS state terminations"
       ),
-      Telemetry.Metrics.counter("mongoose_push.apns.state.get_default_topic.count",
+      counter("mongoose_push.apns.state.get_default_topic.count",
         description: "Counts the number of APNS default topic reads from the ETS cache"
       ),
 
-      # sparrow events
-      Telemetry.Metrics.distribution(
+      # Sparrow events
+      distribution(
         "sparrow.h2_worker.handle.duration.microsecond",
         event_name: [:sparrow, :h2_worker, :handle],
         measurement: :time,
@@ -53,46 +54,85 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
         ],
         description: "A histogram showing time it takes for h2_worker to handle request."
       ),
-      Telemetry.Metrics.counter("sparrow.h2_worker.init.count",
+      counter("sparrow.h2_worker.init.count",
         event_name: [:sparrow, :h2_worker, :init],
         description: "Counts the number of h2_worker starts."
       ),
-      Telemetry.Metrics.counter("sparrow.h2_worker.terminate.count",
+      counter("sparrow.h2_worker.terminate.count",
         event_name: [:sparrow, :h2_worker, :terminate],
         description: "Counts the number of h2_worker terminations."
       ),
-      Telemetry.Metrics.counter("sparrow.h2_worker.conn_success.count",
+      counter("sparrow.h2_worker.conn_success.count",
         event_name: [:sparrow, :h2_worker, :conn_success],
         description: "Counts the number of successful h2_worker connections."
       ),
-      Telemetry.Metrics.counter("sparrow.h2_worker.conn_fail.count",
+      counter("sparrow.h2_worker.conn_fail.count",
         event_name: [:sparrow, :h2_worker, :conn_fail],
         description: "Counts the number of failed h2_worker connections."
       ),
-      Telemetry.Metrics.counter("sparrow.h2_worker.conn_lost.count",
+      counter("sparrow.h2_worker.conn_lost.count",
         event_name: [:sparrow, :h2_worker, :conn_lost],
         description: "Counts the number of lost h2_worker connections."
       ),
-      Telemetry.Metrics.counter("sparrow.h2_worker.request_success.count",
+      counter("sparrow.h2_worker.request_success.count",
         event_name: [:sparrow, :h2_worker, :request_success],
         description: "Counts the number of successful h2_worker requests."
       ),
-      Telemetry.Metrics.counter("sparrow.h2_worker.request_error.count",
+      counter("sparrow.h2_worker.request_error.count",
         event_name: [:sparrow, :h2_worker, :request_error],
         description: "Counts the number of failed h2_worker requests."
       ),
-      Telemetry.Metrics.last_value(
-        "sparrow.pools_warden.workers.count",
+      # Telemetry Poller metrics
+      last_value(
+        "sparrow.pools_warden.workers.gauge",
         event_name: [:sparrow, :pools_warden, :workers],
         measurement: :count,
         tags: [:pool],
         description: "Total count of workers handled by worker_pool."
       ),
-      Telemetry.Metrics.last_value(
-        "sparrow.pools_warden.pools.count",
+      last_value(
+        "sparrow.pools_warden.pools.gauge",
         event_name: [:sparrow, :pools_warden, :pools],
         measurement: :count,
         description: "Total count of the connection pools."
+      ),
+      # Default Telemetry Poller VM metrics
+      last_value(
+        "vm.memory.total",
+        unit: :byte,
+        description: "Total amount of currently allocated memory."
+      ),
+      last_value(
+        "vm.memory.processes",
+        unit: :byte,
+        description: "Amount of memory currently allocated for processes."
+      ),
+      last_value(
+        "vm.memory.processes_used",
+        unit: :byte,
+        description: "Amount of memory currently used for processes."
+      ),
+      last_value(
+        "vm.memory.binary",
+        unit: :byte,
+        description: "Amount of memory currently allocated for binaries."
+      ),
+      last_value(
+        "vm.memory.ets",
+        unit: :byte,
+        description: "Amount of memory currently allocated for ETS tables."
+      ),
+      last_value(
+        "vm.total_run_queue_lengths.total",
+        description: "A sum of all current run queue lengths."
+      ),
+      last_value(
+        "vm.total_run_queue_lengths.cpu",
+        description: "A sum of current CPU schedulers' run queue lengths."
+      ),
+      last_value(
+        "vm.system_counts.process_count",
+        description: "Number of process currently existing at the local node."
       )
     ]
   end
