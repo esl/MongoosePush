@@ -16,7 +16,10 @@ defmodule MongoosePush.Mixfile do
       compilers: compilers(Mix.env()),
       aliases: aliases(),
       elixirc_paths: elixirc_paths(Mix.env()),
-      test_paths: test_paths(Mix.env())
+      test_paths: test_paths(Mix.env()),
+      name: "MongoosePush",
+      source_url: "https://github.com/esl/MongoosePush",
+      homepage_url: "https://esl.github.io/MongoosePush"
     ]
   end
 
@@ -65,11 +68,10 @@ defmodule MongoosePush.Mixfile do
 
   defp docs do
     [
-      name: "MongoosePush",
-      source_url: "https://github.com/esl/MongoosePush",
-      homepage_url: "https://github.com/esl/MongoosePush",
-      # The main page in the docs
-      docs: [main: "MongoosePush", extras: ["README.md"]]
+      javascript_config_path: "../assets/js/versions.js",
+      extras: ["README.md"],
+      api_reference: false,
+      main: "readme"
     ]
   end
 
