@@ -31,7 +31,7 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
-      {:sparrow, github: "esl/sparrow", ref: "b1896ca"},
+      {:sparrow, github: "esl/sparrow", ref: "1760502"},
       {:plug_cowboy, "~> 2.0"},
       {:cowboy, "~> 2.3", override: true},
       {:jason, "~> 1.0"},
@@ -46,10 +46,6 @@ defmodule MongoosePush.Mixfile do
       {:toml, "~> 0.6.1"},
 
       # Below only :dev / :test deps
-      {:mock, "~> 0.3", only: :test},
-      # Until eproxus/meck  #fcc551e3 is in a release, we need to use master version
-      # to include this commit (fixes mocking in Erlang 20.x + Elixir 1.5.x)
-      {:meck, github: "eproxus/meck", override: true},
       {:httpoison, "~> 1.6.2"},
       {:excoveralls, "~> 0.7", only: :test},
       {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
