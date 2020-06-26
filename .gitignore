@@ -1,0 +1,6 @@
+./mix.lock
+./mix.exs
+./deps
+./log
+./_build
+./lib
