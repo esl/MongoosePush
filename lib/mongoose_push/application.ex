@@ -38,7 +38,9 @@ defmodule MongoosePush.Application do
     # The MongoosePush.Metrics.TelemetryMetrics child is started first to capture possible events
     # when services start
     children =
-      [MongoosePush.Metrics.TelemetryMetrics] ++ service_children() ++ [MongoosePushWeb.Endpoint]
+      [MongoosePush.Metrics.TelemetryMetrics] ++
+        MongoosePush.Metrics.TelemetryMetrics.pooler() ++
+        service_children() ++ [MongoosePushWeb.Endpoint]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options

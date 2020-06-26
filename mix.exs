@@ -61,6 +61,7 @@ defmodule MongoosePush.Mixfile do
       {:telemetry, "~>0.4.1"},
       {:telemetry_metrics, "~> 0.5"},
       {:telemetry_metrics_prometheus_core, "~> 0.4"},
+      {:telemetry_poller, "~> 0.5"},
       {:logfmt, "~>3.3"},
       {:stream_data, "~> 0.5", only: :test}
     ]
