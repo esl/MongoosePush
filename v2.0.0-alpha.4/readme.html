@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.21.2">
+    <meta name="project" content="MongoosePush v2.0.0-alpha.4">
+    <title>MongoosePush — MongoosePush v2.0.0-alpha.4</title>
+    <link rel="stylesheet" href="dist/html-de2388dc2f8074b0a4db.css" />
+    <script src="dist/sidebar_items-6545489e9c.js"></script>
+      <script src="../assets/js/versions.js"></script>
+    <script async src="dist/html-de2388dc2f8074b0a4db.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode') === 'true') document.body.className += ' night-mode'; } catch (e) { }</script>
+<div class="main">
+
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" title="Collapse/expand sidebar"></span>
+</button>
+
+<section class="sidebar">
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <button type="button" tabindex="-1" class="search-close-button">
+      <span class="icon-cross" title="Cancel search"></span>
+    </button>
+    <label class="search-label">
+      <input name="q" type="text" id="search-list" class="search-input" placeholder="Search..." aria-label="Search" autocomplete="off" />
+    </label>
+  </form>
+
+  <div class="autocomplete">
+    <div class="autocomplete-results">
+    </div>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectDetails">
+      <a href="https://esl.github.io/MongoosePush" class="sidebar-projectName">
+MongoosePush      </a>
+      <h2 class="sidebar-projectVersion">
+        v2.0.0-alpha.4
+      </h2>
+    </div>
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+<h1>MongoosePush</h1>
+<p><a href="https://travis-ci.org/esl/MongoosePush"><img src="https://travis-ci.org/esl/MongoosePush.svg?branch=master" alt="Build Status" /></a><a href="https://coveralls.io/github/esl/MongoosePush?branch=master"><img src="https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=master" alt="Coverage Status" /></a><a href="https://ebertapp.io/github/esl/MongoosePush"><img src="https://ebertapp.io/github/esl/MongoosePush.svg" alt="Ebert" /></a></p>
+<p><strong>MongoosePush</strong> is a simple, <strong>RESTful</strong> service written in <strong>Elixir</strong>, providing ability to <strong>send push
+notifications</strong> to <code class="inline">FCM</code> (Firebase Cloud Messaging) and/or
+<code class="inline">APNS</code> (Apple Push Notification Service) via their <code class="inline">HTTP/2</code> API.</p>
+<h2 id="quick-start" class="section-heading">
+  <a href="#quick-start" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Quick start
+</h2>
+
+<h3 id="docker" class="section-heading">
+  <a href="#docker" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Docker
+</h3>
+
+<h4>Running from DockerHub</h4>
+<p>We provide prebuilt MongoosePush images. Configuration requires either an FCM token, APNS certificates or an APNS token. Depending on your usecase, you can have some or all of them in a standalone MongoosePush instance or using a docker container.
+For the full configuration you need to set the following directory structure up:</p>
+<ul>
+<li><p>priv/</p>
+<ul>
+<li><p>ssl/</p>
+<ul>
+<li>rest_cert.pem - The HTTP endpoint certificate
+</li>
+<li>rest_key.pem - private key for the HTTP endpoint certificate (has to be unencrypted)
+</li>
+</ul>
+</li>
+<li><p>apns/</p>
+<ul>
+<li>prod_cert.pem - Production APNS app certificate
+</li>
+<li>prod_key.pem - Production APNS app certificate&#39;s private key (has to be unencrypted)
+</li>
+<li>dev_cert.pem - Development APNS app certificate
+</li>
+<li>dev_key.pem - Development APNS app certificate&#39;s private key (has to be unencrypted)
+</li>
+<li>token.p8 - <code class="inline">APNS</code> authentication token
+</li>
+</ul>
+</li>
+<li><p>fcm/</p>
+<ul>
+<li>token.json - <code class="inline">FCM</code> service account JSON file
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>If you want to use <code class="inline">APNS</code> token authentication you need to provide token and set <code class="inline">key_id</code> and <code class="inline">team_id</code> environmental variables. To see how to obtain token and <code class="inline">key_id</code> read:
+<a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token_based_connection_to_apns">https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token_based_connection_to_apns</a>
+To see how to obtain <code class="inline">team_id</code> read: <a href="https://www.mobiloud.com/help/knowledge-base/ios-app-transfer">https://www.mobiloud.com/help/knowledge-base/ios-app-transfer</a>/
+<code class="inline">FCM</code> JSON file can be generated by Firebase console (<a href="https://console.firebase.google.com">https://console.firebase.google.com</a>). Go to your project -&gt; <code class="inline">Project Settings</code> -&gt; <code class="inline">Service accounts</code> -&gt; <code class="inline">Generate new private key</code>
+Assuming that you have the <code class="inline">priv</code> directory with all ceriticates and fcm token in current directory, then you may start MongoosePush with the following command:</p>
+<pre><code class="bash">docker run -v `pwd`/priv:/opt/app/priv \
+  -e PUSH_HTTPS_CERTFILE=&quot;/opt/app/priv/ssl/rest_cert.pem&quot; \
+  -e PUSH_HTTPS_KEYFILE=&quot;/opt/app/priv/ssl/rest_key.pem&quot; \
+  -it --rm mongooseim/mongoose-push:latest</code></pre>
+<h4>Building</h4>
+<p>Building docker is really easy, just type:</p>
+<pre><code class="bash">MIX_ENV=prod mix do deps.get, certs.dev, docker.build, docker.release</code></pre>
+<p>As a result of this command you get access to <code class="inline">mongoose_push:release</code> docker image. You may run it by typing:</p>
+<pre><code class="bash">docker run -it --rm mongoose_push:release foreground</code></pre>
+<p>The docker image that you have just built, exposes the port <code class="inline">8443</code> for the HTTP API of MongoosePush. It contains a <code class="inline">VOLUME</code> for path <em>/opt/app</em> - it is handy for injecting <code class="inline">APNS</code> and <code class="inline">HTTP API</code> certificates since by default the docker image comes with test, self-signed certificates.</p>
+<h4>Configuring</h4>
+<p>The docker image of MongoosePush contains common, basic configuration that is generated from <code class="inline">config/prod.exs</code>. All useful options may be overridden via system environmental variables. Below there&#39;s a full list of the variables you may set while running docker (via <code class="inline">docker -e</code> switch), but if there&#39;s something you feel, you need to change other then that, then you need to prepare your own <code class="inline">config/prod.exs</code> before image build.</p>
+<p>Environmental variables to configure production release:</p>
+<h5>Settings for HTTP endpoint:</h5>
+<ul>
+<li><code class="inline">PUSH_HTTPS_BIND_ADDR</code> - Bind IP address of the HTTP endpoint. Default value in prod release is &quot;127.0.0.1&quot;, but docker overrides this with &quot;0.0.0.0&quot;
+</li>
+<li><code class="inline">PUSH_HTTPS_PORT</code> - The port of the MongoosePush HTTP endpoint. Please note that docker exposes only <code class="inline">8443</code> port, so changing this setting is not recommended
+</li>
+<li><code class="inline">PUSH_HTTPS_KEYFILE</code> - Path to a PEM keyfile used for HTTP endpoint
+</li>
+<li><code class="inline">PUSH_HTTPS_CERTFILE</code> - Path to a PEM certfile used for HTTP endpoint
+</li>
+<li><code class="inline">PUSH_HTTPS_ACCEPTORS</code> - Number of TCP acceptors to start
+</li>
+</ul>
+<h5>General settings:</h5>
+<ul>
+<li><code class="inline">PUSH_LOGLEVEL</code> - <code class="inline">debug</code>/<code class="inline">info</code>/<code class="inline">warn</code>/<code class="inline">error</code> - Log level of the application. <code class="inline">info</code> is the default one
+</li>
+<li><code class="inline">PUSH_FCM_ENABLED</code> - <code class="inline">true</code>/<code class="inline">false</code> - Enable or disable <code class="inline">FCM</code> support. Enabled by default
+</li>
+<li><code class="inline">PUSH_APNS_ENABLED</code> - <code class="inline">true</code>/<code class="inline">false</code> - Enable or disable <code class="inline">APNS</code> support. Enabled by default
+</li>
+</ul>
+<h5>Settings for FCM service:</h5>
+<ul>
+<li><code class="inline">PUSH_FCM_ENDPOINT</code> - Hostname of <code class="inline">FCM</code> service. Set only for local testing. By default this option points to the Google&#39;s official hostname
+</li>
+<li><code class="inline">PUSH_FCM_APP_FILE</code> - Path to <code class="inline">FCM</code> service account JSON file. For details look at <strong>Running from DockerHub</strong> section
+</li>
+<li><code class="inline">PUSH_FCM_POOL_SIZE</code> - Connection pool size for <code class="inline">FCM</code> service
+</li>
+</ul>
+<h5>Settings for development APNS service:</h5>
+<ul>
+<li><code class="inline">PUSH_APNS_DEV_ENDPOINT</code> - Hostname of <code class="inline">APNS</code> service. Set only for local testing. By default this option points to the Apple&#39;s official hostname
+</li>
+<li><code class="inline">PUSH_APNS_DEV_CERT</code> - Path Apple&#39;s development certfile used to communicate with <code class="inline">APNS</code>
+</li>
+<li><code class="inline">PUSH_APNS_DEV_KEY</code> - Path Apple&#39;s development keyfile used to communicate with <code class="inline">APNS</code>
+</li>
+<li><code class="inline">PUSH_APNS_DEV_KEY_ID</code> - Key ID generated from Apple&#39;s developer console. For details look at <strong>Running from DockerHub</strong> section <em>required for token authentication</em>
+</li>
+<li><code class="inline">PUSH_APNS_DEV_TEAM_ID</code> - TEAM ID generated from Apple&#39;s developer console. For details look at <strong>Running from DockerHub</strong> section <em>required for token authenticaton</em>
+</li>
+<li><code class="inline">PUSH_APNS_DEV_P8_TOKEN</code> - Token generated from Apple&#39;s developer console. For details look at <strong>Running from DockerHub</strong> section
+</li>
+<li><code class="inline">PUSH_APNS_DEV_USE_2197</code> - <code class="inline">true</code>/<code class="inline">false</code> - Enable or disable use of alternative <code class="inline">2197</code> port for <code class="inline">APNS</code> connections in development mode. Disabled by default
+</li>
+<li><code class="inline">PUSH_APNS_DEV_POOL_SIZE</code> - Connection pool size for <code class="inline">APNS</code> service in development mode
+</li>
+<li><code class="inline">PUSH_APNS_DEV_DEFAULT_TOPIC</code> - Default <code class="inline">APNS</code> topic to be set if the client app doesn&#39;t specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default). DEV certificates normally don&#39;t provide any topics, so this option can be safely left unset
+</li>
+</ul>
+<h5>Settings for production APNS service:</h5>
+<ul>
+<li><code class="inline">PUSH_APNS_PROD_ENDPOINT</code> - Hostname of <code class="inline">APNS</code> service. Set only for local testing. By default this option points to the Apple&#39;s official hostname
+</li>
+<li><code class="inline">PUSH_APNS_PROD_CERT</code> - Path Apple&#39;s production certfile used to communicate with <code class="inline">APNS</code>
+</li>
+<li><code class="inline">PUSH_APNS_PROD_KEY</code> - Path Apple&#39;s production keyfile used to communicate with <code class="inline">APNS</code>
+</li>
+<li><code class="inline">PUSH_APNS_PROD_KEY_ID</code> - Key ID generated from Apple&#39;s developer console. For details look at <strong>Running from DockerHub</strong> section <em>required for token authentication</em>
+</li>
+<li><code class="inline">PUSH_APNS_PROD_TEAM_ID</code> - TEAM ID generated from Apple&#39;s developer console. For details look at <strong>Running from DockerHub</strong> section <em>required for token authenticaton</em>
+</li>
+<li><code class="inline">PUSH_APNS_PROD_P8_TOKEN</code> - Token generated from Apple&#39;s developer console. For details look at <strong>Running from DockerHub</strong> section
+</li>
+<li><code class="inline">PUSH_APNS_PROD_USE_2197</code> - <code class="inline">true</code>/<code class="inline">false</code> - Enable or disable use of alternative <code class="inline">2197</code> port for <code class="inline">APNS</code> connections in production mode. Disabled by default
+</li>
+<li><code class="inline">PUSH_APNS_PROD_POOL_SIZE</code> - Connection pool size for <code class="inline">APNS</code> service in production mode
+</li>
+<li><code class="inline">PUSH_APNS_PROD_DEFAULT_TOPIC</code> - Default <code class="inline">APNS</code> topic to be set if the client app doesn&#39;t specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default)
+</li>
+</ul>
+<h3 id="local-build" class="section-heading">
+  <a href="#local-build" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Local build
+</h3>
+
+<h4>Perquisites</h4>
+<ul>
+<li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)
+</li>
+<li><p>Erlang/OTP 19.3+</p>
+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain TLS bug that prevents connecting to APNS servers.
+When building with this Erlang version, please make sure that MongoosePushRuntimeTest test suite passes.
+It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p>
+</blockquote>
+</li>
+<li>Rebar3 (just enter <code class="inline">mix local.rebar</code>)
+</li>
+</ul>
+<h4>Build and run of production release</h4>
+<p>Build step is really easy. Just type in root of the repository:</p>
+<pre><code class="bash">MIX_ENV=prod mix do deps.get, compile, certs.dev, distillery.release</code></pre>
+<p>After this step you may try to run the service via:</p>
+<pre><code class="bash">_build/prod/rel/mongoose_push/bin/mongoose_push foreground</code></pre>
+<p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can&#39;t have push notifications without properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in <code class="inline">Configuration</code> section of this README.</p>
+<h4>Build and run of development release</h4>
+<p>Build step is really easy. Just type in root of the repository:</p>
+<pre><code class="bash">MIX_ENV=dev mix do deps.get, compile, certs.dev, distillery.release</code></pre>
+<p>Development release is by default configured to connect to local APNS / FCM mock. This configuration may be changed as needed
+in <code class="inline">config/dev.exs</code> file.
+For now, let&#39;s just start those mocks so that we can use default dev configuration:</p>
+<pre><code class="bash">docker-compose -f test/docker/docker-compose.yml up -d</code></pre>
+<p>After this step you may try to run the service via:</p>
+<pre><code class="bash">_build/dev/rel/mongoose_push/bin/mongoose_push console</code></pre>
+<h3 id="running-tests" class="section-heading">
+  <a href="#running-tests" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Running tests
+</h3>
+
+<p>Setup FCM and APNS mocks first:</p>
+<pre><code class="bash">$ docker-compose -f test/docker/docker-compose.yml up -d</code></pre>
+<p>Generate certificates. This step is needed to be run only once:</p>
+<pre><code class="bash">mix certs.dev</code></pre>
+<p>And finally run tests:</p>
+<pre><code class="bash">$ mix test</code></pre>
+<p>You can cleanup docker after tests by calling:</p>
+<pre><code class="bash">$ docker-compose -f test/docker/docker-compose.yml down</code></pre>
+<h2 id="configuration" class="section-heading">
+  <a href="#configuration" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Configuration
+</h2>
+
+<p>The whole configuration is contained in file <code class="inline">config/{prod|dev|test}.exs</code> depending on which <code class="inline">MIX_ENV</code> you will be using. You should use <code class="inline">MIX_ENV=prod</code> for production installations and <code class="inline">MIX_ENV=dev</code> for your development. Anyway, lets take a look on <code class="inline">config/dev.exs</code>, part by part.</p>
+<h3 id="restful-api-configuration" class="section-heading">
+  <a href="#restful-api-configuration" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  RESTful API configuration
+</h3>
+
+<pre><code class="nohighlight makeup elixir"><span class="n">config</span><span class="w"> </span><span class="ss">:maru</span><span class="p">,</span><span class="w"> </span><span class="nc">MongoosePush.Router</span><span class="p">,</span><span class="w">
+    </span><span class="ss">versioning</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0664809803-1">[</span><span class="w">
+        </span><span class="ss">using</span><span class="p">:</span><span class="w"> </span><span class="ss">:path</span><span class="w">
+    </span><span class="p" data-group-id="0664809803-1">]</span><span class="p">,</span><span class="w">
+    </span><span class="ss">https</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0664809803-2">[</span><span class="w">
+        </span><span class="ss">ip</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="0664809803-3">{</span><span class="mi">127</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p" data-group-id="0664809803-3">}</span><span class="p">,</span><span class="w">
+        </span><span class="ss">port</span><span class="p">:</span><span class="w"> </span><span class="mi">8443</span><span class="p">,</span><span class="w">
+        </span><span class="ss">keyfile</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;priv/ssl/fake_key.pem&quot;</span><span class="p">,</span><span class="w">
+        </span><span class="ss">certfile</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;priv/ssl/fake_cert.pem&quot;</span><span class="p">,</span><span class="w">
+        </span><span class="ss">otp_app</span><span class="p">:</span><span class="w"> </span><span class="ss">:mongoose_push</span><span class="w">
+    </span><span class="p" data-group-id="0664809803-2">]</span></code></pre>
+<p>This part of configuration relates only to <code class="inline">HTTP</code> endpoints exposed by <a href="MongoosePush.html"><code class="inline">MongoosePush</code></a>. Here you can set a bind IP adress (option: <code class="inline">ip</code>), port and paths to your <code class="inline">HTTP</code> <code class="inline">TLS</code> certificates. You should ignore other options unless you know what you&#39;re doing (to learn more, explore <a href="https://maru.readme.io/docs">maru&#39;s documentation</a>).</p>
+<p>You may entirely skip the <code class="inline">maru</code> config entry to disable <code class="inline">HTTP</code> API and just use this project as an <code class="inline">Elixir</code> library.</p>
+<h3 id="fcm-configuration" class="section-heading">
+  <a href="#fcm-configuration" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  FCM configuration
+</h3>
+
+<p>Lets take a look at sample <code class="inline">FCM</code> service configuration:</p>
+<pre><code class="nohighlight makeup elixir"><span class="n">config</span><span class="w"> </span><span class="ss">:mongoose_push</span><span class="p">,</span><span class="w"> </span><span class="ss">fcm</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8182496026-1">[</span><span class="w">
+    </span><span class="ss">default</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8182496026-2">[</span><span class="w">
+        </span><span class="ss">appfile</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;path/to/token.json&quot;</span><span class="p">,</span><span class="w">
+        </span><span class="ss">endpoint</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;localhost&quot;</span><span class="p">,</span><span class="w">
+        </span><span class="ss">pool_size</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+        </span><span class="ss">mode</span><span class="p">:</span><span class="w"> </span><span class="ss">:prod</span><span class="p">,</span><span class="w">
+        </span><span class="ss">tls_opts</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="8182496026-3">[</span><span class="p" data-group-id="8182496026-3">]</span><span class="w">
+    </span><span class="p" data-group-id="8182496026-2">]</span><span class="w">
+  </span><span class="p" data-group-id="8182496026-1">]</span></code></pre>
+<p>This is a definition of a pool - each pool has a name and configuration. It is possible to have multiple named pools with different configuration, which includes pool size, environment mode etc. Currently the only reason you may want to do this is to create separate production and development pools which may be selected by an <code class="inline">HTTP</code> client by specifying matching <code class="inline">:mode</code> in their push request.</p>
+<p>Each <code class="inline">FCM</code> pool may be configured by setting the following fields:</p>
+<ul>
+<li><strong>appfile</strong> (<em>required</em>) - path to <code class="inline">FCM</code> service account JSON file. Details on how to get one are in <strong>Running from DockerHub</strong> section
+</li>
+<li><strong>pool_size</strong> (<em>required</em>) - maximum number of used <code class="inline">HTTP/2</code> connections to google&#39;s service
+</li>
+<li><strong>mode</strong> (<em>either <code class="inline">:prod</code> or <code class="inline">:dev</code></em>) - pool&#39;s mode. The <code class="inline">HTTP</code> client may select pool used to push a notification by specifying matching option in the request
+</li>
+<li><strong>endpoint</strong> (<em>optional</em>) - URL override for <code class="inline">FCM</code> service. Useful mainly in tests
+</li>
+<li><strong>port</strong> (<em>optional</em>) - Port number override for <code class="inline">FCM</code> service. Useful mainly in tests
+</li>
+<li><strong>tags</strong> (<em>optional</em>) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: <a href="https://github.com/esl/sparrow#tags">https://github.com/esl/sparrow#tags</a>
+</li>
+<li><strong>tls_opts</strong> (<em>optional</em>) - a list of raw options passed to <code class="inline">ssl:connect</code> function call while connecting to <code class="inline">FCM</code>. When this option is omitted, it will default to set of values that will verify server certificate based on internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
+</li>
+</ul>
+<p>You may entirely skip the <code class="inline">FCM</code> config entry to disable <code class="inline">FCM</code> support.</p>
+<h3 id="apns-configuration" class="section-heading">
+  <a href="#apns-configuration" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  APNS configuration
+</h3>
+
+<p>Lets take a look at sample <code class="inline">APNS</code> service configuration:</p>
+<pre><code class="nohighlight makeup elixir"><span class="n">config</span><span class="w"> </span><span class="ss">:mongoose_push</span><span class="p">,</span><span class="w"> </span><span class="ss">apns</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9245999436-1">[</span><span class="w">
+   </span><span class="ss">dev</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9245999436-2">[</span><span class="w">
+     </span><span class="ss">cert</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;priv/apns/dev_cert.pem&quot;</span><span class="p">,</span><span class="w">
+     </span><span class="ss">key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;priv/apns/dev_key.pem&quot;</span><span class="p">,</span><span class="w">
+     </span><span class="ss">mode</span><span class="p">:</span><span class="w"> </span><span class="ss">:dev</span><span class="p">,</span><span class="w">
+     </span><span class="ss">use_2197</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="p">,</span><span class="w">
+     </span><span class="ss">pool_size</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+     </span><span class="ss">tls_opts</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9245999436-3">[</span><span class="p" data-group-id="9245999436-3">]</span><span class="w">
+   </span><span class="p" data-group-id="9245999436-2">]</span><span class="p">,</span><span class="w">
+   </span><span class="ss">prod</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9245999436-4">[</span><span class="w">
+     </span><span class="ss">cert</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;priv/apns/prod_cert.pem&quot;</span><span class="p">,</span><span class="w">
+     </span><span class="ss">key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;priv/apns/prod_key.pem&quot;</span><span class="p">,</span><span class="w">
+     </span><span class="ss">mode</span><span class="p">:</span><span class="w"> </span><span class="ss">:prod</span><span class="p">,</span><span class="w">
+     </span><span class="ss">use_2197</span><span class="p">:</span><span class="w"> </span><span class="no">false</span><span class="p">,</span><span class="w">
+     </span><span class="ss">pool_size</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+     </span><span class="ss">tls_opts</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="9245999436-5">[</span><span class="p" data-group-id="9245999436-5">]</span><span class="w">
+   </span><span class="p" data-group-id="9245999436-4">]</span><span class="w">
+ </span><span class="p" data-group-id="9245999436-1">]</span></code></pre>
+<p>Just like for <code class="inline">FCM</code>, at the top level we can specify the named pools that have different configurations. For <code class="inline">APNS</code> this is especially useful since Apple delivers different APS certificates for development and production use. The HTTP client can select a named pool by providing a matching :mode in the HTTP request.</p>
+<p>Each <code class="inline">APNS</code> pool may be configured by setting the following fields:</p>
+<ul>
+<li><strong>cert</strong> (<em>required</em>) - relative path to <code class="inline">APNS</code> <code class="inline">PEM</code> certificate issued by Apple. This certificate have to be somewhere in <code class="inline">priv</code> directory
+</li>
+<li><strong>key</strong> (<em>required</em>) - relative path to <code class="inline">PEM</code> private key for <code class="inline">APNS</code> certificate issued by Apple. This file have to be somewhere in <code class="inline">priv</code> directory
+</li>
+<li><strong>pool_size</strong> (<em>required</em>) - maximum number of used <code class="inline">HTTP/2</code> connections to google&#39;s service
+</li>
+<li><strong>mode</strong> (<em>either <code class="inline">:prod</code> or <code class="inline">:dev</code></em>) - pool&#39;s mode. The <code class="inline">HTTP</code> client may select pool used to push a notification by specifying matching option in the request
+</li>
+<li><strong>endpoint</strong> (<em>optional</em>) - URL override for <code class="inline">APNS</code> service. Useful mainly in tests
+</li>
+<li><strong>port</strong> (<em>optional</em>) - Port number override for <code class="inline">APNS</code> service. Useful mainly in tests
+</li>
+<li><strong>use_2197</strong> (<em>optional <code class="inline">true</code> or <code class="inline">false</code></em>) - whether use alternative port for <code class="inline">APNS</code>: 2197
+</li>
+<li><strong>tags</strong> (<em>optional</em>) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: <a href="https://github.com/esl/sparrow#tags">https://github.com/esl/sparrow#tags</a>
+</li>
+<li><strong>tls_opts</strong> (<em>optional</em>) - a list of raw options passed to <code class="inline">ssl:connect</code> function call while connecting to <code class="inline">APNS</code>. When this option is omitted, it will default to set of values that will verify server certificate based on internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
+</li>
+</ul>
+<p>You may entirely skip the <code class="inline">APNS</code> config entry to disable <code class="inline">APNS</code> support.</p>
+<h4>Converting APNS files</h4>
+<p>If you happen to have APNS files in <code class="inline">pkcs12</code> format (.p12 or .pfx extenstion) you need to convert them to <code class="inline">PEM</code> format which is understood by MongoosePush. Belowe you can find sample <code class="inline">openssl</code> commands which may be helpful.</p>
+<h5>Get cert from pkcs12 file</h5>
+<pre><code class="nohighlight makeup elixir"><span class="n">openssl</span><span class="w"> </span><span class="n">pkcs12</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="nc">YourAPNS</span><span class="o">.</span><span class="n">p12</span><span class="w"> </span><span class="o">-</span><span class="n">out</span><span class="w"> </span><span class="nc">YourCERT</span><span class="o">.</span><span class="n">pem</span><span class="w"> </span><span class="o">-</span><span class="n">nodes</span><span class="w"> </span><span class="o">-</span><span class="n">nokeys</span></code></pre>
+<h4>Get key from pkcs12 file</h4>
+<pre><code class="nohighlight makeup elixir"><span class="n">openssl</span><span class="w"> </span><span class="n">pkcs12</span><span class="w"> </span><span class="o">-</span><span class="ow">in</span><span class="w"> </span><span class="nc">YourAPNS</span><span class="o">.</span><span class="n">p12</span><span class="w"> </span><span class="o">-</span><span class="n">out</span><span class="w"> </span><span class="nc">YourKEY</span><span class="o">.</span><span class="n">pem</span><span class="w"> </span><span class="o">-</span><span class="n">nodes</span><span class="w"> </span><span class="o">-</span><span class="n">nocerts</span></code></pre>
+<h2 id="restful-api" class="section-heading">
+  <a href="#restful-api" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  RESTful API
+</h2>
+
+<h3 id="swagger" class="section-heading">
+  <a href="#swagger" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Swagger
+</h3>
+
+<p>If for some reason you need <code class="inline">Swagger</code> spec for this <code class="inline">RESTful</code> service, there is a swagger endpoint available via an <code class="inline">HTTP</code> path <code class="inline">/swagger.json</code></p>
+<h3 id="just-tell-me-what-to-send-already" class="section-heading">
+  <a href="#just-tell-me-what-to-send-already" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Just tell me what to send already
+</h3>
+
+<h4>Request</h4>
+<p>There is only one endpoint at this moment:</p>
+<ul>
+<li><code class="inline">POST /v2/notification/{device_id}</code>
+</li>
+</ul>
+<p>As you can imagine, <code class="inline">{device_id}</code> should be replaced with device ID/Token generated by your push notification provider (<code class="inline">FCM</code> or <code class="inline">APNS</code>). The notification should be sent as <code class="inline">JSON</code> payload of this request. Minimal <code class="inline">JSON</code> request could be like this:</p>
+<pre><code class="json">{
+  &quot;service&quot;: &quot;apns&quot;,
+  &quot;alert&quot;:
+    {
+      &quot;body&quot;: &quot;notification&#39;s text body&quot;,
+      &quot;title&quot;: &quot;notification&#39;s title&quot;
+    }
+}</code></pre>
+<p>The full list of options contains the following:</p>
+<ul>
+<li><strong>service</strong> (<em>required</em>, <code class="inline">apns</code> or <code class="inline">fcm</code>) - push notifications provider to be used for this notification
+</li>
+<li><strong>mode</strong> (<em>optional</em>, <code class="inline">prod</code> (default) or <code class="inline">dev</code>) - allows for selecting named pool configured in <a href="MongoosePush.html"><code class="inline">MongoosePush</code></a>
+</li>
+<li><strong>priority</strong> (<em>optional</em>) - Either <code class="inline">normal</code> or <code class="inline">high</code>. Those values are used without changes for FCM. For APNS however, <code class="inline">normal</code> maps to priority <code class="inline">5</code>, while <code class="inline">high</code> maps to priority <code class="inline">10</code>. Please refer to FCM / APNS documentation for more details on those values. By default <code class="inline">priority</code> is not set at all, therefore the push notification service decides which value is used by default.
+</li>
+<li><strong>time_to_live</strong> (<em>optional</em>) - Maximum lifespan of an FCM notification. For more details, please, refer to <a href="https://firebase.google.com/docs/cloud-messaging/concept-options#ttl">the official FCM documentation</a>.
+</li>
+<li><strong>mutable_content</strong> (<em>optional</em>, <code class="inline">true</code> / <code class="inline">false</code> (default)) - Only applicable to APNS. Sets &quot;mutable-content=1&quot; in APNS payload.
+</li>
+<li><strong>topic</strong> (<em>optional</em>, <code class="inline">APNS</code> specific) - if APNS certificate configured in <a href="MongoosePush.html"><code class="inline">MongoosePush</code></a> allows for multiple applications, this field selects the application. Please refer to <code class="inline">APNS</code> documentation for more datails
+</li>
+<li><strong>tags</strong> (<em>optional</em>) - a list of tags used to choose a pool with matching tags. To see how tags work read: <a href="https://github.com/esl/sparrow#tags">https://github.com/esl/sparrow#tags</a>
+</li>
+<li><strong>data</strong> (<em>optional</em>) - custom JSON structure sent to the target device. For <code class="inline">APNS</code>, all keys form this stucture are merged into highest level APS message (the one that holds &#39;aps&#39; key), while for <code class="inline">FCM</code> the whole <code class="inline">data</code> json stucture is sent as FCM&#39;s <code class="inline">data payload</code> along with <code class="inline">notification</code>.
+</li>
+<li><p><strong>alert</strong> (<em>optional</em>) - JSON stucture that if provided will send non-silent notification with the following fields:</p>
+<ul>
+<li><strong>body</strong> (<em>required</em>) - text body of notification
+</li>
+<li><strong>title</strong> (<em>required</em>) - short title of notification
+</li>
+<li><strong>click_action</strong> (<em>optional</em>) - for <code class="inline">FCM</code> its <code class="inline">activity</code> to run when notification is clicked. For <code class="inline">APNS</code> its <code class="inline">category</code> to invoke. Please refer to Android/iOS documentation for more details about this action
+</li>
+<li><strong>tag</strong> (<em>optional</em>, <code class="inline">FCM</code> specific) - notifications aggregation key
+</li>
+<li><strong>badge</strong> (<em>optional</em>, <code class="inline">APNS</code> specific) - unread notifications count
+</li>
+<li><strong>sound</strong> (<em>optional</em>) - sound that should be play when notification arrives. Please refer to FCM / APNS documentation for more details.
+</li>
+</ul>
+</li>
+</ul>
+<p>Please note that either <strong>alert</strong> and <strong>data</strong> has to be provided (also can be both).
+If you only specify <strong>alert</strong>, the request will result in classic, simple notification.
+If you only specify <strong>data</strong>, the request will result in &quot;silent&quot; notification, i.e. the client will receive the data and will be able to decide whether notification shall be shown and how should be shown to the user.
+If you specify both <strong>alert</strong> and <strong>data</strong>, target device will receive both notification and the custom data payload to process.</p>
+<h4>Description of the possible server responses</h4>
+<ul>
+<li><strong>200</strong> <code class="inline">&quot;OK&quot;</code> - the request was successful.
+</li>
+<li><strong>400</strong> <code class="inline">{&quot;reason&quot; : &quot;invalid_request&quot;|&quot;no_matching_pool&quot;}</code> - the request was invalid.
+</li>
+<li><strong>410</strong> <code class="inline">{&quot;reason&quot; : &quot;unregistered&quot;}</code> - the device was not registered.
+</li>
+<li><strong>413</strong> <code class="inline">{&quot;reason&quot; : &quot;payload_too_large&quot;}</code> - the payload was too large.
+</li>
+<li><strong>429</strong> <code class="inline">{&quot;reason&quot; : &quot;too_many_requests&quot;}</code> - there were too many requests to the server.
+</li>
+<li><strong>503</strong> <code class="inline">{&quot;reason&quot; : &quot;service_internal&quot;|&quot;internal_config&quot;|&quot;unspecified&quot;}</code> - the internal service or configuration error occured.
+</li>
+<li><strong>520</strong> <code class="inline">{&quot;reason&quot; : &quot;unspecified&quot;}</code> - the unknown error occured.
+</li>
+<li><strong>500</strong> <code class="inline">{&quot;reason&quot; : reason}</code> - the server internal error occured, 
+specified by <strong>reason</strong>.
+</li>
+</ul>
+<h2 id="metrics" class="section-heading">
+  <a href="#metrics" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Metrics
+</h2>
+
+<p>MongoosePush supports metrics based on <code class="inline">elixometer</code>. In order to enable metrics, you need to add an <code class="inline">elixometer</code> configuration in the config file matching your release type (or simply <code class="inline">sys.config</code> when you need this on already released MongoosePush). The following example config will enable simplest reporter - TTY (already enabled in <code class="inline">:dev</code> environment):</p>
+<pre><code class="nohighlight makeup elixir"><span class="n">config</span><span class="w"> </span><span class="ss">:exometer_core</span><span class="p">,</span><span class="w"> </span><span class="ss">report</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1378637903-1">[</span><span class="ss">reporters</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="1378637903-2">[</span><span class="p" data-group-id="1378637903-3">{</span><span class="ss">:exometer_report_tty</span><span class="p">,</span><span class="w"> </span><span class="p" data-group-id="1378637903-4">[</span><span class="p" data-group-id="1378637903-4">]</span><span class="p" data-group-id="1378637903-3">}</span><span class="p" data-group-id="1378637903-2">]</span><span class="p" data-group-id="1378637903-1">]</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:elixometer</span><span class="p">,</span><span class="w"> </span><span class="ss">reporter</span><span class="p">:</span><span class="w"> </span><span class="ss">:exometer_report_tty</span><span class="p">,</span><span class="w">
+     </span><span class="ss">env</span><span class="p">:</span><span class="w"> </span><span class="nc">Mix</span><span class="o">.</span><span class="n">env</span><span class="p">,</span><span class="w">
+     </span><span class="ss">metric_prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mongoose_push&quot;</span></code></pre>
+<p>The example below on the other hand will enable <code class="inline">graphite</code> reporter (replace GRAPHITE_OPTIONS with a list of options for <code class="inline">graphite</code>):</p>
+<p>Before making a release:</p>
+<pre><code class="nohighlight makeup elixir"><span class="n">config</span><span class="w"> </span><span class="ss">:exometer_core</span><span class="p">,</span><span class="w"> </span><span class="ss">report</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3492722369-1">[</span><span class="ss">reporters</span><span class="p">:</span><span class="w"> </span><span class="p" data-group-id="3492722369-2">[</span><span class="p" data-group-id="3492722369-3">{</span><span class="ss">:exometer_report_graphite</span><span class="p">,</span><span class="w"> </span><span class="nc">GRAPHITE_OPTIONS</span><span class="p" data-group-id="3492722369-3">}</span><span class="p" data-group-id="3492722369-2">]</span><span class="p" data-group-id="3492722369-1">]</span><span class="w">
+</span><span class="n">config</span><span class="w"> </span><span class="ss">:elixometer</span><span class="p">,</span><span class="w"> </span><span class="ss">reporter</span><span class="p">:</span><span class="w"> </span><span class="ss">:exometer_report_graphite</span><span class="p">,</span><span class="w">
+      </span><span class="ss">env</span><span class="p">:</span><span class="w"> </span><span class="nc">Mix</span><span class="o">.</span><span class="n">env</span><span class="p">,</span><span class="w">
+      </span><span class="ss">metric_prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;mongoose_push&quot;</span></code></pre>
+<p>or if you modify an existing release (<code class="inline">sys.config</code>):</p>
+<pre><code class="erlang">{exometer_core,[{report, [{reporters, [{exometer_report_graphite, GRAPHITE_OPTIONS}]}]}]},
+{elixometer,
+    [{reporter, exometer_report_graphite},
+     {env, prod},
+     {metric_prefix, &lt;&lt;&quot;mongoose_push&quot;&gt;&gt;}]},</code></pre>
+<h3 id="i-use-mongoosepush-docker-where-do-i-find-sys-config" class="section-heading">
+  <a href="#i-use-mongoosepush-docker-where-do-i-find-sys-config" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  I use MongoosePush docker, where do I find <code class="inline">sys.config</code>?
+</h3>
+
+<p>If you use dockerized MongoosePush, you need to do the following:</p>
+<ul>
+<li>Start MongoosePush docker, let&#39;s assume its name is <code class="inline">mongoose_push</code>
+</li>
+<li>Run: <code class="inline">docker cp mongoose_push:/opt/app/var/sys.config sys.config</code> on you docker host (this will get the current <code class="inline">sys.config</code> to your <code class="inline">${CWD}</code>)
+</li>
+<li>Modify the <code class="inline">sys.config</code> as you see fit (for metrics, see above)
+</li>
+<li>Stop MongoosePush docker container and restart it with the modified <code class="inline">sys.config</code> as volume in <code class="inline">/opt/app/sys.config</code> (yes, this is not the path we used to copy this file from, this is an override)
+</li>
+</ul>
+<h3 id="available-metrics" class="section-heading">
+  <a href="#available-metrics" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Available metrics
+</h3>
+
+<p>The following metrics are available:</p>
+<ul>
+<li><code class="inline">mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.all</code>
+</li>
+<li><code class="inline">mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.error.${REASON}</code>
+</li>
+<li><code class="inline">mongoose_push.${METRIC_TYPE}.push.${SERVICE}.${MODE}.success</code>
+</li>
+</ul>
+<p>Where:</p>
+<ul>
+<li><strong>METRIC_TYPE</strong> is either <code class="inline">timers</code> or <code class="inline">spirals</code>
+</li>
+<li><strong>SERVICE</strong> is either <code class="inline">fcm</code> or <code class="inline">apns</code>
+</li>
+<li><strong>MODE</strong> is either <code class="inline">prod</code> or <code class="inline">dev</code>
+</li>
+<li><strong>REASON</strong> is an arbitrary error reason term
+</li>
+</ul>
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.21.2),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+        </p>
+        <p>
+          <button class="line footer-button night-mode-toggle">
+            Toggle night mode
+          </button>
+          <button class="line footer-button tooltips-toggle">
+            <span class="tooltips-option-disable">Disable tooltips</span>
+            <span class="tooltips-option-enable">Enable tooltips</span>
+          </button>
+          <button class="line footer-button display-shortcuts-help">
+            Display keyboard shortcuts
+          </button>
+          <button class="line footer-button display-quick-switch">
+            Go to a HexDocs package
+          </button>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  </body>
+</html>

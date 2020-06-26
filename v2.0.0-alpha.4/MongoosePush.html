@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.21.2">
+    <meta name="project" content="MongoosePush v2.0.0-alpha.4">
+    <title>MongoosePush — MongoosePush v2.0.0-alpha.4</title>
+    <link rel="stylesheet" href="dist/html-de2388dc2f8074b0a4db.css" />
+    <script src="dist/sidebar_items-6545489e9c.js"></script>
+      <script src="../assets/js/versions.js"></script>
+    <script async src="dist/html-de2388dc2f8074b0a4db.js"></script>
+  </head>
+  <body data-type="modules">
+    <script>try { if(localStorage.getItem('night-mode') === 'true') document.body.className += ' night-mode'; } catch (e) { }</script>
+<div class="main">
+
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" title="Collapse/expand sidebar"></span>
+</button>
+
+<section class="sidebar">
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <button type="button" tabindex="-1" class="search-close-button">
+      <span class="icon-cross" title="Cancel search"></span>
+    </button>
+    <label class="search-label">
+      <input name="q" type="text" id="search-list" class="search-input" placeholder="Search..." aria-label="Search" autocomplete="off" />
+    </label>
+  </form>
+
+  <div class="autocomplete">
+    <div class="autocomplete-results">
+    </div>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectDetails">
+      <a href="https://esl.github.io/MongoosePush" class="sidebar-projectName">
+MongoosePush      </a>
+      <h2 class="sidebar-projectVersion">
+        v2.0.0-alpha.4
+      </h2>
+    </div>
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Pages</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+      <h1>
+        <small class="app-vsn">MongoosePush v2.0.0-alpha.4</small>
+MongoosePush          <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L1" title="View Source" class="view-source" rel="help">
+            <span class="icon-code" aria-hidden="true"></span>
+            <span class="sr-only">View Source</span>
+          </a>
+      </h1>
+
+
+        <section id="moduledoc">
+<p>MongoosePush is simple (seriously) service providing ability to send push
+notification to <code class="inline">FCM</code> (Firebase Cloud Messaging) and/or
+<code class="inline">APNS</code> (Apple Push Notification Service). What makes it cool is not only
+simplicity but also support for newest and fastest <code class="inline">HTTP/2</code> based APIs
+for both services.</p>
+<p>At this moment only those two services are supported but in future
+MongoosePush may and probably will support even more Push Notification Services.</p>
+        </section>
+
+        <section id="summary" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#summary">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+            Summary
+          </h1>
+  <div class="summary-types summary">
+    <h2>
+      <a href="#types">Types</a>
+    </h2>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:alert/0">alert()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:alert_key/0">alert_key()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:data/0">data()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:data_key/0">data_key()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:error/0">error()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:mode/0">mode()</a>
+  </div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:req_key/0">req_key()</a>
+  </div>
+    <div class="summary-synopsis"><p>Available keys in <code class="inline">request</code> map</p></div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:request/0">request()</a>
+  </div>
+    <div class="summary-synopsis"><p>Raw push request. The keys: <code class="inline">:service</code> and at least one of <code class="inline">:alert</code> or <code class="inline">:body</code> are required</p></div>
+</div>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#t:service/0">service()</a>
+  </div>
+</div>
+  </div>
+  <div class="summary-functions summary">
+    <h2>
+      <a href="#functions">Functions</a>
+    </h2>
+<div class="summary-row">
+  <div class="summary-signature">
+    <a href="#push/2">push(device_id, request)</a>
+  </div>
+    <div class="summary-synopsis"><p>Push notification defined by <code class="inline">request</code> to device with <code class="inline">device_id</code>.
+<code class="inline">request</code> has to define at least <code class="inline">:service</code> type (<code class="inline">:fcm</code> or <code class="inline">:apns</code>) and
+at least one of <code class="inline">:alert</code> or <code class="inline">:data</code>. If <code class="inline">alert</code> is not present, the notification will be send as &#39;silent&#39;.
+Please refer to yours push notification service provider&#39;s documentation for more details on
+silent notifications.</p></div>
+</div>
+  </div>
+        </section>
+
+        <section id="types" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#types">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+Types          </h1>
+          <div class="types-list">
+<section class="detail" id="t:alert/0">
+  <div class="detail-header">
+    <a href="#t:alert/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">alert()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L33" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>alert() :: %{required(<a href="#t:alert_key/0">alert_key</a>()) => <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>()}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:alert_key/0">
+  <div class="detail-header">
+    <a href="#t:alert_key/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">alert_key()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L28" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>alert_key() :: :title | :body | :tag | :badge | :click_action | :sound</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:data/0">
+  <div class="detail-header">
+    <a href="#t:data/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">data()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L34" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>data() :: %{required(<a href="#t:data_key/0">data_key</a>()) => <a href="https://hexdocs.pm/elixir/typespecs.html#built-in-types">term</a>()}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:data_key/0">
+  <div class="detail-header">
+    <a href="#t:data_key/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">data_key()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L29" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>data_key() :: <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>()</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:error/0">
+  <div class="detail-header">
+    <a href="#t:error/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">error()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L39" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>error() :: {:generic, :no_matching_pool | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>()}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:mode/0">
+  <div class="detail-header">
+    <a href="#t:mode/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">mode()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L37" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>mode() :: :dev | :prod</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+<section class="detail" id="t:req_key/0">
+  <div class="detail-header">
+    <a href="#t:req_key/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">req_key()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L19" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>req_key() ::
+  :service
+  | :mode
+  | :alert
+  | :data
+  | :topic
+  | :priority
+  | :time_to_live
+  | :mutable_content</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Available keys in <code class="inline">request</code> map</p>
+  </section>
+</section>
+<section class="detail" id="t:request/0">
+  <div class="detail-header">
+    <a href="#t:request/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">request()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L32" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>request() :: %{
+  required(<a href="#t:req_key/0">req_key</a>()) => <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">atom</a>() | <a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>() | <a href="https://hexdocs.pm/elixir/typespecs.html#basic-types">integer</a>() | <a href="#t:alert/0">alert</a>() | <a href="#t:data/0">data</a>()
+}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Raw push request. The keys: <code class="inline">:service</code> and at least one of <code class="inline">:alert</code> or <code class="inline">:body</code> are required</p>
+  </section>
+</section>
+<section class="detail" id="t:service/0">
+  <div class="detail-header">
+    <a href="#t:service/0" class="detail-link" title="Link to this type">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this type</span>
+    </a>
+    <h1 class="signature">service()</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L36" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>service() :: :fcm | :apns</pre>
+      </div>
+  </div>
+  <section class="docstring">
+  </section>
+</section>
+          </div>
+        </section>
+        <section id="functions" class="details-list">
+          <h1 class="section-heading">
+            <a class="hover-link" href="#functions">
+              <span class="icon-link" aria-hidden="true"></span>
+              <span class="sr-only">Link to this section</span>
+            </a>
+Functions          </h1>
+          <div class="functions-list">
+<section class="detail" id="push/2">
+  <div class="detail-header">
+    <a href="#push/2" class="detail-link" title="Link to this function">
+      <span class="icon-link" aria-hidden="true"></span>
+      <span class="sr-only">Link to this function</span>
+    </a>
+    <h1 class="signature">push(device_id, request)</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/master/lib/mongoose_push.ex#L1" class="view-source" rel="help" title="View Source">
+       <span class="icon-code" aria-hidden="true"></span>
+       <span class="sr-only">View Source</span>
+     </a>
+      <div class="specs">
+          <pre>push(<a href="https://hexdocs.pm/elixir/String.html#t:t/0">String.t</a>(), <a href="#t:request/0">request</a>()) ::
+  :ok | {:error, <a href="MongoosePush.Service.html#t:error/0">MongoosePush.Service.error</a>()} | {:error, <a href="#t:error/0">error</a>()}</pre>
+      </div>
+  </div>
+  <section class="docstring">
+<p>Push notification defined by <code class="inline">request</code> to device with <code class="inline">device_id</code>.
+<code class="inline">request</code> has to define at least <code class="inline">:service</code> type (<code class="inline">:fcm</code> or <code class="inline">:apns</code>) and
+at least one of <code class="inline">:alert</code> or <code class="inline">:data</code>. If <code class="inline">alert</code> is not present, the notification will be send as &#39;silent&#39;.
+Please refer to yours push notification service provider&#39;s documentation for more details on
+silent notifications.</p>
+<p>Field <code class="inline">:data</code> may contain any custom data that have to be delivered to the target device, while
+field <code class="inline">:alert</code>, if present, must contain at least <code class="inline">:title</code> and <code class="inline">:body</code>. The <code class="inline">:alert</code> field may also
+contain: :sound, <code class="inline">:tag</code> (option specific to FCM service), <code class="inline">:topic</code> and <code class="inline">:bagde</code> (specific to APNS).
+Please consult push notification service provider&#39;s documentation for more informations on those
+optional fields.</p>
+<p>Field <code class="inline">:priority</code> may be used to set priority for message on both FCM and APNS. The values are
+native for FCM and for APNS - :normal is &quot;5&quot; and :high is 10.</p>
+<p><code class="inline">:mode</code> option is also specific to APNS but it only selects appropriate
+worker pool (with <code class="inline">:mode</code> set to either <code class="inline">:prod</code> or <code class="inline">:dev</code>).
+Default value to <code class="inline">:mode</code> is <code class="inline">:prod</code>.</p>
+<p>Field <code class="inline">:mutable_content</code> (specific to APNS) can be set to <code class="inline">true</code> (by default <code class="inline">false</code>) to enable
+this feature (please consult APNS documentation for more information).</p>
+  </section>
+</section>
+          </div>
+        </section>
+      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.21.2),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+        </p>
+        <p>
+          <button class="line footer-button night-mode-toggle">
+            Toggle night mode
+          </button>
+          <button class="line footer-button tooltips-toggle">
+            <span class="tooltips-option-disable">Disable tooltips</span>
+            <span class="tooltips-option-enable">Enable tooltips</span>
+          </button>
+          <button class="line footer-button display-shortcuts-help">
+            Display keyboard shortcuts
+          </button>
+          <button class="line footer-button display-quick-switch">
+            Go to a HexDocs package
+          </button>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  </body>
+</html>
