@@ -147,9 +147,9 @@ defmodule MongoosePushTelemetryMetricsTest do
     )
 
     metrics = TelemetryMetricsPrometheus.Core.scrape()
-    workers_regex = ~r/sparrow_pools_warden_workers_count{pool=\"periodic_pool\"} 5/
+    workers_regex = ~r/sparrow_pools_warden_workers_gauge{pool=\"periodic_pool\"} 5/
     workers_match = Regex.match?(workers_regex, metrics)
-    pools_regex = ~r/sparrow_pools_warden_pools_count [\d]+/
+    pools_regex = ~r/sparrow_pools_warden_pools_gauge [\d]+/
     pools_match = Regex.match?(pools_regex, metrics)
 
     assert true == workers_match
