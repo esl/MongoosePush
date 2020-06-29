@@ -33,7 +33,7 @@ defmodule MongoosePush.Mixfile do
       {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
       {:sparrow, github: "esl/sparrow", ref: "80a17bd"},
       {:plug_cowboy, "~> 2.0"},
-      {:cowboy, "~> 2.3", override: true},
+      {:cowboy, "< 2.8.0", override: true},
       {:jason, "~> 1.0"},
       {:poison, "~> 3.0"},
       {:distillery, "~> 2.0", override: true},
@@ -59,9 +59,11 @@ defmodule MongoosePush.Mixfile do
       {:assert_eventually, "~> 0.2.0", only: [:test, :integration]},
       {:mox, "~> 0.5.2", only: [:test, :integration]},
       {:telemetry, "~>0.4.1"},
-      {:telemetry_metrics, "~> 0.4.2"},
-      {:telemetry_metrics_prometheus_core, "~> 0.3"},
-      {:logfmt, "~>3.3"}
+      {:telemetry_metrics, "~> 0.5"},
+      {:telemetry_metrics_prometheus_core, "~> 0.4"},
+      {:telemetry_poller, "~> 0.5"},
+      {:logfmt, "~>3.3"},
+      {:stream_data, "~> 0.5", only: :test}
     ]
   end
 

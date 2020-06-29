@@ -17,67 +17,56 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
     assert json_response(conn, 200) == nil
   end
 
-  test "Request.SendNotification.FlatNotification schema without required service field", %{
-    conn: conn
-  } do
-    conn =
-      post(
-        conn,
-        "/v1/notification/666",
-        Jason.encode!(Map.drop(ControllersHelper.flat_request(), ["service"]))
-      )
+  @dropped_fields ["service", "body"]
+  for dropped <- @dropped_fields do
+    test "Request.SendNotification.FlatNotification schema without required #{dropped} field", %{
+      conn: conn
+    } do
+      body =
+        ControllersHelper.flat_request()
+        |> Map.drop([unquote(dropped)])
+        |> Jason.encode!()
 
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("service")
-  end
+      conn = post(conn, "/v1/notification/666", body)
 
-  test "Request.SendNotification.FlatNotification schema without required body field", %{
-    conn: conn
-  } do
-    conn =
-      post(
-        conn,
-        "/v1/notification/666",
-        Jason.encode!(Map.drop(ControllersHelper.flat_request(), ["body"]))
-      )
-
-    assert json_response(conn, 422) == ControllersHelper.missing_field_response("body")
+      assert json_response(conn, 422) ==
+               ControllersHelper.missing_field_response(:v1, unquote(dropped))
+    end
   end
 
   test "Request.SendNotification.FlatNotification schema with incorrect badge value", %{
     conn: conn
   } do
-    conn =
-      post(
-        conn,
-        "/v1/notification/666",
-        Jason.encode!(%{ControllersHelper.flat_request() | "badge" => "seven"})
-      )
+    body =
+      ControllersHelper.flat_request()
+      |> Map.put("badge", "seven")
+      |> Jason.encode!()
+
+    conn = post(conn, "/v1/notification/666", body)
 
     assert json_response(conn, 422) ==
              ControllersHelper.invalid_field_response("integer", "string", "badge")
   end
 
   test "Request.SendNotification.FlatNotification schema with unexpected field", %{conn: conn} do
-    conn =
-      post(
-        conn,
-        "/v1/notification/666",
-        Jason.encode!(Map.put(ControllersHelper.flat_request(), "field", "peek-a-boo"))
-      )
+    body =
+      ControllersHelper.flat_request()
+      |> Map.put("field", "peek-a-boo")
+      |> Jason.encode!()
 
+    conn = post(conn, "/v1/notification/666", body)
     assert json_response(conn, 422) == ControllersHelper.unexpected_field_response("field")
   end
 
   test "Request.SendNotification.FlatNotification schema with unsupported mode value", %{
     conn: conn
   } do
-    conn =
-      post(
-        conn,
-        "/v1/notification/666",
-        Jason.encode!(%{ControllersHelper.flat_request() | "mode" => "test"})
-      )
+    body =
+      ControllersHelper.flat_request()
+      |> Map.put("mode", "test")
+      |> Jason.encode!()
 
+    conn = post(conn, "/v1/notification/666", body)
     assert json_response(conn, 422) == ControllersHelper.invalid_value_for_enum("mode")
   end
 
@@ -146,7 +135,7 @@ defmodule MongoosePushWeb.APIv1NotificationControllerTest do
     assert json_response(conn, 503) == %{"details" => "Please try again later"}
   end
 
-  # decoder end-to-end tests
+  # decoder tests
 
   test "decoder test: all possible fields", %{conn: conn} do
     device_id = "1"

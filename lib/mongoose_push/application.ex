@@ -27,14 +27,20 @@ defmodule MongoosePush.Application do
   def start(_type, _args) do
     # Logger setup
     loglevel = Application.get_env(:mongoose_push, :logging)[:level] || :info
+    logformat = Application.get_env(:mongoose_push, :logging)[:format] || :logfmt
     set_loglevel(loglevel)
+    set_logformat(logformat)
 
     # Mostly status logging
     _ = check_runtime_configuration_status()
 
     # Define workers and child supervisors to be supervised
+    # The MongoosePush.Metrics.TelemetryMetrics child is started first to capture possible events
+    # when services start
     children =
-      service_children() ++ [MongoosePushWeb.Endpoint, MongoosePush.Metrics.TelemetryMetrics]
+      [MongoosePush.Metrics.TelemetryMetrics] ++
+        MongoosePush.Metrics.TelemetryMetrics.pooler() ++
+        service_children() ++ [MongoosePushWeb.Endpoint]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
@@ -155,6 +161,14 @@ defmodule MongoosePush.Application do
       false ->
         :ok
     end
+  end
+
+  defp set_logformat(:logfmt), do: set_logformat(MongoosePush.Logger.LogFmt)
+
+  defp set_logformat(:json), do: set_logformat(MongoosePush.Logger.JSON)
+
+  defp set_logformat(module) do
+    Logger.configure_backend(:console, format: {module, :format}, metadata: :all)
   end
 
   defp check_runtime_configuration_status() do

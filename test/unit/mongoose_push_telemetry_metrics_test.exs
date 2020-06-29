@@ -127,10 +127,33 @@ defmodule MongoosePushTelemetryMetricsTest do
 
     # 3. regex on the payload to make sure this is prometheus output
     fcm_regex =
-      ~r/mongoose_push_notification_send_time_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
+      ~r/mongoose_push_notification_send_time_microsecond_count{error_category=\"\",error_reason=\"\",service=\"fcm\",status=\"success\"} (?<count>[\d]+)/
 
     fcm_match = Regex.named_captures(fcm_regex, metrics.resp_body)
-    assert 0 != fcm_match
+    assert nil != fcm_match
+  end
+
+  test "sparrow periodic metrics" do
+    :telemetry.execute(
+      [:sparrow, :pools_warden, :workers],
+      %{count: 5},
+      %{pool: :periodic_pool}
+    )
+
+    :telemetry.execute(
+      [:sparrow, :pools_warden, :pools],
+      %{count: 3},
+      %{}
+    )
+
+    metrics = TelemetryMetricsPrometheus.Core.scrape()
+    workers_regex = ~r/sparrow_pools_warden_workers_gauge{pool=\"periodic_pool\"} 5/
+    workers_match = Regex.match?(workers_regex, metrics)
+    pools_regex = ~r/sparrow_pools_warden_pools_gauge [\d]+/
+    pools_match = Regex.match?(pools_regex, metrics)
+
+    assert true == workers_match
+    assert true == pools_match
   end
 
   defp do_push(push_result, service, repeat_no) do
