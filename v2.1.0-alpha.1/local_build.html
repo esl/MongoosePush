@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.22.1">
+    <meta name="project" content="MongoosePush v2.1.0-alpha.1">
+    <title>Local build — MongoosePush v2.1.0-alpha.1</title>
+    <link rel="stylesheet" href="dist/elixir-e589b8fad3dab6230c65.css" />
+    <script src="dist/sidebar_items-73da2830db.js"></script>
+      <script src="../assets/js/versions.js"></script>
+    <script async src="dist/app-5c0c23dfec2d63ae33a2.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode') === 'true') document.body.className += ' night-mode'; } catch (e) { }</script>
+<div class="main">
+
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" title="Collapse/expand sidebar"></span>
+</button>
+
+<section class="sidebar">
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <button type="button" tabindex="-1" class="search-close-button">
+      <span class="icon-cross" title="Cancel search"></span>
+    </button>
+    <label class="search-label">
+      <input name="q" type="text" id="search-list" class="search-input" placeholder="Search..." aria-label="Search" autocomplete="off" />
+    </label>
+  </form>
+
+  <div class="autocomplete">
+    <div class="autocomplete-results">
+    </div>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectDetails">
+      <a href="https://esl.github.io/MongoosePush" class="sidebar-projectName">
+MongoosePush      </a>
+      <h2 class="sidebar-projectVersion">
+        v2.1.0-alpha.1
+      </h2>
+    </div>
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Guides</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+<h1>Local build</h1><h2 id="prerequisites" class="section-heading">
+  <a href="#prerequisites" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Prerequisites
+</h2>
+<ul><li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)</li><li>Erlang/OTP 19.3+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain TLS bug that prevents connecting to APNS servers.
+When building with this Erlang version, please make sure that MongoosePushRuntimeTest test suite passes.
+It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p></blockquote></li><li>Rebar3 (just enter <a href="https://hexdocs.pm/mix/Mix.Tasks.Local.Rebar.html"><code class="inline">mix local.rebar</code></a>)</li></ul><h2 id="production-release" class="section-heading">
+  <a href="#production-release" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Production release
+</h2>
+<p>Build step is really easy. Just type in root of the repository:</p><pre><code class="bash">MIX_ENV=prod mix do deps.get, compile, certs.dev, distillery.release</code></pre><p>After this step you may try to run the service via:</p><pre><code class="bash">_build/prod/rel/mongoose_push/bin/mongoose_push foreground</code></pre><p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in <code class="inline">Configuration</code> section of this README.</p><h2 id="development-release" class="section-heading">
+  <a href="#development-release" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Development release
+</h2>
+<p>Build step is really easy. Just type in root of the repository:</p><pre><code class="bash">MIX_ENV=dev mix do deps.get, compile, certs.dev, distillery.release</code></pre><p>Development release is by default configured to connect to local APNS / FCM mock. This configuration may be changed as needed
+in <code class="inline">config/dev.exs</code> file.
+For now, let's just start those mocks so that we can use default dev configuration:</p><pre><code class="bash">docker-compose -f test/docker/docker-compose.mocks.yml up -d</code></pre><p>After this step you may try to run the service via:</p><pre><code class="bash">_build/dev/rel/mongoose_push/bin/mongoose_push console</code></pre>      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.22.1),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+        </p>
+        <p>
+          <button class="line footer-button display-shortcuts-help">
+            Display keyboard shortcuts
+          </button>
+          <button class="line footer-button night-mode-toggle">
+            Toggle night mode
+          </button>
+          <button class="line footer-button display-quick-switch">
+            Go to a HexDocs package
+          </button>
+          <button class="line footer-button tooltips-toggle">
+            <span class="tooltips-option-disable">Disable tooltips</span>
+            <span class="tooltips-option-enable">Enable tooltips</span>
+          </button>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.22.1">
+    <meta name="project" content="MongoosePush v2.1.0-alpha.1">
+    <title>Metrics — MongoosePush v2.1.0-alpha.1</title>
+    <link rel="stylesheet" href="dist/elixir-e589b8fad3dab6230c65.css" />
+    <script src="dist/sidebar_items-73da2830db.js"></script>
+      <script src="../assets/js/versions.js"></script>
+    <script async src="dist/app-5c0c23dfec2d63ae33a2.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode') === 'true') document.body.className += ' night-mode'; } catch (e) { }</script>
+<div class="main">
+
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" title="Collapse/expand sidebar"></span>
+</button>
+
+<section class="sidebar">
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <button type="button" tabindex="-1" class="search-close-button">
+      <span class="icon-cross" title="Cancel search"></span>
+    </button>
+    <label class="search-label">
+      <input name="q" type="text" id="search-list" class="search-input" placeholder="Search..." aria-label="Search" autocomplete="off" />
+    </label>
+  </form>
+
+  <div class="autocomplete">
+    <div class="autocomplete-results">
+    </div>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectDetails">
+      <a href="https://esl.github.io/MongoosePush" class="sidebar-projectName">
+MongoosePush      </a>
+      <h2 class="sidebar-projectVersion">
+        v2.1.0-alpha.1
+      </h2>
+    </div>
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Guides</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+<h1>Metrics</h1><p>MongoosePush 2.1 provides metrics in the Prometheus format on the <code class="inline">/metrics</code> endpoint.
+This is a breaking change compared to previous releases.
+Existing dashboards will need to be updated.</p><p>It is important to know that metrics are created inside MongoosePush only when a certain event happens.
+This may mean that a freshly started MongoosePush node will not have all the possible metrics available yet.</p><h2 id="available-metrics" class="section-heading">
+  <a href="#available-metrics" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Available metrics
+</h2>
+<h4>Histograms</h4><p>For more details about the histogram metric type please go to <a href="https://prometheus.io/docs/concepts/metric_types/">https://prometheus.io/docs/concepts/metric_types/</a>#histogram</p><h6>Notification sent time</h6><p><code class="inline">mongoose_push_notification_send_time_microsecond_bucket{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS},le=${LE}}</code>
+<code class="inline">mongoose_push_notification_send_time_microsecond_sum{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}</code>
+<code class="inline">mongoose_push_notification_send_time_microsecond_count{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}</code></p><p>Where:</p><ul><li><code class="inline">STATUS</code> is <code class="inline">&quot;success&quot;</code> for the successful notifications or <code class="inline">&quot;error&quot;</code> in all other cases</li><li><code class="inline">SERVICE</code> is either <code class="inline">&quot;apns&quot;</code> or <code class="inline">&quot;fcm&quot;</code></li><li><code class="inline">CATEGORY</code> is an arbitrary error category term (in case of <code class="inline">status=&quot;error&quot;</code>) or an empty string (when <code class="inline">status=&quot;success&quot;</code>)</li><li><code class="inline">REASON</code> is an arbitrary error reason term (in case of <code class="inline">status=&quot;error&quot;</code>) or an empty string (when <code class="inline">status=&quot;success&quot;</code>)</li><li><code class="inline">LE</code> defines the <code class="inline">upper inclusive bound</code> (<code class="inline">less than or equal</code>) values for buckets, currently <code class="inline">1000</code>, <code class="inline">10_000</code>, <code class="inline">25_000</code>, <code class="inline">50_000</code>, <code class="inline">100_000</code>, <code class="inline">250_000</code>, <code class="inline">500_000</code>, <code class="inline">1000_000</code> or <code class="inline">+Inf</code></li></ul><p>This histogram metric shows the distribution of times needed to:</p><ol><li>Select a worker (this may include waiting time when all workers are busy).</li><li>Send a request.</li><li>Get a response from push notifications provider.</li></ol><h6>HTTP/2 requests</h6><p><code class="inline">sparrow_h_worker_handle_duration_microsecond_bucket{le=${LE}}</code>
+<code class="inline">sparrow_h_worker_handle_duration_microsecond_sum{le=${LE}}</code>
+<code class="inline">sparrow_h_worker_handle_duration_microsecond_count{le=${LE}}</code></p><p>Where:</p><ul><li><code class="inline">LE</code> defines the <code class="inline">upper inclusive bound</code> (<code class="inline">less than or equal</code>) values for buckets, currently <code class="inline">1000</code>, <code class="inline">10_000</code>, <code class="inline">25_000</code>, <code class="inline">50_000</code>, <code class="inline">100_000</code>, <code class="inline">250_000</code>, <code class="inline">500_000</code>, <code class="inline">1000_000</code> or <code class="inline">+Inf</code></li></ul><p>This histogram metric shows the distribution of times needed to handle and send a request. This includes:</p><ol><li>Open a new stream within an already established channel.</li><li>Send a request.</li></ol><blockquote><p><strong>NOTE</strong></p><p>A bucket of value 250_000 will keep the count of measurements that are less than or equal to 250_000.
+A measurement of value 51_836 will be added to all the buckets where the upper bound is greater than 51_836.
+In this case these are buckets <code class="inline">100_000</code>, <code class="inline">250_000</code>, <code class="inline">500_000</code>, <code class="inline">1000_000</code> and <code class="inline">+Inf</code></p></blockquote><h4>Counters</h4><ul><li><code class="inline">mongoose_push_supervisor_init_count{service=${SERVICE}}</code> - Counts the number of push notification service supervisor starts.
+The <code class="inline">SERVICE</code> variable can take <code class="inline">&quot;apns&quot;</code> or <code class="inline">&quot;fcm&quot;</code> as a value.
+This metric is updated when MongoosePush starts, and later on when the underlying supervision tree is terminated and the error is propagated to the main application supervisor.</li><li><code class="inline">mongoose_push_apns_state_init_count</code> - Counts the number of APNS state initialisations.</li><li><code class="inline">mongoose_push_apns_state_terminate_count</code> - Counts the number of APNS state terminations.</li><li><code class="inline">mongoose_push_apns_state_get_default_topic_count</code> - Counts the number of default topic reads from cache.</li><li><code class="inline">sparrow_h_worker_init_count</code> - Counts the number of h2_worker starts.</li><li><code class="inline">sparrow_h_worker_terminate_count</code> - Counts the number of h2_worker terminations.</li><li><code class="inline">sparrow_h_worker_conn_success_count</code> - Counts the number of successful h2_worker connections.</li><li><code class="inline">sparrow_h_worker_conn_fail_count</code> - Counts the number of failed h2_worker connections.</li><li><code class="inline">sparrow_h_worker_conn_lost_count</code> - Counts the number of lost h2_worker connections.</li><li><code class="inline">sparrow_h_worker_request_success_count</code> - Counts the number of successful h2_worker requests.</li><li><code class="inline">sparrow_h_worker_request_error_count</code> - Counts the number of failed h2_worker requests.</li></ul><h4>Gauge</h4><ul><li><code class="inline">sparrow_pools_warden_pools_gauge</code> - The current value of the selected measurement from the most recent event.</li><li><code class="inline">sparrow_pools_warden_workers_gauge{pool=${POOL}}</code> - Current number of workers operated by a given worker <code class="inline">POOL</code>.</li><li><code class="inline">vm_memory_total</code> - Total amount of currently allocated memory.</li><li><code class="inline">vm_memory_processes</code> - Amount of memory currently allocated for processes.</li><li><code class="inline">vm_memory_processes_used</code> - Amount of memory currently used for processes.</li><li><code class="inline">vm_memory_binary</code> - Amount of memory currently allocated for binaries.</li><li><code class="inline">vm_memory_ets</code> - Amount of memory currently allocated for ETS tables.</li><li><code class="inline">vm_total_run_queue_lengths_total</code> - A sum of all current run queue lengths.</li><li><code class="inline">vm_total_run_queue_lengths_cpu</code> - A sum of current CPU schedulers' run queue lengths.</li><li><code class="inline">vm_system_counts_process_count</code> - Number of process currently existing at the local node.</li></ul><h2 id="how-to-quickly-see-all-metrics" class="section-heading">
+  <a href="#how-to-quickly-see-all-metrics" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  How to quickly see all metrics
+</h2>
+<pre><code class="bash">curl -k https://127.0.0.1:8443/metrics</code></pre><p>The above command assumes that MongoosePush runs on <code class="inline">localhost</code> and listens on port <code class="inline">8443</code>.
+Please, mind the <code class="inline">HTTPS</code> protocol, metrics are hosted on the same port than all the other API endpoints.</p><h2 id="prometheus-configuration" class="section-heading">
+  <a href="#prometheus-configuration" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Prometheus configuration
+</h2>
+<p>When configuring Prometheus, it's important to:</p><ul><li>set the <code class="inline">scheme</code> to <code class="inline">https</code> since MongoosePush exposes <code class="inline">/metrics</code> path encrypted endpoint (HTTPS)</li><li>set the <code class="inline">insecure_skip_verify</code> to <code class="inline">true</code> if the default self-signed certificates are used</li></ul><pre><code class="yaml">scrape_configs:
+  - job_name: 'mongoose-push'
+    scheme: 'https' #MongoosePush exposes encrypted endpoint - HTTPS
+    tls_config: #The default certs used by MongoosePush are self-signed
+      insecure_skip_verify: true #For checking purposes we can ignore certs verification
+    static_configs:
+      - targets: ['mongoose-push:8443']
+        labels:
+          group: 'production'
+</code></pre>      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.22.1),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+        </p>
+        <p>
+          <button class="line footer-button display-shortcuts-help">
+            Display keyboard shortcuts
+          </button>
+          <button class="line footer-button night-mode-toggle">
+            Toggle night mode
+          </button>
+          <button class="line footer-button display-quick-switch">
+            Go to a HexDocs package
+          </button>
+          <button class="line footer-button tooltips-toggle">
+            <span class="tooltips-option-disable">Disable tooltips</span>
+            <span class="tooltips-option-enable">Enable tooltips</span>
+          </button>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  </body>
+</html>
