@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="ExDoc v0.22.1">
     <meta name="project" content="MongoosePush v2.1.0-alpha.1">
-    <title>Search — MongoosePush v2.1.0-alpha.1</title>
+    <title>Healthcheck — MongoosePush v2.1.0-alpha.1</title>
     <link rel="stylesheet" href="dist/elixir-e589b8fad3dab6230c65.css" />
     <script src="dist/sidebar_items-f4fe27fec2.js"></script>
       <script src="../assets/js/versions.js"></script>
     <script async src="dist/app-5c0c23dfec2d63ae33a2.js"></script>
   </head>
-  <body data-type="search">
+  <body data-type="extras">
     <script>try { if(localStorage.getItem('night-mode') === 'true') document.body.className += ' night-mode'; } catch (e) { }</script>
 <div class="main">
 
@@ -62,11 +62,35 @@ MongoosePush      </a>
 <section class="content">
   <div class="content-outer">
     <div id="content" class="content-inner">
-<div id="search">
-  <h1>Search</h1>
-  <div class="loading"><div></div><div></div><div></div><div></div></div>
-</div>
-      <footer class="footer">
+
+<h1>Healthcheck</h1><p>MongoosePush exposes a <code class="inline">/healthcheck</code> endpoint, from which you can get information about the current status of all connections in a <code class="inline">JSON</code> format, grouped by connection pool. The response structure is described in the following <a href="https://datatracker.ietf.org/doc/draft-inadarei-api-health-check">RFC draft</a>. An example with 2 pools, one being connected to the service and the other one not, would look like this:</p><pre><code class="json">{
+  &quot;description&quot;: &quot;Health of MongoosePush connections to FCM and APNS services&quot;,
+  &quot;details&quot;: {
+    &quot;pool:pool1&quot;: [
+      {
+        &quot;output&quot;: {
+          &quot;connected&quot;: 5,
+          &quot;disconnected&quot;: 0
+        },
+        &quot;status&quot;: &quot;pass&quot;,
+        &quot;time&quot;: &quot;2020-07-01T11:58:30.093318Z&quot;
+      }
+    ],
+    &quot;pool:pool2&quot;: [
+      {
+        &quot;output&quot;: {
+          &quot;connected&quot;: 0,
+          &quot;disconnected&quot;: 5
+        },
+        &quot;status&quot;: &quot;fail&quot;,
+        &quot;time&quot;: &quot;2020-07-01T11:58:30.102291Z&quot;
+      }
+    ]
+  },
+  &quot;releaseID&quot;: &quot;2.0.2&quot;,
+  &quot;status&quot;: &quot;pass&quot;,
+  &quot;version&quot;: &quot;2&quot;
+}</code></pre><p>If all the connections are down the response status is <code class="inline">503</code>; in all the other cases, it's <code class="inline">200</code>.</p><p>Please note that it's not recommended to use this frequently as it puts an extra load on the worker processes.</p>      <footer class="footer">
         <p>
           <span class="line">
             Built using
@@ -99,4 +123,3 @@ MongoosePush      </a>
 </div>
   </body>
 </html>
-<script src="dist/search_items-132ea7fd0e.js"></script>
