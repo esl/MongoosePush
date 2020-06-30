@@ -69,9 +69,83 @@ defmodule MongoosePush.Mixfile do
   defp docs do
     [
       javascript_config_path: "../assets/js/versions.js",
-      extras: ["README.md"],
+      extras: [
+        "guides/introduction.md",
+        "guides/configuration.md",
+        "guides/local_build.md",
+        "guides/test.md",
+        "guides/docker.md",
+        "guides/http_api.md",
+        "guides/metrics.md"
+      ],
+      extra_section: "Guides",
+      groups_for_modules: [
+        API: [
+          MongoosePush.API,
+          MongoosePush.API.V1.ResponseEncoder,
+          MongoosePush.API.V2.ResponseEncoder,
+          MongoosePush.API.V3.ResponseEncoder
+        ],
+        Configuration: [
+          MongoosePush.Config.Provider.Confex,
+          MongoosePush.Config.Provider.Toml,
+          MongoosePush.Config.Utils
+        ],
+        "Logs format": [
+          MongoosePush.Logger.Common,
+          MongoosePush.Logger.JSON,
+          MongoosePush.Logger.LogFmt
+        ],
+        Metrics: [MongoosePush.Metrics.TelemetryMetrics],
+        "Push notification services": [
+          MongoosePush.Service,
+          MongoosePush.Service.APNS,
+          MongoosePush.Service.APNS.ErrorHandler,
+          MongoosePush.Service.APNS.State,
+          MongoosePush.Service.APNS.Supervisor,
+          MongoosePush.Service.FCM,
+          MongoosePush.Service.FCM.ErrorHandler,
+          MongoosePush.Service.FCM.Pool.Supervisor,
+          MongoosePush.Service.FCM.Pools
+        ],
+        Web: [
+          MongoosePushWeb,
+          MongoosePushWeb.APIv1.NotificationController,
+          MongoosePushWeb.APIv2.NotificationController,
+          MongoosePushWeb.APIv3.NotificationController,
+          MongoosePushWeb.ApiSpec,
+          MongoosePushWeb.Endpoint,
+          MongoosePushWeb.PrometheusMetricsController,
+          MongoosePushWeb.Router,
+          MongoosePushWeb.Router.Helpers
+        ],
+        "Protocols and plugs": [
+          MongoosePushWeb.Plug.CastAndValidate,
+          MongoosePushWeb.Plug.CastAndValidate.StubAdapter,
+          MongoosePushWeb.Plug.MaybePutSwaggerUI,
+          MongoosePushWeb.Plug.MaybeRenderSpec,
+          MongoosePushWeb.Protocols.RequestDecoder,
+          MongoosePushWeb.Protocols.RequestDecoderHelper
+        ],
+        Schemas: [
+          MongoosePushWeb.Schemas,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification,
+          MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification,
+          MongoosePushWeb.Schemas.Response.SendNotification.GenericError,
+          MongoosePushWeb.Schemas.Response.SendNotification.Gone,
+          MongoosePushWeb.Schemas.Response.SendNotification.PayloadTooLarge,
+          MongoosePushWeb.Schemas.Response.SendNotification.ServiceUnavailable,
+          MongoosePushWeb.Schemas.Response.SendNotification.TooManyRequests,
+          MongoosePushWeb.Schemas.Response.SendNotification.UnknownError
+        ]
+      ],
       api_reference: false,
-      main: "readme"
+      main: "introduction"
     ]
   end
 
