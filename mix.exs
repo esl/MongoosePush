@@ -33,7 +33,7 @@ defmodule MongoosePush.Mixfile do
       {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
       {:sparrow, github: "esl/sparrow", ref: "1760502"},
       {:plug_cowboy, "~> 2.0"},
-      {:cowboy, "~> 2.3", override: true},
+      {:cowboy, "< 2.8.0", override: true},
       {:jason, "~> 1.0"},
       {:poison, "~> 3.0"},
       {:distillery, "~> 2.0", override: true},
