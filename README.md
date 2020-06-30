@@ -493,7 +493,7 @@ If you specify both **alert** and **data**, target device will receive both noti
  
 ### Healthcheck
 
-MongoosePush exposes `/healthcheck` endpoint, from which you can get information about current status of connections in a `JSON` format, grouped by connection pool. An example with 2 pools, one being connected to the service and the other one not would look like this:
+MongoosePush exposes a `/healthcheck` endpoint, from which you can get information about the current status of all connections in a `JSON` format, grouped by connection pool. An example with 2 pools, one being connected to the service and the other one not, would look like this:
 
 ```json
 [
