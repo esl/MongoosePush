@@ -49,8 +49,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
       old_config = Application.fetch_env!(:mongoose_push, :fcm)
 
       new_config =
-        old_config
-        |> Enum.map(fn {pool_name, pool_info} ->
+        Enum.map(old_config, fn {pool_name, pool_info} ->
           # We simulate broken FCM connection by changing the port
           {pool_name, Keyword.update(pool_info, :port, 4444, &(&1 + 1))}
         end)
@@ -118,8 +117,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
       old_fcm_config = Application.fetch_env!(:mongoose_push, :fcm)
 
       new_fcm_config =
-        old_fcm_config
-        |> Enum.map(fn {pool_name, pool_info} ->
+        Enum.map(old_fcm_config, fn {pool_name, pool_info} ->
           # We simulate broken FCM connection by changing the port
           {pool_name, Keyword.update(pool_info, :port, 4444, &(&1 + 1))}
         end)
@@ -127,8 +125,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
       old_apns_config = Application.fetch_env!(:mongoose_push, :apns)
 
       new_apns_config =
-        old_apns_config
-        |> Enum.map(fn {pool_name, pool_info} ->
+        Enum.map(old_apns_config, fn {pool_name, pool_info} ->
           # We simulate broken APNS connection by changing the port
           {pool_name, Keyword.update(pool_info, :use_2197, false, &(!&1))}
         end)

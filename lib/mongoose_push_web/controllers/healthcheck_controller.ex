@@ -4,13 +4,11 @@ defmodule MongoosePushWeb.HealthcheckController do
   def send(conn = %Plug.Conn{}, %{}) do
     stats = :wpool.stats()
 
-    connections =
-      stats
-      |> Enum.map(&extract_connection_info_from_pool/1)
+    connections = Enum.map(stats, &extract_connection_info_from_pool/1)
 
     status = get_status(connections)
 
-    payload = format_response(status, connections)
+    payload = format_response(connections)
 
     conn
     |> put_status(status)
@@ -24,8 +22,7 @@ defmodule MongoosePushWeb.HealthcheckController do
     workers = Supervisor.which_children(sup_pid)
 
     {_workers, connection_status} =
-      workers
-      |> Enum.map_reduce(%{connected: 0, disconnected: 0}, fn worker_info, acc ->
+      Enum.map_reduce(workers, %{connected: 0, disconnected: 0}, fn worker_info, acc ->
         {_, worker_pid, _, _} = worker_info
 
         if Sparrow.H2Worker.is_alive_connection(worker_pid) do
@@ -54,29 +51,32 @@ defmodule MongoosePushWeb.HealthcheckController do
   end
 
   defp is_pool_disconnected?(pool_info) do
-    case pool_info[:connection_status][:connected] do
-      0 ->
-        true
-
-      _ ->
-        false
-    end
+    pool_info[:connection_status][:connected] == 0
   end
 
   # Response formatted to match the draft RFC for healthcheck endpoints, described here:
   # https://tools.ietf.org/id/draft-inadarei-api-health-check-01.html
-  defp format_response(status, connections) do
-    {_, pool_infos} =
-      connections
-      |> Enum.map_reduce(%{}, &format_pool_info/2)
+  defp format_response(connections) do
+    {_, pool_infos} = Enum.map_reduce(connections, %{}, &format_pool_info/2)
+
+    statuses =
+      pool_infos
+      |> Map.values()
+      |> List.flatten()
+      |> Enum.map(fn pool_info ->
+        Map.fetch!(pool_info, :status)
+      end)
 
     health =
-      case status do
-        503 ->
+      cond do
+        Enum.all?(statuses, fn st -> st == "pass" end) ->
+          "pass"
+
+        Enum.all?(statuses, fn st -> st == "fail" end) ->
           "fail"
 
-        200 ->
-          "pass"
+        true ->
+          "warn"
       end
 
     %{
