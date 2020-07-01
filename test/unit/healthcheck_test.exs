@@ -28,12 +28,19 @@ defmodule MongoosePushWeb.HealthcheckTest do
       end)
 
     for {pool_name, worker_count} <- fcm_pools ++ apns_pools do
-      pool_info = %{
-        "pool" => Atom.to_string(pool_name),
-        "connection_status" => List.duplicate("connected", worker_count)
+      pool_connection_status = %{
+        "connected" => worker_count,
+        "disconnected" => 0
       }
 
-      assert true == Enum.member?(pools, pool_info)
+      response =
+        pools
+        |> Map.fetch!("details")
+        |> Map.fetch!("pool:#{pool_name}")
+        |> List.first()
+        |> Map.fetch!("output")
+
+      assert response == pool_connection_status
     end
   end
 
@@ -73,21 +80,35 @@ defmodule MongoosePushWeb.HealthcheckTest do
         end)
 
       for {pool_name, worker_count} <- apns_pools do
-        pool_info = %{
-          "pool" => Atom.to_string(pool_name),
-          "connection_status" => List.duplicate("connected", worker_count)
+        pool_connection_status = %{
+          "connected" => worker_count,
+          "disconnected" => 0
         }
 
-        assert true == Enum.member?(pools, pool_info)
+        response =
+          pools
+          |> Map.fetch!("details")
+          |> Map.fetch!("pool:#{pool_name}")
+          |> List.first()
+          |> Map.fetch!("output")
+
+        assert response == pool_connection_status
       end
 
       for {pool_name, worker_count} <- fcm_pools do
-        pool_info = %{
-          "pool" => Atom.to_string(pool_name),
-          "connection_status" => List.duplicate("disconnected", worker_count)
+        pool_connection_status = %{
+          "connected" => 0,
+          "disconnected" => worker_count
         }
 
-        assert true == Enum.member?(pools, pool_info)
+        response =
+          pools
+          |> Map.fetch!("details")
+          |> Map.fetch!("pool:#{pool_name}")
+          |> List.first()
+          |> Map.fetch!("output")
+
+        assert response == pool_connection_status
       end
     end
   end
@@ -138,21 +159,35 @@ defmodule MongoosePushWeb.HealthcheckTest do
         end)
 
       for {pool_name, worker_count} <- apns_pools do
-        pool_info = %{
-          "pool" => Atom.to_string(pool_name),
-          "connection_status" => List.duplicate("disconnected", worker_count)
+        pool_connection_status = %{
+          "connected" => 0,
+          "disconnected" => worker_count
         }
 
-        assert true == Enum.member?(pools, pool_info)
+        response =
+          pools
+          |> Map.fetch!("details")
+          |> Map.fetch!("pool:#{pool_name}")
+          |> List.first()
+          |> Map.fetch!("output")
+
+        assert response == pool_connection_status
       end
 
       for {pool_name, worker_count} <- fcm_pools do
-        pool_info = %{
-          "pool" => Atom.to_string(pool_name),
-          "connection_status" => List.duplicate("disconnected", worker_count)
+        pool_connection_status = %{
+          "connected" => 0,
+          "disconnected" => worker_count
         }
 
-        assert true == Enum.member?(pools, pool_info)
+        response =
+          pools
+          |> Map.fetch!("details")
+          |> Map.fetch!("pool:#{pool_name}")
+          |> List.first()
+          |> Map.fetch!("output")
+
+        assert response == pool_connection_status
       end
     end
   end

@@ -493,28 +493,37 @@ If you specify both **alert** and **data**, target device will receive both noti
  
 ### Healthcheck
 
-MongoosePush exposes a `/healthcheck` endpoint, from which you can get information about the current status of all connections in a `JSON` format, grouped by connection pool. An example with 2 pools, one being connected to the service and the other one not, would look like this:
+MongoosePush exposes a `/healthcheck` endpoint, from which you can get information about the current status of all connections in a `JSON` format, grouped by connection pool. Response structure is described in a following [RFC draft](https://tools.ietf.org/id/draft-inadarei-api-health-check-01.html). An example with 2 pools, one being connected to the service and the other one not, would look like this:
 
 ```json
-[
 {
-  "pool": "pool_name1",
-  "connection_status":
-    [
-      "connected",
-      "connected"
+  "description": "Health of MongoosePush connections to FCM and APNS services",
+  "details": {
+    "pool:pool1": [
+      {
+        "output": {
+          "connected": 5,
+          "disconnected": 0
+        },
+        "status": "pass",
+        "time": "2020-07-01T11:58:30.093318Z"
+      }
+    ],
+    "pool:pool2": [
+      {
+        "output": {
+          "connected": 0,
+          "disconnected": 5
+        },
+        "status": "fail",
+        "time": "2020-07-01T11:58:30.102291Z"
+      }
     ]
-},
-{
-  "pool": "pool_name2",
-  "connection_status":
-  [
-    "disconnected",
-    "disconnected",
-    "disconnected"
-  ]
+  },
+  "releaseID": "2.0.2",
+  "status": "pass",
+  "version": "2"
 }
-]
 ```
 If all the connections are down the response status is `503` and in all the other cases it's `200`.
 
