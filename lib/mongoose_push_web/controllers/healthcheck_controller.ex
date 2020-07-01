@@ -81,8 +81,7 @@ defmodule MongoosePushWeb.HealthcheckController do
 
     %{
       status: health,
-      version: "2",
-      releaseID: "2.0.2",
+      version: List.to_string(Application.spec(:mongoose_push, :vsn)),
       description: "Health of MongoosePush connections to FCM and APNS services",
       details: pool_infos
     }
