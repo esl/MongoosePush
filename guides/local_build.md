@@ -23,7 +23,7 @@ After this step you may try to run the service via:
 _build/prod/rel/mongoose_push/bin/mongoose_push foreground
 ```
 
-Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without properly configured `FCM` and/or `APNS` service. You can find out how to properly configure it in `Configuration` section of this README.
+Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without properly configured `FCM` and/or `APNS` service. You can find out how to properly configure it in [configuration](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/configuration.html#content) section.
 
 ## Development release
 
