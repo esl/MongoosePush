@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/esl/MongoosePush.svg?branch=master)](https://travis-ci.org/esl/MongoosePush) [![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=master)](https://coveralls.io/github/esl/MongoosePush?branch=master) [![Ebert](https://ebertapp.io/github/esl/MongoosePush.svg)](https://ebertapp.io/github/esl/MongoosePush)
 
-**MongoosePush** is a simple, **RESTful** service written in **Elixir**, providing ability to **send push
+**MongoosePush** is a simple, **RESTful** service written in **Elixir**, providing the ability to **send push
 notifications** to `FCM` (Firebase Cloud Messaging) and/or
 `APNS` (Apple Push Notification Service) via their `HTTP/2` API.
 
@@ -10,9 +10,10 @@ notifications** to `FCM` (Firebase Cloud Messaging) and/or
 
 Documentation is available at: https://esl.github.io/MongoosePush
 
-## Quick start
 
-### Running from DockerHub
+# Quick start
+
+## Running from DockerHub
 
 We provide prebuilt MongoosePush images. Configuration requires either an FCM token, APNS certificates or an APNS token. Depending on your usecase, you can have some or all of them in a standalone MongoosePush instance or using a docker container.
 For the full configuration you need to set the following directory structure up:
@@ -42,7 +43,7 @@ docker run -v `pwd`/priv:/opt/app/priv \
   -it --rm mongooseim/mongoose-push:latest
 ```
 
-### Local build prerequisites
+## Local build prerequisites
 
 * Elixir 1.5+ (http://elixir-lang.org/install.html)
 * Erlang/OTP 19.3+

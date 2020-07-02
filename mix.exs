@@ -70,14 +70,14 @@ defmodule MongoosePush.Mixfile do
     [
       javascript_config_path: "../assets/js/versions.js",
       extras: [
-        "guides/introduction.md",
-        "guides/configuration.md",
-        "guides/local_build.md",
-        "guides/test.md",
-        "guides/docker.md",
-        "guides/http_api.md",
-        "guides/healthcheck.md",
-        "guides/metrics.md"
+        "README.md": [file: "guides/introduction", title: "Introduction"],
+        "guides/configuration.md": [file: "guides/configuration", title: "Configuration"],
+        "guides/local_build.md": [file: "guides/local_build", title: "Local build"],
+        "guides/test.md": [file: "guides/test", title: "Running tests"],
+        "guides/docker.md": [file: "guides/docker", title: "Docker"],
+        "guides/http_api.md": [file: "guides/http_api", title: "HTTP API"],
+        "guides/healthcheck.md": [file: "guides/healthcheck", title: "Healthcheck"],
+        "guides/metrics.md": [file: "guides/metrics", title: "Metrics"]
       ],
       extra_section: "Guides",
       groups_for_modules: [
@@ -146,7 +146,7 @@ defmodule MongoosePush.Mixfile do
         ]
       ],
       api_reference: false,
-      main: "introduction"
+      main: "readme"
     ]
   end
 
