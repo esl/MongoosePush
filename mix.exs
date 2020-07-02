@@ -76,6 +76,7 @@ defmodule MongoosePush.Mixfile do
         "guides/test.md",
         "guides/docker.md",
         "guides/http_api.md",
+        "guides/healthcheck.md",
         "guides/metrics.md"
       ],
       extra_section: "Guides",
