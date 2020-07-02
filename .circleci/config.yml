@@ -3,6 +3,8 @@ version: 2.1
 filters: &all_tags
   tags:
     only: /.*/
+  branches:
+    ignore: gh-pages
 
 run: &DOCKER_TAGS
     name: Generate image tag
