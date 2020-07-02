@@ -51,7 +51,7 @@ MIX_ENV=integration mix test.env.up
 # Now we can just run tests
 MIX_ENV=integration mix test
 
-# Optionally we can shut the mocks down. If you want to rerun tests, you may skip this step do that
+# Optionally we can shut the mocks down. If you want to rerun tests, you may skip this step. To do that
 # you don't need to re-invoke `mix test.env.up`. Mocks are being reset by each test separately,
 # so you don't need to worry about their state.
 MIX_ENV=integration mix test.env.down
@@ -67,4 +67,3 @@ You need to call `MIX_ENV=integration mix test.env.up` each time you make change
   * for `MIX_ENV=integration`: *test/docker/docker-compose.mocks.yml* and *test/docker/docker-compose.mpush.yml*
 * `mix test.env.down` - runs `docker-compose down` on the same compose files as `mix test.env.up`
 * `mix test.env.wait X` - waits up to X milliseconds for the services from `mix test.env.up` to become available. Prints error if they don't.
-

@@ -13,7 +13,7 @@
 
 ## Production release
 
-Build step is really easy. Just type in root of the repository:
+The build step is really easy. Just type in root of the repository:
 ```bash
 MIX_ENV=prod mix do deps.get, compile, certs.dev, distillery.release
 ```
@@ -27,14 +27,14 @@ Yeah, I know... It crashed. Running this service is fast and simple but unfortun
 
 ## Development release
 
-Build step is really easy. Just type in root of the repository:
+The build step is really easy. Just type in root of the repository:
 ```bash
 MIX_ENV=dev mix do deps.get, compile, certs.dev, distillery.release
 ```
 
-Development release is by default configured to connect to local APNS / FCM mock. This configuration may be changed as needed
+The development release is by default configured to connect to a local APNS / FCM mock. This configuration may be changed as needed
 in `config/dev.exs` file.
-For now, let's just start those mocks so that we can use default dev configuration:
+For now, let's just start those mocks so that we can use the default dev configuration:
 ```bash
 docker-compose -f test/docker/docker-compose.mocks.yml up -d
 ```
@@ -43,4 +43,3 @@ After this step you may try to run the service via:
 ```bash
 _build/dev/rel/mongoose_push/bin/mongoose_push console
 ```
-
