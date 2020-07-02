@@ -1,6 +1,6 @@
 # Configuration
 
-The whole configuration is contained in file `config/{prod|dev|test}.exs` depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Anyway, lets take a look on `config/dev.exs`, part by part.
+The whole configuration is contained in the config/{prod|dev|test}.exs`file  depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Let's examine `config/dev.exs`.
 
 ## RESTful API configuration
 
@@ -14,12 +14,12 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
     otp_app: :mongoose_push
   ]
 ```
-This part of configuration relates only to `HTTPS` endpoints exposed by `MongoosePush`. Here you can set a bind IP address (option: `ip`), port and paths to your `HTTPS` `TLS` certificates. You should ignore other options unless you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
+This part of configuration relates only to `HTTPS` endpoints exposed by `MongoosePush`. Here you can set a bind IP address (option: `ip`), port a port and paths to your `HTTPS` `TLS` certificates. You should ignore other options unless you are sure you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
 
-You may entirely skip the `mongoose_push` config entry to disable `HTTPS` API and just use this project as an `Elixir` library.
+You may entirely skip the `mongoose_push` config entry to disable the `HTTPS` API and just use this project as an `Elixir` library.
 
 ## FCM configuration
-Let's take a look at sample `FCM` service configuration:
+Let's take a look at a sample `FCM` service configuration:
 ```elixir
 config :mongoose_push, fcm: [
     default: [
@@ -35,19 +35,19 @@ config :mongoose_push, fcm: [
 This is a definition of a pool - each pool has a name and configuration. It is possible to have multiple named pools with different configuration, which includes pool size, environment mode etc. Currently the only reason you may want to do this is to create separate production and development pools which may be selected by an `HTTP` client by specifying matching `:mode` in their push request.
 
 Each `FCM` pool may be configured by setting the following fields:
-* **appfile** (*required*) - path to `FCM` service account JSON file. Details on how to get one are in [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
+* **appfile** (*required*) - path to an `FCM` service account JSON file. Details on how to get one are in [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
 * **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
-* **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
-* **endpoint** (*optional*) - URL override for `FCM` service. Useful mainly in tests
-* **port** (*optional*) - Port number override for `FCM` service. Useful mainly in tests
-* **tags** (*optional*) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
-* **tls_opts** (*optional*) - a list of raw options passed to `ssl:connect` function call while connecting to `FCM`. When this option is omitted, it will default to set of values that will verify server certificate based on internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
+* **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select a pool used to push a notification by specifying a matching option in the request
+* **endpoint** (*optional*) - URL override for the `FCM` service. Useful mainly in tests
+* **port** (*optional*) - Port number override for `the FCM` service. Useful mainly in tests
+* **tags** (*optional*) - a list of tags. Used when choosing a pool to match the request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
+* **tls_opts** (*optional*) - a list of raw options passed to the `ssl:connect` function call while connecting to `FCM`. When this option is omitted, it will default to a set of values that will verify the server certificate based on an internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
 
 You may entirely skip the `FCM` config entry to disable `FCM` support.
 
 ## APNS configuration
 
-Lets take a look at sample `APNS` service configuration:
+Lets take a look at a sample `APNS` service configuration:
 ```elixir
 config :mongoose_push, apns: [
    dev: [
@@ -71,21 +71,21 @@ config :mongoose_push, apns: [
 Just like for `FCM`, at the top level we can specify the named pools that have different configurations. For `APNS` this is especially useful since Apple delivers different APS certificates for development and production use. The HTTP client can select a named pool by providing a matching :mode in the HTTP request.
 
 Each `APNS` pool may be configured by setting the following fields:
-* **cert** (*required*) - relative path to `APNS` `PEM` certificate issued by Apple. This certificate have to be somewhere in `priv` directory
-* **key** (*required*) - relative path to `PEM` private key for `APNS` certificate issued by Apple. This file have to be somewhere in `priv` directory
-* **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
-* **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select pool used to push a notification by specifying matching option in the request
+* **cert** (*required*) - relative path to `APNS` `PEM` certificate issued by Apple. This certificate has to be somewhere in the `priv` directory
+* **key** (*required*) - relative path to `PEM` private key for `APNS` certificate issued by Apple. This file has to be somewhere in the `priv` directory
+* **pool_size** (*required*) - maximum number of used `HTTP/2` connections to the google's service
+* **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select a pool used to push a notification by specifying the matching option in the request
 * **endpoint** (*optional*) - URL override for `APNS` service. Useful mainly in tests
 * **port** (*optional*) - Port number override for `APNS` service. Useful mainly in tests
-* **use_2197** (*optional `true` or `false`*) - whether use alternative port for `APNS`: 2197
-* **tags** (*optional*) - a list of tags. Used when choosing pool to match request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
-* **tls_opts** (*optional*) - a list of raw options passed to `ssl:connect` function call while connecting to `APNS`. When this option is omitted, it will default to set of values that will verify server certificate based on internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
+* **use_2197** (*optional `true` or `false`*) - whether to use an alternative port for `APNS`: 2197
+* **tags** (*optional*) - a list of tags. Used when choosing a pool to match the request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
+* **tls_opts** (*optional*) - a list of raw options passed to the `ssl:connect` function call while connecting to `APNS`. When this option is omitted, it will default to a set of values that will verify the server certificate based on an internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
 
 You may entirely skip the `APNS` config entry to disable `APNS` support.
 
 #### Converting APNS files
 
-If you happen to have APNS files in `pkcs12` format (.p12 or .pfx extension) you need to convert them to `PEM` format which is understood by MongoosePush. Below you can find sample `openssl` commands which may be helpful.
+If you happen to have APNS files in a `pkcs12` format (.p12 or .pfx extension) you need to convert them to the `PEM` format which is understood by MongoosePush. Below you can find sample `openssl` commands which may be helpful.
 
 ##### Get cert from pkcs12 file
 
@@ -99,7 +99,7 @@ If you happen to have APNS files in `pkcs12` format (.p12 or .pfx extension) you
 
 ## Environmental variables
 
-Environmental variables to configure production release.
+Environmental variables to configure a production release.
 
 #### Settings for HTTP endpoint:
 * `PUSH_HTTPS_BIND_ADDR` - Bind IP address of the HTTP endpoint. Default value in prod release is "127.0.0.1", but docker overrides this with "0.0.0.0"
@@ -118,29 +118,29 @@ Environmental variables to configure production release.
 * `PUSH_OPENAPI_EXPOSE_UI` - `true`/`false` - Enable or disable SwaggerUI. If enabled, it will be available on `/swaggerui`. Disabled by default. Requires `PUSH_OPENAPI_EXPOSE_SPEC` to also be enabled.
 
 #### Settings for FCM service:
-* `PUSH_FCM_ENDPOINT` - Hostname of `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
-* `PUSH_FCM_APP_FILE` - Path to `FCM` service account JSON file. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
-* `PUSH_FCM_POOL_SIZE` - Connection pool size for `FCM` service
+* `PUSH_FCM_ENDPOINT` - Hostname of the `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
+* `PUSH_FCM_APP_FILE` - Path to the `FCM` service account JSON file. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
+* `PUSH_FCM_POOL_SIZE` - Connection pool size for the `FCM` service
 
 #### Settings for development APNS service:
-* `PUSH_APNS_DEV_ENDPOINT` - Hostname of `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
-* `PUSH_APNS_DEV_CERT` - Path Apple's development certfile used to communicate with `APNS`
-* `PUSH_APNS_DEV_KEY` - Path Apple's development keyfile used to communicate with `APNS`
+* `PUSH_APNS_DEV_ENDPOINT` - Hostname of the `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
+* `PUSH_APNS_DEV_CERT` - Path to Apple's development certfile used to communicate with `APNS`
+* `PUSH_APNS_DEV_KEY` - Path to Apple's development keyfile used to communicate with `APNS`
 * `PUSH_APNS_DEV_KEY_ID` - Key ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authentication*
 * `PUSH_APNS_DEV_TEAM_ID` - TEAM ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authenticaton*
 * `PUSH_APNS_DEV_P8_TOKEN` - Token generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
-* `PUSH_APNS_DEV_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in development mode. Disabled by default
+* `PUSH_APNS_DEV_USE_2197` - `true`/`false` - Enable or disable use of an alternative `2197` port for `APNS` connections in development mode. Disabled by default
 * `PUSH_APNS_DEV_POOL_SIZE` - Connection pool size for `APNS` service in development mode
 * `PUSH_APNS_DEV_DEFAULT_TOPIC` - Default `APNS` topic to be set if the client app doesn't specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default). DEV certificates normally don't provide any topics, so this option can be safely left unset
 
 #### Settings for production APNS service:
-* `PUSH_APNS_PROD_ENDPOINT` - Hostname of `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
-* `PUSH_APNS_PROD_CERT` - Path Apple's production certfile used to communicate with `APNS`
-* `PUSH_APNS_PROD_KEY` - Path Apple's production keyfile used to communicate with `APNS`
+* `PUSH_APNS_PROD_ENDPOINT` - Hostname of the `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
+* `PUSH_APNS_PROD_CERT` - Path to Apple's production certfile used to communicate with `APNS`
+* `PUSH_APNS_PROD_KEY` - Path to Apple's production keyfile used to communicate with `APNS`
 * `PUSH_APNS_PROD_KEY_ID` - Key ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authentication*
 * `PUSH_APNS_PROD_TEAM_ID` - TEAM ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authenticaton*
 * `PUSH_APNS_PROD_P8_TOKEN` - Token generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
-* `PUSH_APNS_PROD_USE_2197` - `true`/`false` - Enable or disable use of alternative `2197` port for `APNS` connections in production mode. Disabled by default
+* `PUSH_APNS_PROD_USE_2197` - `true`/`false` - Enable or disable use of an alternative `2197` port for `APNS` connections in production mode. Disabled by default
 * `PUSH_APNS_PROD_POOL_SIZE` - Connection pool size for `APNS` service in production mode
 * `PUSH_APNS_PROD_DEFAULT_TOPIC` - Default `APNS` topic to be set if the client app doesn't specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default)
 
@@ -173,15 +173,15 @@ Environmental variables to configure production release.
 `[[service.apns]]` (*array*, *optional*) - TOML Array representing a single APNS connection pool. Can have its own connection details like auth, and can be defined with a unique set of `tags` that can be later used when sending notifications to find a proper connection pool. If no `service.apns` array entry is provided, APNS will be disabled. All following TOML keys are valid for any `service.apns` array entry:
 
 * `service.apns.tags` (*list(string)*, *optional*) - List of tags to identify this connection pool. When sending push notifications, you can provide a similar list of tags to "select" a correct connection pool. Notifications will be send only via a connection pool that defines all tags provided along with the notification request.
-* `service.apns.connection.endpoint` (*string*, *optional*) - Domain/Host of APNS server. You should leave this not set to use official APNS servers.
-* `service.apns.connection.use_2197` (*boolean*, *optional*) - Port of APNS server (2197 or default). You should leave this not set to use official APNS servers.
+* `service.apns.connection.endpoint` (*string*, *optional*) - Domain/Host of APNS server. You should leave this not set to use the official APNS servers.
+* `service.apns.connection.use_2197` (*boolean*, *optional*) - Port of APNS server (2197 or default). You should leave this not set to use the official APNS servers.
 * `service.apns.connection.count` (*integer*, *optional*) - Number of connections to open. Default is 5.
 
 If token authentication is to be used:
 
 * `service.apns.auth.token.key_id` (*string*, *required*) - "Key ID" for this APNS token. See APNS documentation for more details.
 * `service.apns.auth.token.team_id` (*string*, *required*) - "Team ID" for this APNS token. See APNS documentation for more details.
-* `service.apns.auth.token.tokenfile` (*string*, *required*) - Path to this APNS token P8 file. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`).
+* `service.apns.auth.token.tokenfile` (*string*, *required*) - Path to this APNS token P8 file. This path should be either absolute, or relative to the root dir of the release (in the Docker container that would be `/opt/app`).
 
 If the certificate authentication is to be used:
 
