@@ -8,7 +8,7 @@
     <meta name="project" content="MongoosePush v2.1.0-alpha.1">
     <title>Local build — MongoosePush v2.1.0-alpha.1</title>
     <link rel="stylesheet" href="dist/elixir-e589b8fad3dab6230c65.css" />
-    <script src="dist/sidebar_items-f4fe27fec2.js"></script>
+    <script src="dist/sidebar_items-1746e807b3.js"></script>
       <script src="../assets/js/versions.js"></script>
     <script async src="dist/app-5c0c23dfec2d63ae33a2.js"></script>
   </head>
@@ -67,18 +67,18 @@ MongoosePush      </a>
   <a href="#prerequisites" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Prerequisites
 </h2>
-<ul><li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)</li><li>Erlang/OTP 19.3+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain TLS bug that prevents connecting to APNS servers.
-When building with this Erlang version, please make sure that MongoosePushRuntimeTest test suite passes.
+<ul><li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)</li><li>Erlang/OTP 19.3+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain a TLS bug that prevents connecting to APNS servers.
+When building with this Erlang version, please make sure that the MongoosePushRuntimeTest test suite passes.
 It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p></blockquote></li><li>Rebar3 (just enter <a href="https://hexdocs.pm/mix/Mix.Tasks.Local.Rebar.html"><code class="inline">mix local.rebar</code></a>)</li></ul><h2 id="production-release" class="section-heading">
   <a href="#production-release" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Production release
 </h2>
-<p>The build step is really easy. Just type in root of the repository:</p><pre><code class="bash">MIX_ENV=prod mix do deps.get, compile, certs.dev, distillery.release</code></pre><p>After this step you may try to run the service via:</p><pre><code class="bash">_build/prod/rel/mongoose_push/bin/mongoose_push foreground</code></pre><p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without a properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in the <a href="https://esl.github.io/MongoosePush/v2.1.0-alpha.1/configuration.html#content">configuration</a> section.</p><h2 id="development-release" class="section-heading">
+<p>The build step is really easy. Just type in the root of the repository:</p><pre><code class="bash">MIX_ENV=prod mix do deps.get, compile, certs.dev, distillery.release</code></pre><p>After this step you may try to run the service via:</p><pre><code class="bash">_build/prod/rel/mongoose_push/bin/mongoose_push foreground</code></pre><p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without a properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in the <a href="configuration.html#content">configuration</a> section.</p><h2 id="development-release" class="section-heading">
   <a href="#development-release" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Development release
 </h2>
-<p>The build step is really easy. Just type in root of the repository:</p><pre><code class="bash">MIX_ENV=dev mix do deps.get, compile, certs.dev, distillery.release</code></pre><p>The development release is by default configured to connect to a local APNS / FCM mock. This configuration may be changed as needed
-in <code class="inline">config/dev.exs</code> file.
+<p>Again, an easy step:</p><pre><code class="bash">MIX_ENV=dev mix do deps.get, compile, certs.dev, distillery.release</code></pre><p>The development release is by default configured to connect to a local APNS / FCM mock.
+This configuration may be changed as needed in the <code class="inline">config/dev.exs</code> file.
 For now, let's just start those mocks so that we can use the default dev configuration:</p><pre><code class="bash">docker-compose -f test/docker/docker-compose.mocks.yml up -d</code></pre><p>After this step you may try to run the service via:</p><pre><code class="bash">_build/dev/rel/mongoose_push/bin/mongoose_push console</code></pre>      <footer class="footer">
         <p>
           <span class="line">

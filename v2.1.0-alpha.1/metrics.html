@@ -8,7 +8,7 @@
     <meta name="project" content="MongoosePush v2.1.0-alpha.1">
     <title>Metrics — MongoosePush v2.1.0-alpha.1</title>
     <link rel="stylesheet" href="dist/elixir-e589b8fad3dab6230c65.css" />
-    <script src="dist/sidebar_items-f4fe27fec2.js"></script>
+    <script src="dist/sidebar_items-1746e807b3.js"></script>
       <script src="../assets/js/versions.js"></script>
     <script async src="dist/app-5c0c23dfec2d63ae33a2.js"></script>
   </head>
@@ -87,7 +87,7 @@ Please, mind the <code class="inline">HTTPS</code> protocol, metrics are hosted 
   <a href="#prometheus-configuration" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Prometheus configuration
 </h2>
-<p>When configuring Prometheus, it's important to:</p><ul><li>set the <code class="inline">scheme</code> to <code class="inline">https</code> since MongoosePush exposes <code class="inline">/metrics</code> path encrypted endpoint (HTTPS)</li><li>set the <code class="inline">insecure_skip_verify</code> to <code class="inline">true</code> if the default self-signed certificates are used</li></ul><pre><code class="yaml">scrape_configs:
+<p>When configuring Prometheus, it's important to:</p><ul><li>set the <code class="inline">scheme</code> to <code class="inline">https</code>,</li><li>set the <code class="inline">insecure_skip_verify</code> to <code class="inline">true</code> if the default self-signed certificates are used.</li></ul><pre><code class="yaml">scrape_configs:
   - job_name: 'mongoose-push'
     scheme: 'https' #MongoosePush exposes encrypted endpoint - HTTPS
     tls_config: #The default certs used by MongoosePush are self-signed
