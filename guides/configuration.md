@@ -99,9 +99,9 @@ If you happen to have APNS files in a `pkcs12` format (.p12 or .pfx extension) y
 
 
 
-## Environmental variables
+## Environment variables
 
-Environmental variables to configure a production release.
+Environment variables to configure a production release.
 
 #### Settings for HTTP endpoint:
 * `PUSH_HTTPS_BIND_ADDR` - Bind IP address of the HTTP endpoint. Default value in prod release is "127.0.0.1", but docker overrides this with "0.0.0.0"
@@ -150,15 +150,15 @@ Environmental variables to configure a production release.
 
 #### General keys
 
-* `general.logging.level` (*string*, *optional*) - One of: `debug`/`info`/`warn`/`error`. If not set, falls back to the environmental variable `PUSH_LOGLEVEL` or its default.
-* `general.https.bind.addr` (*string*, *optional*) - Bind IP address of the HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_BIND_ADDR` or its default.
-* `general.https.bind.port` (*integer*, *optional*) - Port of the HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_PORT` or its default.
-* `general.https.num_acceptors` (*integer*, *optional*) - Number of TCP acceptors to start. If not set, falls back to the environmental variable `PUSH_HTTPS_ACCEPTORS` or its default.
-* `general.https.certfile` (*string*, *optional*) - Path to a PEM certfile used for HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_CERTFILE` or its default. See `PUSH_HTTPS_CERTFILE` documentation for more details.
-* `general.https.keyfile` (*string*, *optional*) - Path to a PEM keyfile used for HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_KEYFILE` or its default. See `PUSH_HTTPS_KEYFILE` documentation for more details.
-* `general.https.cacertfile` (*string*, *optional*) - Path to a PEM cacertfile used for HTTPS endpoint. If not set, falls back to the environmental variable `PUSH_HTTPS_CERTFILE` or its default. See `PUSH_HTTPS_CERTFILE` documentation for more details.
-* `general.openapi.expose_spec` (*boolean*, *optional*) - Enable or disable OpenAPI specification endpoint. If enabled, it will be available on `/swagger.json` HTTP path. If not set, falls back to the environmental variable `PUSH_OPENAPI_EXPOSE_SPEC` or its default.
-* `general.openapi.expose_ui` (*boolean*, *optional*) - Enable or disable SwaggerUI. If enabled, it will be available on `/swaggerui` HTTP path.  If not set, falls back to the environmental variable `PUSH_OPENAPI_EXPOSE_UI` or its default.
+* `general.logging.level` (*string*, *optional*) - One of: `debug`/`info`/`warn`/`error`. If not set, falls back to the environment variable `PUSH_LOGLEVEL` or its default.
+* `general.https.bind.addr` (*string*, *optional*) - Bind IP address of the HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_BIND_ADDR` or its default.
+* `general.https.bind.port` (*integer*, *optional*) - Port of the HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_PORT` or its default.
+* `general.https.num_acceptors` (*integer*, *optional*) - Number of TCP acceptors to start. If not set, falls back to the environment variable `PUSH_HTTPS_ACCEPTORS` or its default.
+* `general.https.certfile` (*string*, *optional*) - Path to a PEM certfile used for HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_CERTFILE` or its default. See `PUSH_HTTPS_CERTFILE` documentation for more details.
+* `general.https.keyfile` (*string*, *optional*) - Path to a PEM keyfile used for HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_KEYFILE` or its default. See `PUSH_HTTPS_KEYFILE` documentation for more details.
+* `general.https.cacertfile` (*string*, *optional*) - Path to a PEM cacertfile used for HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_CERTFILE` or its default. See `PUSH_HTTPS_CERTFILE` documentation for more details.
+* `general.openapi.expose_spec` (*boolean*, *optional*) - Enable or disable OpenAPI specification endpoint. If enabled, it will be available on `/swagger.json` HTTP path. If not set, falls back to the environment variable `PUSH_OPENAPI_EXPOSE_SPEC` or its default.
+* `general.openapi.expose_ui` (*boolean*, *optional*) - Enable or disable SwaggerUI. If enabled, it will be available on `/swaggerui` HTTP path.  If not set, falls back to the environment variable `PUSH_OPENAPI_EXPOSE_UI` or its default.
 
 #### FCM keys
 
