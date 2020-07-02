@@ -37,7 +37,7 @@ config :mongoose_push, fcm: [
 This is a definition of a pool - each pool has a name and configuration. It is possible to have multiple named pools with different configuration, which includes pool size, environment mode etc. Currently the only reason you may want to do this is to create separate production and development pools which may be selected by an `HTTP` client by specifying matching `:mode` in their push request.
 
 Each `FCM` pool may be configured by setting the following fields:
-* **appfile** (*required*) - path to an `FCM` service account JSON file. Details on how to get one are in [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
+* **appfile** (*required*) - path to an `FCM` service account JSON file. Details on how to get one are in [Running from DockerHub](docker.html#running-from-dockerhub) section
 * **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
 * **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select a pool used to push a notification by specifying a matching option in the request
 * **endpoint** (*optional*) - URL override for the `FCM` service. Useful mainly in tests
@@ -121,16 +121,16 @@ Environmental variables to configure a production release.
 
 #### Settings for FCM service:
 * `PUSH_FCM_ENDPOINT` - Hostname of the `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
-* `PUSH_FCM_APP_FILE` - Path to the `FCM` service account JSON file. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
+* `PUSH_FCM_APP_FILE` - Path to the `FCM` service account JSON file. For details look at [Running from DockerHub](docker.html#running-from-dockerhub) section
 * `PUSH_FCM_POOL_SIZE` - Connection pool size for the `FCM` service
 
 #### Settings for development APNS service:
 * `PUSH_APNS_DEV_ENDPOINT` - Hostname of the `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
 * `PUSH_APNS_DEV_CERT` - Path to Apple's development certfile used to communicate with `APNS`
 * `PUSH_APNS_DEV_KEY` - Path to Apple's development keyfile used to communicate with `APNS`
-* `PUSH_APNS_DEV_KEY_ID` - Key ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authentication*
-* `PUSH_APNS_DEV_TEAM_ID` - TEAM ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authenticaton*
-* `PUSH_APNS_DEV_P8_TOKEN` - Token generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
+* `PUSH_APNS_DEV_KEY_ID` - Key ID generated from Apple's developer console. For details look at [Running from DockerHub](docker.html#running-from-dockerhub) section *required for token authentication*
+* `PUSH_APNS_DEV_TEAM_ID` - TEAM ID generated from Apple's developer console. For details look at [Running from DockerHub](docker.html#running-from-dockerhub) section *required for token authenticaton*
+* `PUSH_APNS_DEV_P8_TOKEN` - Token generated from Apple's developer console. For details look at [Running from DockerHub](docker.html#running-from-dockerhub) section
 * `PUSH_APNS_DEV_USE_2197` - `true`/`false` - Enable or disable use of an alternative `2197` port for `APNS` connections in development mode. Disabled by default
 * `PUSH_APNS_DEV_POOL_SIZE` - Connection pool size for `APNS` service in development mode
 * `PUSH_APNS_DEV_DEFAULT_TOPIC` - Default `APNS` topic to be set if the client app doesn't specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default). DEV certificates normally don't provide any topics, so this option can be safely left unset
@@ -139,9 +139,9 @@ Environmental variables to configure a production release.
 * `PUSH_APNS_PROD_ENDPOINT` - Hostname of the `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
 * `PUSH_APNS_PROD_CERT` - Path to Apple's production certfile used to communicate with `APNS`
 * `PUSH_APNS_PROD_KEY` - Path to Apple's production keyfile used to communicate with `APNS`
-* `PUSH_APNS_PROD_KEY_ID` - Key ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authentication*
-* `PUSH_APNS_PROD_TEAM_ID` - TEAM ID generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section *required for token authenticaton*
-* `PUSH_APNS_PROD_P8_TOKEN` - Token generated from Apple's developer console. For details look at [Running from DockerHub](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/docker.html#running-from-dockerhub) section
+* `PUSH_APNS_PROD_KEY_ID` - Key ID generated from Apple's developer console. For details look at [Running from DockerHub](docker.html#running-from-dockerhub) section *required for token authentication*
+* `PUSH_APNS_PROD_TEAM_ID` - TEAM ID generated from Apple's developer console. For details look at [Running from DockerHub](docker.html#running-from-dockerhub) section *required for token authenticaton*
+* `PUSH_APNS_PROD_P8_TOKEN` - Token generated from Apple's developer console. For details look at [Running from DockerHub](docker.html#running-from-dockerhub) section
 * `PUSH_APNS_PROD_USE_2197` - `true`/`false` - Enable or disable use of an alternative `2197` port for `APNS` connections in production mode. Disabled by default
 * `PUSH_APNS_PROD_POOL_SIZE` - Connection pool size for `APNS` service in production mode
 * `PUSH_APNS_PROD_DEFAULT_TOPIC` - Default `APNS` topic to be set if the client app doesn't specify it with the API call. If this option is not set, MongoosePush will try to extract this value from the provided APNS certificate (the first topic will be assumed default)

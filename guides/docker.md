@@ -49,4 +49,4 @@ The docker image that you have just built, exposes the port `8443` for the HTTP 
 
 ## Configuration (basic)
 
-The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via [environment variables](https://esl.github.io/MongoosePush/v2.1.0-alpha.1/configuration.html#environmental-variables). However, if there's something you feel you need to change other than that, then you need to prepare your own `config/prod.exs` before image build.
+The docker image of MongoosePush contains common, basic configuration that is generated from `config/prod.exs`. All useful options may be overridden via [environment variables](configuration.html#environmental-variables). However, if there's something you feel you need to change other than that, then you need to prepare your own `config/prod.exs` before image build.
