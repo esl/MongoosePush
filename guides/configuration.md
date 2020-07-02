@@ -1,6 +1,8 @@
 # Configuration
 
-The whole configuration is contained in the config/{prod|dev|test}.exs`file  depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development. Let's examine `config/dev.exs`.
+The whole configuration is contained in the `config/{prod|dev|test}.exs` file, depending on which `MIX_ENV` you will be using. You should use `MIX_ENV=prod` for production installations and `MIX_ENV=dev` for your development.
+
+Let's examine `config/dev.exs`.
 
 ## RESTful API configuration
 
@@ -14,7 +16,7 @@ config :mongoose_push, MongoosePushWeb.Endpoint,
     otp_app: :mongoose_push
   ]
 ```
-This part of configuration relates only to `HTTPS` endpoints exposed by `MongoosePush`. Here you can set a bind IP address (option: `ip`), port a port and paths to your `HTTPS` `TLS` certificates. You should ignore other options unless you are sure you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
+This part of the configuration relates only to the `HTTPS` endpoints exposed by `MongoosePush`. Here you can set an IP address (option: `ip`), a port, and paths to your `HTTPS` `TLS` certificates. You should ignore other options unless you are sure you know what you're doing (to learn more, explore [phoenix documentation](https://hexdocs.pm/phoenix/overview.html)).
 
 You may entirely skip the `mongoose_push` config entry to disable the `HTTPS` API and just use this project as an `Elixir` library.
 
