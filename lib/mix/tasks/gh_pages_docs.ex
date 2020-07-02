@@ -29,6 +29,7 @@ defmodule Mix.Tasks.GhPagesDocs do
             Mix.shell().cmd("git add #{version}/*")
             Mix.shell().cmd("git commit -m \"Update #{version}\"")
             Mix.shell().cmd("rm -rf doc")
+            Mix.shell().cmd("git push origin gh-pages")
 
           _ ->
             Mix.raise("Cannot create the #{version} directory")
