@@ -493,7 +493,7 @@ If you specify both **alert** and **data**, target device will receive both noti
  
 ### Healthcheck
 
-MongoosePush exposes a `/healthcheck` endpoint, from which you can get information about the current status of all connections in a `JSON` format, grouped by connection pool. Response structure is described in a following [RFC draft](https://tools.ietf.org/id/draft-inadarei-api-health-check-01.html). An example with 2 pools, one being connected to the service and the other one not, would look like this:
+MongoosePush exposes a `/healthcheck` endpoint, from which you can get information about the current status of all connections in a `JSON` format, grouped by connection pool. The response structure is described in the following [RFC draft](https://datatracker.ietf.org/doc/draft-inadarei-api-health-check). An example with 2 pools, one being connected to the service and the other one not, would look like this:
 
 ```json
 {
@@ -525,7 +525,7 @@ MongoosePush exposes a `/healthcheck` endpoint, from which you can get informati
   "version": "2"
 }
 ```
-If all the connections are down the response status is `503` and in all the other cases it's `200`.
+If all the connections are down the response status is `503`; in all the other cases, it's `200`.
 
 Please note that it's not recommended to use this frequently as it puts an extra load on the worker processes.
 

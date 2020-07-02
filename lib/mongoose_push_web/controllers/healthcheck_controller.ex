@@ -55,7 +55,7 @@ defmodule MongoosePushWeb.HealthcheckController do
   end
 
   # Response formatted to match the draft RFC for healthcheck endpoints, described here:
-  # https://tools.ietf.org/id/draft-inadarei-api-health-check-01.html
+  # https://datatracker.ietf.org/doc/draft-inadarei-api-health-check
   defp format_response(connections) do
     {_, pool_infos} = Enum.map_reduce(connections, %{}, &format_pool_info/2)
 
@@ -83,7 +83,7 @@ defmodule MongoosePushWeb.HealthcheckController do
       status: health,
       version: List.to_string(Application.spec(:mongoose_push, :vsn)),
       description: "Health of MongoosePush connections to FCM and APNS services",
-      details: pool_infos
+      checks: pool_infos
     }
   end
 

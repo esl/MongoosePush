@@ -35,7 +35,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
 
       response =
         pools
-        |> Map.fetch!("details")
+        |> Map.fetch!("checks")
         |> Map.fetch!("pool:#{pool_name}")
         |> List.first()
         |> Map.fetch!("output")
@@ -86,7 +86,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
 
         response =
           pools
-          |> Map.fetch!("details")
+          |> Map.fetch!("checks")
           |> Map.fetch!("pool:#{pool_name}")
           |> List.first()
           |> Map.fetch!("output")
@@ -102,7 +102,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
 
         response =
           pools
-          |> Map.fetch!("details")
+          |> Map.fetch!("checks")
           |> Map.fetch!("pool:#{pool_name}")
           |> List.first()
           |> Map.fetch!("output")
@@ -163,7 +163,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
 
         response =
           pools
-          |> Map.fetch!("details")
+          |> Map.fetch!("checks")
           |> Map.fetch!("pool:#{pool_name}")
           |> List.first()
           |> Map.fetch!("output")
@@ -179,7 +179,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
 
         response =
           pools
-          |> Map.fetch!("details")
+          |> Map.fetch!("checks")
           |> Map.fetch!("pool:#{pool_name}")
           |> List.first()
           |> Map.fetch!("output")
