@@ -1,0 +1,335 @@
+version: 2.1
+
+filters: &all_tags
+  tags:
+    only: /.*/
+  branches:
+    ignore: gh-pages
+
+run: &DOCKER_TAGS
+    name: Generate image tag
+    command: |
+        set -x
+        if [ -n "$CIRCLE_TAG" ]; then
+            DOCKER_TAG="$CIRCLE_TAG"
+        elif [ "$CIRCLE_BRANCH" == "master" ]; then
+            DOCKER_TAG="${CIRCLE_SHA1:0:7}"
+        else
+            DOCKER_TAG=`echo $CIRCLE_BRANCH | sed 's,/,_,g'`
+        fi
+        env | sort
+        echo "export DOCKER_TAG=$DOCKER_TAG" >> $BASH_ENV
+        echo "export DOCKER_IMAGE=mongoose-push" >> $BASH_ENV
+
+executors:
+  elixir-builder:
+    parameters:
+      erlang_version:
+        type: string
+        default: "22.0"
+      elixir_version:
+        type: string
+        default: "1.9"
+      env:
+        type: string
+        default: test
+    docker:
+      - image: mongooseim/beam-builder:erlang-<< parameters.erlang_version >>_elixir-<< parameters.elixir_version >>
+      - image: mongooseim/fcm-mock-server
+      - image: mobify/apns-http2-mock-server
+    working_directory: ~/app
+    environment:
+        MIX_ENV: << parameters.env >>
+
+commands:
+  test:
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Wait for FCM mock
+          command: dockerize -wait tcp://localhost:4000 -timeout 1m
+      - run:
+          name: Wait for APNS mock
+          command: dockerize -wait tcp://localhost:2197 -timeout 1m
+
+      - run: MIX_ENV=test mix do certs.dev, coveralls.circle
+
+      - save_cache:
+          key: build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - "_build"
+      - store_artifacts:
+          path: cover
+          destination: coverage_results
+
+jobs:
+  pre-build:
+    executor: elixir-builder
+
+    steps:
+      - checkout
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - run: mix deps.get
+      - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
+      - save_cache:
+          key: mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+          paths:
+                - deps
+                - ~/.mix
+
+
+  dialyzer:
+    executor: elixir-builder
+    steps:
+      - checkout
+      - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file" }}-{{ checksum "mix.lock" }}
+            - plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file"  }}
+      - run: mix dialyzer --plt
+      - save_cache:
+          key: plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file"  }}-{{ checksum "mix.lock" }}
+          paths:
+            - .dialyzer
+            - _build
+      - save_cache:
+          key: plt-cache-{{ .Environment.CACHE_VERSION }}-{{ checksum ".version_file"  }}
+          paths:
+            - .dialyzer
+      - run:
+          name: Execute dialyzer
+          command: mix deps.get && mix dialyzer --halt-exit-status
+
+  test-erlang-22_elixir-1-9:
+    executor:
+      name: elixir-builder
+      env: test
+      erlang_version: "22.0"
+      elixir_version: "1.9"
+    steps:
+      - test
+
+  build-dev-certs:
+    executor:
+      name: elixir-builder
+      env: dev
+      erlang_version: "22.0"
+      elixir_version: "1.9"
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+            - build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Generate dev certs
+          command: mix certs.dev
+      - save_cache:
+          key: certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - priv
+
+  test-erlang-22_elixir-1-8:
+    executor:
+      name: elixir-builder
+      env: test
+      erlang_version: "22.0"
+      elixir_version: "1.8"
+    steps:
+      - test
+
+  test-erlang-22_elixir-1-7:
+    executor:
+      name: elixir-builder
+      env: test
+      erlang_version: "22.0"
+      elixir_version: "1.7"
+    steps:
+      - test
+
+  test-erlang-21_elixir-1-9:
+    executor:
+      name: elixir-builder
+      env: test
+      erlang_version: "21.3"
+      elixir_version: "1.9"
+    steps:
+      - test
+
+  test-erlang-21_elixir-1-8:
+    executor:
+      name: elixir-builder
+      env: test
+      erlang_version: "21.3"
+      elixir_version: "1.8"
+    steps:
+      - test
+
+  test-erlang-21_elixir-1-7:
+    executor:
+      name: elixir-builder
+      env: test
+      erlang_version: "21.3"
+      elixir_version: "1.7"
+    steps:
+      - test
+
+  format_check:
+    executor:
+      name: elixir-builder
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run: mix format --check-formatted
+
+  build-docker-image:
+    executor:
+      name: elixir-builder
+      env: prod
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run: *DOCKER_TAGS
+      - run:
+          name: Login to DockerHub
+          command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
+      - run:
+          name: Build docker image
+          command: docker build -f Dockerfile --build-arg MIX_ENV=prod -t mpush:latest .
+      - run:
+          name: Push docker image but do not tag it as the latest
+          command: docker tag mpush:latest $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+      - run:
+          name: Push docker image but do not tag it as the latest
+          command: docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+
+  integration-tests:
+    machine:
+        image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          name: Install elixir
+          command: |
+              wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
+              sudo dpkg -i erlang-solutions_1.0_all.deb && \
+              sudo apt-get update && \
+              sudo apt-get install -y esl-erlang=1:21.0 && \
+              sudo apt-get install -y elixir=1.8.0-1
+              wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
+              sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
+              sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
+              sudo chmod +x /usr/local/bin/dockerize && \
+              sudo rm dockerize-linux-amd64-v0.6.1.tar.gz
+
+      - restore_cache:
+          keys:
+              - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+              - certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run: *DOCKER_TAGS
+      - run:
+          name: Compile mix deps
+          command: MIX_ENV=integration mix do deps.get, deps.compile
+      - run:
+          name: Generate certificates
+          command: MIX_ENV=integration mix certs.dev
+      - run:
+          name: Setup MongoosePush and mocks
+          command: MIX_ENV=integration mix test.env.up
+      - run:
+          name: Wait for MongoosePush and mocks
+          command: MIX_ENV=integration mix test.env.wait 60000
+      - run:
+          name: Run integration tests
+          command: MIX_ENV=integration mix test
+
+  push-to-dockerhub:
+    executor:
+      name: elixir-builder
+      env: prod
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: *DOCKER_TAGS
+      - run:
+          name: Login to DockerHub
+          command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
+      - run:
+          name: Tag and push docker image
+          command: |
+             set -x
+             if [ "$CIRCLE_BRANCH" == "master" ]; then
+               docker pull $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+               docker tag $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
+               docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
+             fi
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - pre-build:
+          filters: *all_tags
+
+      - format_check:
+          requires:
+            - pre-build
+          filters: *all_tags
+      - dialyzer:
+          requires:
+            - pre-build
+          filters: *all_tags
+      - test-erlang-22_elixir-1-9:
+          requires:
+            - pre-build
+          filters: *all_tags
+      - test-erlang-22_elixir-1-8:
+          requires:
+            - pre-build
+          filters: *all_tags
+      - test-erlang-21_elixir-1-9:
+          requires:
+            - pre-build
+          filters: *all_tags
+      - test-erlang-21_elixir-1-8:
+          requires:
+            - pre-build
+          filters: *all_tags
+      - build-docker-image:
+          requires:
+            - pre-build
+          filters: *all_tags
+
+      - integration-tests:
+          requires:
+            - pre-build
+          filters: *all_tags
+
+      - push-to-dockerhub:
+          requires:
+            - integration-tests
+            - build-docker-image
+            - test-erlang-22_elixir-1-9
+          filters: *all_tags
