@@ -16,7 +16,10 @@ defmodule MongoosePush.Mixfile do
       compilers: compilers(Mix.env()),
       aliases: aliases(),
       elixirc_paths: elixirc_paths(Mix.env()),
-      test_paths: test_paths(Mix.env())
+      test_paths: test_paths(Mix.env()),
+      name: "MongoosePush",
+      source_url: "https://github.com/esl/MongoosePush",
+      homepage_url: "https://esl.github.io/MongoosePush"
     ]
   end
 
@@ -65,11 +68,85 @@ defmodule MongoosePush.Mixfile do
 
   defp docs do
     [
-      name: "MongoosePush",
-      source_url: "https://github.com/esl/MongoosePush",
-      homepage_url: "https://github.com/esl/MongoosePush",
-      # The main page in the docs
-      docs: [main: "MongoosePush", extras: ["README.md"]]
+      javascript_config_path: "../assets/js/versions.js",
+      extras: [
+        "README.md": [file: "guides/introduction", title: "Introduction"],
+        "guides/configuration.md": [file: "guides/configuration", title: "Configuration"],
+        "guides/local_build.md": [file: "guides/local_build", title: "Local build"],
+        "guides/test.md": [file: "guides/test", title: "Running tests"],
+        "guides/docker.md": [file: "guides/docker", title: "Docker"],
+        "guides/http_api.md": [file: "guides/http_api", title: "HTTP API"],
+        "guides/healthcheck.md": [file: "guides/healthcheck", title: "Healthcheck"],
+        "guides/metrics.md": [file: "guides/metrics", title: "Metrics"]
+      ],
+      extra_section: "Guides",
+      groups_for_modules: [
+        API: [
+          MongoosePush.API,
+          MongoosePush.API.V1.ResponseEncoder,
+          MongoosePush.API.V2.ResponseEncoder,
+          MongoosePush.API.V3.ResponseEncoder
+        ],
+        Configuration: [
+          MongoosePush.Config.Provider.Confex,
+          MongoosePush.Config.Provider.Toml,
+          MongoosePush.Config.Utils
+        ],
+        "Logs format": [
+          MongoosePush.Logger.Common,
+          MongoosePush.Logger.JSON,
+          MongoosePush.Logger.LogFmt
+        ],
+        Metrics: [MongoosePush.Metrics.TelemetryMetrics],
+        "Push notification services": [
+          MongoosePush.Service,
+          MongoosePush.Service.APNS,
+          MongoosePush.Service.APNS.ErrorHandler,
+          MongoosePush.Service.APNS.State,
+          MongoosePush.Service.APNS.Supervisor,
+          MongoosePush.Service.FCM,
+          MongoosePush.Service.FCM.ErrorHandler,
+          MongoosePush.Service.FCM.Pool.Supervisor,
+          MongoosePush.Service.FCM.Pools
+        ],
+        Web: [
+          MongoosePushWeb,
+          MongoosePushWeb.APIv1.NotificationController,
+          MongoosePushWeb.APIv2.NotificationController,
+          MongoosePushWeb.APIv3.NotificationController,
+          MongoosePushWeb.ApiSpec,
+          MongoosePushWeb.Endpoint,
+          MongoosePushWeb.PrometheusMetricsController,
+          MongoosePushWeb.Router,
+          MongoosePushWeb.Router.Helpers
+        ],
+        "Protocols and plugs": [
+          MongoosePushWeb.Plug.CastAndValidate,
+          MongoosePushWeb.Plug.CastAndValidate.StubAdapter,
+          MongoosePushWeb.Plug.MaybePutSwaggerUI,
+          MongoosePushWeb.Plug.MaybeRenderSpec,
+          MongoosePushWeb.Protocols.RequestDecoder,
+          MongoosePushWeb.Protocols.RequestDecoderHelper
+        ],
+        Schemas: [
+          MongoosePushWeb.Schemas,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification,
+          MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification,
+          MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification,
+          MongoosePushWeb.Schemas.Response.SendNotification.GenericError,
+          MongoosePushWeb.Schemas.Response.SendNotification.Gone,
+          MongoosePushWeb.Schemas.Response.SendNotification.PayloadTooLarge,
+          MongoosePushWeb.Schemas.Response.SendNotification.ServiceUnavailable,
+          MongoosePushWeb.Schemas.Response.SendNotification.TooManyRequests,
+          MongoosePushWeb.Schemas.Response.SendNotification.UnknownError
+        ]
+      ],
+      api_reference: false,
+      main: "readme"
     ]
   end
 

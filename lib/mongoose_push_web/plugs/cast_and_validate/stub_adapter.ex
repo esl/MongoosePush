@@ -1,4 +1,9 @@
 defmodule MongoosePushWeb.Plug.CastAndValidate.StubAdapter do
+  @moduledoc """
+  Module which is an almost empty Plug.Conn.Adapter behavior implementation.
+  It is used by the MongoosePushWeb.Plug.CastAndValidate plug
+  as part of the workaround this module introduces.
+  """
   @behaviour Plug.Conn.Adapter
 
   @impl true

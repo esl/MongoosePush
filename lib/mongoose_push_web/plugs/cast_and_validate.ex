@@ -87,7 +87,9 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
     )
   end
 
-  def get_operation(_conn = %{private: %{phoenix_controller: controller, phoenix_action: action}}) do
+  defp get_operation(
+         _conn = %{private: %{phoenix_controller: controller, phoenix_action: action}}
+       ) do
     controller.open_api_operation(action).operationId
   end
 end
