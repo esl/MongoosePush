@@ -43,7 +43,7 @@ All Mix commands need to be invoked in the `MIX_ENV=integration` environment:
 ```bash
 # We start the mocks AND MongoosePush docker container.
 # This may take a few minutes on the first run, as the MongoosePush docker image needs
-# to build from scratch. Subsequent runs should be much faster.
+# to be built from scratch. Subsequent runs should be much faster.
 # You need to rerun this command each time you make changes in the app code,
 # as MongoosePush needs to be rebuilt and redeployed!
 MIX_ENV=integration mix test.env.up

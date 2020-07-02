@@ -91,8 +91,8 @@ Please, mind the `HTTPS` protocol, metrics are hosted on the same port than all 
 ## Prometheus configuration
 
 When configuring Prometheus, it's important to:
-* set the `scheme` to `https` since MongoosePush exposes `/metrics` path encrypted endpoint (HTTPS)
-* set the `insecure_skip_verify` to `true` if the default self-signed certificates are used
+* set the `scheme` to `https`,
+* set the `insecure_skip_verify` to `true` if the default self-signed certificates are used.
 
 ```yaml
 scrape_configs:
