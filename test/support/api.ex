@@ -30,7 +30,7 @@ defmodule MongoosePush.Support.API do
 
   def get(path) do
     %Response{status_code: status, headers: headers, body: body} =
-      HTTPoison.get!("https://localhost:8443" <> path)
+      HTTPoison.get!("https://localhost:8443" <> path, [], hackney: [:insecure])
 
     {status, headers, body}
   end

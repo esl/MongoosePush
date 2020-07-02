@@ -22,6 +22,7 @@ defmodule MongoosePushWeb.Router do
     pipe_through(:api)
 
     get("/metrics", MongoosePushWeb.PrometheusMetricsController, :send)
+    get("/healthcheck", MongoosePushWeb.HealthcheckController, :send)
   end
 
   scope "/v1", MongoosePushWeb.APIv1 do
