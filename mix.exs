@@ -70,7 +70,7 @@ defmodule MongoosePush.Mixfile do
     [
       javascript_config_path: "../assets/js/versions.js",
       extras: [
-        "README.md": [file: "guides/introduction", title: "Introduction"],
+        "README.md": [file: "guides/readme", title: "Introduction"],
         "guides/configuration.md": [file: "guides/configuration", title: "Configuration"],
         "guides/local_build.md": [file: "guides/local_build", title: "Local build"],
         "guides/test.md": [file: "guides/test", title: "Running tests"],
