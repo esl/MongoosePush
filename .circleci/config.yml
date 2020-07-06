@@ -299,12 +299,6 @@ jobs:
               sudo apt-get update && \
               sudo apt-get install -y esl-erlang=1:21.0 && \
               sudo apt-get install -y elixir=1.8.0-1
-              wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
-              sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
-              sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
-              sudo chmod +x /usr/local/bin/dockerize && \
-              sudo rm dockerize-linux-amd64-v0.6.1.tar.gz
-
       - restore_cache:
           keys:
               - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
