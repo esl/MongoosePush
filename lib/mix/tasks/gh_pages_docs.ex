@@ -23,18 +23,18 @@ defmodule Mix.Tasks.GhPagesDocs do
 
     Mix.Task.run("docs")
     File.cd!("doc")
-    Mix.shell().cmd("git stash")
+    0 = Mix.shell().cmd("git stash")
 
     # ignore all the changes, the only changes we want to track are in the
     # doc directory which is listed in .gitignore
 
-    Mix.shell().cmd("git checkout gh-pages")
+    0 = Mix.shell().cmd("git checkout gh-pages")
 
     case File.mkdir("../#{version}") do
       result when result in [:ok, {:error, :eexist}] ->
-        Mix.shell().cmd("cp -r ./* ../#{version}")
+        0 = Mix.shell().cmd("cp -r ./* ../#{version}")
         File.cd!("..")
-        Mix.shell().cmd("git add #{version}/*")
+        0 = Mix.shell().cmd("git add #{version}/*")
 
         unless String.contains?(File.read!("assets/js/versions.js"), version) do
           update_versions_js()
@@ -42,11 +42,11 @@ defmodule Mix.Tasks.GhPagesDocs do
 
         update_index_html()
 
-        Mix.shell().cmd("git add assets/js/versions.js")
-        Mix.shell().cmd("git add index.html")
-        Mix.shell().cmd("git commit -m \"Add content for #{version}\"")
-        Mix.shell().cmd("rm -rf doc")
-        Mix.shell().cmd("git push origin gh-pages")
+        0 = Mix.shell().cmd("git add assets/js/versions.js")
+        0 = Mix.shell().cmd("git add index.html")
+        0 = Mix.shell().cmd("git commit -m \"Add content for #{version}\"")
+        0 = Mix.shell().cmd("rm -rf doc")
+        0 = Mix.shell().cmd("git push origin gh-pages")
 
       _ ->
         Mix.raise("Cannot create the #{version} directory")
