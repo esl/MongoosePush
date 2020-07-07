@@ -11,7 +11,7 @@ defmodule Mix.Tasks.GhPagesDocs do
 
   @spec run(term) :: :ok
   def run([version]) do
-    unless File.read!("assets/js/versions.js") |> String.contains?(version) do
+    unless String.contains?(File.read!("assets/js/versions.js"), version) do
       update_versions_js()
     end
 
@@ -25,16 +25,18 @@ defmodule Mix.Tasks.GhPagesDocs do
     File.cd!("doc")
     Mix.shell().cmd("git stash")
 
+    # ignore all the changes, the only changes we want to track are in the
+    # doc directory which is listed in .gitignore
+
     Mix.shell().cmd("git checkout gh-pages")
 
     case File.mkdir("../#{version}") do
       result when result in [:ok, {:error, :eexist}] ->
         Mix.shell().cmd("cp -r ./* ../#{version}")
         File.cd!("..")
-        Mix.shell().cmd("ls")
         Mix.shell().cmd("git add #{version}/*")
 
-        unless File.read!("assets/js/versions.js") |> String.contains?(version) do
+        unless String.contains?(File.read!("assets/js/versions.js"), version) do
           update_versions_js()
         end
 
@@ -44,7 +46,6 @@ defmodule Mix.Tasks.GhPagesDocs do
         Mix.shell().cmd("git add index.html")
         Mix.shell().cmd("git commit -m \"Add content for #{version}\"")
         Mix.shell().cmd("rm -rf doc")
-        Mix.shell().cmd("git show ")
         Mix.shell().cmd("git push origin gh-pages")
 
       _ ->
@@ -56,14 +57,24 @@ defmodule Mix.Tasks.GhPagesDocs do
     current = Project.config()[:version]
     {output, 0} = System.cmd("git", ["tag"], [])
 
-    versions =
-      output
-      |> String.split("\n")
-      |> Enum.drop(7)
-      |> Enum.drop(-1)
-      |> List.insert_at(0, current)
-      |> Enum.map(&version_elem/1)
-      |> Enum.join(",\n")
+    versions = [
+      current
+      # we skip the old releases and generate from 1.0.6 on
+      | String.split(output, "\n") --
+          [
+            "0.1.0",
+            "0.10.0",
+            "0.9.0",
+            "1.0.0",
+            "1.0.3",
+            "1.0.4",
+            "1.0.5"
+          ]
+    ]
+
+    versions
+    |> Enum.map(&version_elem/1)
+    |> Enum.join(",\n")
 
     File.write!("assets/js/versions.js", "var versionNodes = [\n#{versions}\n]")
   end
