@@ -286,6 +286,47 @@ jobs:
                docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
              fi
 
+  gh-pages-deploy:
+    machine:
+        image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run:
+          name: Install elixir
+          command: |
+              wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
+              sudo dpkg -i erlang-solutions_1.0_all.deb && \
+              sudo apt-get update && \
+              sudo apt-get install -y esl-erlang=1:21.0 && \
+              sudo apt-get install -y elixir=1.8.0-1
+      - restore_cache:
+          keys:
+              - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          keys:
+              - certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run:
+          name: Compile mix deps
+          command: mix do deps.get, deps.compile
+      - run:
+          name: Configure Git
+          command: |
+              git config --global user.email "mongoosepushbot@erlang-solutions.com"
+              git config --global user.name "mongoosepushbot"
+      - add_ssh_keys:
+          fingerprints:
+            - "${GH_DEPLOY_KEY}"
+      - run:
+          name: Generate docs
+          command: |
+              set -x
+              if [ -n "$CIRCLE_TAG" ]; then
+                  mix gh_pages_docs $CIRCLE_TAG
+              elif [ "$CIRCLE_BRANCH" == "master" ]; then
+                  mix gh_pages_docs latest
+              fi
+
+
 workflows:
   version: 2
   build_and_test:
@@ -333,3 +374,12 @@ workflows:
             - build-docker-image
             - test-erlang-22_elixir-1-9
           filters: *all_tags
+
+      - gh-pages-deploy:
+          requires:
+            - pre-build
+          filters:
+            tags:
+              only: /^\d+\.\d+\.\d+([a-z0-9\-\+\.])*/
+            branches:
+              only: master
