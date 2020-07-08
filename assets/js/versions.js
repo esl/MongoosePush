@@ -1,6 +1,6 @@
 var versionNodes = [
     {
-      version: "v2.1.0-alpha.1", // version number or name (required)
+      version: "v2.1.0", // version number or name (required)
       url: "https://esl.github.io/MongoosePush/v2.1.0-alpha.1/introduction.html"
     },
     {
