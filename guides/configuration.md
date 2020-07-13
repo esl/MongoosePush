@@ -112,6 +112,7 @@ Environment variables to configure a production release.
 
 #### General settings:
 * `PUSH_LOGLEVEL` - `debug`/`info`/`warn`/`error` - Log level of the application. `info` is the default one
+* `PUSH_LOGFORMAT` - `logfmt`/`json` - Log format of the application. Defaults to `logfmt` for the `dev` and `test` environments, and to `json` for the `prod` environment.
 * `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Enabled by default
 * `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
 * `TLS_SERVER_CERT_VALIDATION` - `true`/`false` - Enable or disable TLS
