@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.22.1">
+    <meta name="project" content="MongoosePush v2.1.0">
+    <title>Running tests — MongoosePush v2.1.0</title>
+    <link rel="stylesheet" href="dist/elixir-e589b8fad3dab6230c65.css" />
+    <script src="dist/sidebar_items-c5d5d1db14.js"></script>
+      <script src="../assets/js/versions.js"></script>
+    <script async src="dist/app-5c0c23dfec2d63ae33a2.js"></script>
+  </head>
+  <body data-type="extras">
+    <script>try { if(localStorage.getItem('night-mode') === 'true') document.body.className += ' night-mode'; } catch (e) { }</script>
+<div class="main">
+
+<button class="sidebar-button sidebar-toggle">
+  <span class="icon-menu" title="Collapse/expand sidebar"></span>
+</button>
+
+<section class="sidebar">
+  <form class="sidebar-search" action="search.html">
+    <button type="submit" class="search-button">
+      <span class="icon-search" aria-hidden="true"></span>
+    </button>
+    <button type="button" tabindex="-1" class="search-close-button">
+      <span class="icon-cross" title="Cancel search"></span>
+    </button>
+    <label class="search-label">
+      <input name="q" type="text" id="search-list" class="search-input" placeholder="Search..." aria-label="Search" autocomplete="off" />
+    </label>
+  </form>
+
+  <div class="autocomplete">
+    <div class="autocomplete-results">
+    </div>
+  </div>
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectDetails">
+      <a href="https://esl.github.io/MongoosePush" class="sidebar-projectName">
+MongoosePush      </a>
+      <h2 class="sidebar-projectVersion">
+        v2.1.0
+      </h2>
+    </div>
+  </div>
+
+  <ul class="sidebar-listNav">
+    <li><a id="extras-list" href="#full-list">Guides</a></li>
+
+      <li><a id="modules-list" href="#full-list">Modules</a></li>
+
+      <li><a id="tasks-list" href="#full-list">Mix Tasks</a></li>
+  </ul>
+  <div class="gradient"></div>
+  <ul id="full-list" class="sidebar-fullList"></ul>
+</section>
+
+<section class="content">
+  <div class="content-outer">
+    <div id="content" class="content-inner">
+
+
+<h1>Running tests</h1><p>One thing that you need to do <em>once</em> before running any tests is generating fake certificates for APNS/HTTPS (it doesn't matter which MIX_ENV you run this in):</p><pre><code class="bash">mix certs.dev</code></pre><p>Also, you'll need to have <code class="inline">docker-compose</code> installed and present in your path to run any tests.</p><h2 id="tl-dr" class="section-heading">
+  <a href="#tl-dr" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  TL;DR
+</h2>
+<pre><code class="bash"># Unit tests
+MIX_ENV=test mix do test.env.up, test, test.env.down
+
+# Integration tests
+MIX_ENV=integration mix do test.env.up, test, test.env.down</code></pre><h2 id="basic-tests-non-release" class="section-heading">
+  <a href="#basic-tests-non-release" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Basic tests (non-release)
+</h2>
+<p>Basic tests require FCM and APNS mock services to be present at the time of running the tests:</p><pre><code class="bash"># We start the mocks
+mix test.env.up
+
+# Now we can just run tests
+mix test
+
+# Optionally we can shut the mocks down. If you want to rerun the tests, you may skip this step so that
+# you don't need to re-invoke `mix test.env.up`. Mocks are being reset by each test separately,
+# so you don't need to worry about their state.
+mix test.env.down</code></pre><h2 id="integration-tests-using-production-grade-release" class="section-heading">
+  <a href="#integration-tests-using-production-grade-release" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Integration tests (using production-grade release)
+</h2>
+<p>Integration tests can be run in exactly the same way as described above for &quot;basic&quot; tests, with one exception:
+All Mix commands need to be invoked in the <code class="inline">MIX_ENV=integration</code> environment:</p><pre><code class="bash"># We start the mocks AND MongoosePush docker container.
+# This may take a few minutes on the first run, as the MongoosePush docker image needs
+# to be built from scratch. Subsequent runs should be much faster.
+# You need to rerun this command each time you make changes in the app code,
+# as MongoosePush needs to be rebuilt and redeployed!
+MIX_ENV=integration mix test.env.up
+
+# Now we can just run tests
+MIX_ENV=integration mix test
+
+# Optionally we can shut the mocks down. If you want to rerun tests, you may skip this step. To do that
+# you don't need to re-invoke `mix test.env.up`. Mocks are being reset by each test separately,
+# so you don't need to worry about their state.
+MIX_ENV=integration mix test.env.down</code></pre><h2 id="test-environment-setup" class="section-heading">
+  <a href="#test-environment-setup" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
+  Test environment setup
+</h2>
+<ul><li><a href="Mix.Tasks.Test.Env.Up.html"><code class="inline">mix test.env.up</code></a> - runs <code class="inline">docker-compose up -d --build</code> with the following compose files:<ul><li>for <code class="inline">MIX_ENV=test</code> and <code class="inline">MIX_ENV=dev</code>: <em>test/docker/docker-compose.mocks.yml</em></li><li>for <code class="inline">MIX_ENV=integration</code>: <em>test/docker/docker-compose.mocks.yml</em> and <em>test/docker/docker-compose.mpush.yml</em></li></ul></li><li><a href="Mix.Tasks.Test.Env.Down.html"><code class="inline">mix test.env.down</code></a> - runs <code class="inline">docker-compose down</code> on the same compose files as <a href="Mix.Tasks.Test.Env.Up.html"><code class="inline">mix test.env.up</code></a></li><li><code class="inline">mix test.env.wait X</code> - waits up to X milliseconds for the services from <a href="Mix.Tasks.Test.Env.Up.html"><code class="inline">mix test.env.up</code></a> to become available. Prints an error if they don't.</li></ul>      <footer class="footer">
+        <p>
+          <span class="line">
+            Built using
+            <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener">ExDoc</a> (v0.22.1),
+          </span>
+          <span class="line">
+            designed by
+            <a href="https://twitter.com/dignifiedquire" target="_blank" rel="noopener" title="@dignifiedquire">Friedel Ziegelmayer</a>.
+          </span>
+        </p>
+        <p>
+          <button class="line footer-button display-shortcuts-help">
+            Display keyboard shortcuts
+          </button>
+          <button class="line footer-button night-mode-toggle">
+            Toggle night mode
+          </button>
+          <button class="line footer-button display-quick-switch">
+            Go to a HexDocs package
+          </button>
+          <button class="line footer-button tooltips-toggle">
+            <span class="tooltips-option-disable">Disable tooltips</span>
+            <span class="tooltips-option-enable">Enable tooltips</span>
+          </button>
+        </p>
+      </footer>
+    </div>
+  </div>
+</section>
+</div>
+  </body>
+</html>
+
