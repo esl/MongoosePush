@@ -1,5 +1,9 @@
 var versionNodes = [
     {
+    version: "v2.1.0",
+    url: "https://esl.github.io/MongoosePush/v2.1.0/readme.html"
+    },  
+    {
       version: "v2.1.0-alpha.1",
       url: "https://esl.github.io/MongoosePush/v2.1.0-alpha.1/readme.html"
     },
