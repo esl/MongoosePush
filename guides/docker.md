@@ -45,7 +45,8 @@ As a result of this command you get access to the `mpush:latest` docker image. Y
 docker run -it --rm mpush:latest foreground
 ```
 
-The docker image that you have just built, exposes the port `8443` for the HTTP API of MongoosePush. It contains a `VOLUME` for path */opt/app* - it is handy for injecting `APNS` and `HTTP API` certificates since by default the docker image comes with test, self-signed certificates.
+The docker image that you have just built, exposes the port `8443` for the HTTP API of MongoosePush.
+It contains a `VOLUME` for path */opt/app/priv* - it is handy for injecting `APNS` and `HTTP API` certificates since by default the docker image comes with test, self-signed certificates.
 
 ## Configuration (basic)
 
