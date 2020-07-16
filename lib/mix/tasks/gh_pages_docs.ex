@@ -17,7 +17,7 @@ defmodule Mix.Tasks.GhPagesDocs do
 
     version =
       case version do
-        "latest" -> Project.config()[:version]
+        "latest" -> "v#{Project.config()[:version]}"
         tag -> "v#{tag}"
       end
 
