@@ -78,7 +78,8 @@ Assuming that you have the <code class="inline">priv</code> directory with all c
   <a href="#building" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Building
 </h2>
-<p>Building a docker image is really easy, just type:</p><pre><code class="bash">docker build . -t mpush:latest</code></pre><p>As a result of this command you get access to the <code class="inline">mpush:latest</code> docker image. You may run it by typing:</p><pre><code class="bash">docker run -it --rm mpush:latest foreground</code></pre><p>The docker image that you have just built, exposes the port <code class="inline">8443</code> for the HTTP API of MongoosePush. It contains a <code class="inline">VOLUME</code> for path <em>/opt/app</em> - it is handy for injecting <code class="inline">APNS</code> and <code class="inline">HTTP API</code> certificates since by default the docker image comes with test, self-signed certificates.</p><h2 id="configuration-basic" class="section-heading">
+<p>Building a docker image is really easy, just type:</p><pre><code class="bash">docker build . -t mpush:latest</code></pre><p>As a result of this command you get access to the <code class="inline">mpush:latest</code> docker image. You may run it by typing:</p><pre><code class="bash">docker run -it --rm mpush:latest foreground</code></pre><p>The docker image that you have just built, exposes the port <code class="inline">8443</code> for the HTTP API of MongoosePush.
+It contains a <code class="inline">VOLUME</code> for path <em>/opt/app/priv</em> - it is handy for injecting <code class="inline">APNS</code> and <code class="inline">HTTP API</code> certificates since by default the docker image comes with test, self-signed certificates.</p><h2 id="configuration-basic" class="section-heading">
   <a href="#configuration-basic" class="hover-link"><span class="icon-link" aria-hidden="true"></span></a>
   Configuration (basic)
 </h2>
