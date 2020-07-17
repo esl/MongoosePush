@@ -1,0 +1,18 @@
+# This file needs to be used along with `docker-compose.mocks.yml` and `docker-compose.mpush.yml:
+# PRIV=priv docker-compose -f test/docker/docker-compose.mocks.yml -f test/docker/docker-compose.mpush.yml -f test/docker/docker-compose.prometheus.yml ...
+version: '3'
+
+services:
+  prometheus:
+    image: prom/prometheus
+    container_name: mpush-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    build: './grafana'
+    container_name: mpush-grafana
+    ports:
+      - '3000:3000'
