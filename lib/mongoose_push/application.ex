@@ -31,6 +31,8 @@ defmodule MongoosePush.Application do
     set_loglevel(loglevel)
     set_logformat(logformat)
 
+    :ok = check_apns_ciphers()
+
     # Mostly status logging
     _ = check_runtime_configuration_status()
 
@@ -204,6 +206,38 @@ defmodule MongoosePush.Application do
           status: :error,
           reason: :no_release
         )
+    end
+  end
+
+  defp check_apns_ciphers() do
+    all_ciphers = :ssl.cipher_suites()
+
+    apns_ciphers =
+      Enum.filter(all_ciphers, fn cipher ->
+        case cipher do
+          {:ecdhe_rsa, :aes_128_gcm, _, :sha256} ->
+            true
+
+          {:ecdhe_rsa, :aes_256_gcm, _, :sha384} ->
+            true
+
+          _ ->
+            false
+        end
+      end)
+
+    case length(apns_ciphers) > 0 do
+      true ->
+        :ok
+
+      false ->
+        Logger.error("APNS required ciphers missing",
+          what: :tls_configuration,
+          status: :error,
+          reason: :no_apns_ciphers
+        )
+
+        throw({:error, :no_apns_ciphers})
     end
   end
 end
