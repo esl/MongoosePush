@@ -5,8 +5,14 @@ version: '3'
 services:
   prometheus:
     image: prom/prometheus
-    container_name: mongoose-push-prometheus
+    container_name: mpush-prometheus
     ports:
       - "9090:9090"
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    build: './grafana'
+    container_name: mpush-grafana
+    ports:
+      - '3000:3000'

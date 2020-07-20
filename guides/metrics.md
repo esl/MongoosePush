@@ -7,6 +7,29 @@ Existing dashboards will need to be updated.
 It is important to know that metrics are created inside MongoosePush only when a certain event happens.
 This may mean that a freshly started MongoosePush node will not have all the possible metrics available yet.
 
+## Default dashboard
+
+MongoosePush 2.1.1 provides default Grafana dashboards where we can see some of the available metrics.
+You can create the dashboards using the following command:
+
+```bash
+make dashboards
+```
+
+This starts and configures two containers:
+* `mpush-grafana` - running Grafana, available at http://127.0.0.1:3000/
+* `mpush-prometheus` - running Prometheus, which scraps the metrics from the `/metrics` endpoint, available at http://127.0.0.1:9090/
+
+Once we login to the Grafana container with the default (login: admin, password: admin) credentials we can see two dashboards:
+* MongoosePush Metrics - displaying metrics related to notification send times and successful/failed connections.
+* MongoosePush VM - this dashboard contains metrics related to the VM like memory allocations or lengths of the run queues.
+
+You can stop the docker containers that are running Grafana and Prometheus using the following command:
+
+```bash
+make clean-dashboards
+```
+
 ## Available metrics
 
 #### Histograms
@@ -68,7 +91,7 @@ This histogram metric shows the distribution of times needed to handle and send 
 
 #### Gauge
 
-* `sparrow_pools_warden_pools_gauge` - The current value of the selected measurement from the most recent event.
+* `sparrow_pools_warden_pools_gauge` - Current number of worker pools.
 * `sparrow_pools_warden_workers_gauge{pool=${POOL}}` - Current number of workers operated by a given worker `POOL`.
 * `vm_memory_total` - Total amount of currently allocated memory.
 * `vm_memory_processes` - Amount of memory currently allocated for processes.
