@@ -2,5 +2,7 @@
   org_id: 1
   folder: ''
   type: 'file'
+  editable: true
+  allowUiUpdates: true
   options:
     folder: '/var/lib/grafana/dashboards'
