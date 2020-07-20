@@ -210,23 +210,13 @@ defmodule MongoosePush.Application do
   end
 
   defp check_apns_ciphers() do
-    all_ciphers = :ssl.cipher_suites()
-
-    apns_ciphers =
-      Enum.filter(all_ciphers, fn cipher ->
-        case cipher do
-          {:ecdhe_rsa, :aes_128_gcm, _, :sha256} ->
-            true
-
-          {:ecdhe_rsa, :aes_256_gcm, _, :sha384} ->
-            true
-
-          _ ->
-            false
-        end
+    apns_ciphers_present =
+      Enum.any?(:ssl.cipher_suites(), fn x ->
+        x == {:ecdhe_rsa, :aes_128_gcm, :aead, :sha256} ||
+          x == {:ecdhe_rsa, :aes_256_gcm, :aead, :sha384}
       end)
 
-    case length(apns_ciphers) > 0 do
+    case apns_ciphers_present do
       true ->
         :ok
 
