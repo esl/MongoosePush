@@ -13,17 +13,27 @@ defmodule MongoosePush.Service.APNS do
   alias MongoosePush.Service.APNS.ErrorHandler
 
   @priority_mapping %{normal: "5", high: "10"}
+  @push_type "apns-push-type"
+  @type_background "background"
 
   @spec prepare_notification(String.t(), MongoosePush.request(), atom()) ::
           Service.notification()
   def prepare_notification(device_id, %{alert: nil} = request, _pool) do
     # Setup silent notification
-    Notification.new(device_id, Map.get(request, :mode, :prod))
-    |> Notification.add_content_available(1)
-    |> maybe(:add_apns_topic, request[:topic])
-    |> maybe(:add_mutable_content, request[:mutable_content])
-    |> maybe(:add_apns_priority, @priority_mapping[request[:priority]])
-    |> add_data(request[:data])
+    notification =
+      Notification.new(device_id, Map.get(request, :mode, :prod))
+      |> Notification.add_content_available(1)
+      |> maybe(:add_apns_topic, request[:topic])
+      |> maybe(:add_mutable_content, request[:mutable_content])
+      |> maybe(:add_apns_priority, @priority_mapping[request[:priority]])
+      |> add_data(request[:data])
+
+    # `apns-push-type` must be set to `background` for iOS 13+.
+    headers =
+      notification
+      |> Map.get(:headers, [])
+
+    Map.put(notification, :headers, headers ++ [{@push_type, @type_background}])
   end
 
   def prepare_notification(device_id, request, pool) do
