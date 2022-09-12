@@ -44,7 +44,7 @@ defmodule MongoosePush.Mixfile do
       {:mix_docker, "~> 0.5"},
       {:uuid, "~> 1.1"},
       {:lager, ">= 3.7.0", override: true},
-      {:phoenix, "~> 1.5.13"},
+      {:phoenix, "~> 1.6"},
       {:open_api_spex, "3.7.0"},
       {:toml, "~> 0.6.1"},
       {:asn1_compiler, "~> 0.1.1"},
