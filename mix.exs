@@ -37,7 +37,7 @@ defmodule MongoosePush.Mixfile do
       {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
       {:sparrow, github: "esl/sparrow", ref: "1760502"},
       {:plug_cowboy, "~> 2.2"},
-      {:jason, "~> 1.0"},
+      {:jason, "~> 1.4"},
       {:poison, "~> 3.0", override: true},
       {:distillery, "~> 2.0", override: true},
       {:confex, "~> 3.2", override: true},
@@ -45,24 +45,24 @@ defmodule MongoosePush.Mixfile do
       {:uuid, "~> 1.1"},
       {:lager, ">= 3.7.0", override: true},
       {:phoenix, "~> 1.6"},
-      {:open_api_spex, "3.7.0"},
+      {:open_api_spex, "~> 3.12"},
       {:toml, "~> 0.6.1"},
       {:asn1_compiler, "~> 0.1.1"},
 
       # Below only :dev / :test deps
-      {:httpoison, "~> 1.6.2"},
+      {:httpoison, "~> 1.8"},
       {:excoveralls, "~> 0.7", only: :test},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
-      {:credo, "~> 0.5", only: [:dev, :test]},
+      {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev},
       {:quixir, "~> 0.9", only: [:test, :integration]},
-      {:assert_eventually, "~> 0.2.0", only: [:test, :integration]},
-      {:mox, "~> 0.5.2", only: [:test, :integration]},
-      {:telemetry, "~>0.4.1"},
+      {:assert_eventually, "~> 1.0", only: [:test, :integration]},
+      {:mox, "~> 1.0", only: [:test, :integration]},
+      {:telemetry, "~> 0.4.1"},
       {:telemetry_metrics, "~> 0.5"},
       {:telemetry_metrics_prometheus_core, "~> 0.4"},
       {:telemetry_poller, "~> 0.5"},
-      {:logfmt, "~>3.3"},
+      {:logfmt, "~> 3.3"},
       {:stream_data, "~> 0.5", only: :test}
     ]
   end
@@ -156,10 +156,9 @@ defmodule MongoosePush.Mixfile do
       plt_core_path: ".dialyzer/",
       plt_add_apps: [:ex_unit, :mix],
       flags: [
-        "-Wunmatched_returns",
-        "-Werror_handling",
-        "-Wrace_conditions",
-        "-Wunderspecs"
+        :unmatched_returns,
+        :error_handling,
+        :underspecs
       ]
     ]
   end

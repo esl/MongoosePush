@@ -36,55 +36,68 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
   # so the framework can serve us as expected.
   defp update_schema_and_do_call(
          conn = %{params: %{"alert" => _, "data" => _}},
-         opts = %{operation_id: operation_id}
+         opts
        ) do
-    new_schema = %OpenApiSpex.Reference{
-      "$ref": "#/components/schemas/Request.SendNotification.Deep.MixedNotification"
-    }
+    new_opts =
+      %OpenApiSpex.Reference{
+        "$ref": "#/components/schemas/Request.SendNotification.Deep.MixedNotification"
+      }
+      |> update_schema(conn, opts)
 
-    conn
-    |> update_schema(operation_id, new_schema)
-    |> OpenApiSpex.Plug.CastAndValidate.call(opts)
+    OpenApiSpex.Plug.CastAndValidate.call(conn, new_opts)
   end
 
   defp update_schema_and_do_call(
          conn = %{params: %{"data" => _}},
-         opts = %{operation_id: operation_id}
+         opts
        ) do
-    new_schema = %OpenApiSpex.Reference{
-      "$ref": "#/components/schemas/Request.SendNotification.Deep.SilentNotification"
-    }
+    new_opts =
+      %OpenApiSpex.Reference{
+        "$ref": "#/components/schemas/Request.SendNotification.Deep.SilentNotification"
+      }
+      |> update_schema(conn, opts)
 
-    conn
-    |> update_schema(operation_id, new_schema)
-    |> OpenApiSpex.Plug.CastAndValidate.call(opts)
+    OpenApiSpex.Plug.CastAndValidate.call(conn, new_opts)
   end
 
-  defp update_schema_and_do_call(conn, opts = %{operation_id: operation_id}) do
-    new_schema = %OpenApiSpex.Reference{
-      "$ref": "#/components/schemas/Request.SendNotification.Deep.AlertNotification"
-    }
+  defp update_schema_and_do_call(conn, opts) do
+    new_opts =
+      %OpenApiSpex.Reference{
+        "$ref": "#/components/schemas/Request.SendNotification.Deep.AlertNotification"
+      }
+      |> update_schema(conn, opts)
 
-    conn
-    |> update_schema(operation_id, new_schema)
-    |> OpenApiSpex.Plug.CastAndValidate.call(opts)
+    OpenApiSpex.Plug.CastAndValidate.call(conn, new_opts)
   end
 
-  defp update_schema(conn, operation_id, new_schema) do
-    Kernel.update_in(
-      conn,
-      [
-        Access.key(:private),
-        :open_api_spex,
-        :operation_lookup,
-        operation_id,
-        Access.key(:requestBody),
-        Access.key(:content),
-        "application/json",
-        Access.key(:schema)
-      ],
-      fn %OpenApiSpex.Schema{oneOf: _listOfSchemas} -> new_schema end
-    )
+  def update_schema(new_schema, conn, %{operation_id: operation_id} = opts) do
+    new_operation_id = {operation_id, new_schema}
+
+    spec_module = OpenApiSpex.Plug.PutApiSpec.spec_module(conn)
+    {spec, operation_lookup} = cache().get(spec_module)
+
+    unless operation_lookup[new_operation_id] do
+      new_operation_lookup =
+        operation_lookup[operation_id]
+        |> update_in(
+          [
+            Access.key(:requestBody),
+            Access.key(:content),
+            "application/json",
+            Access.key(:schema)
+          ],
+          fn %OpenApiSpex.Schema{oneOf: _listOfSchemas} -> new_schema end
+        )
+        |> then(&Map.put(operation_lookup, new_operation_id, &1))
+
+      cache().put(spec_module, {spec, new_operation_lookup})
+    end
+
+    Map.put(opts, :operation_id, new_operation_id)
+  end
+
+  defp cache() do
+    OpenApiSpex.Plug.Cache.adapter()
   end
 
   defp get_operation(
