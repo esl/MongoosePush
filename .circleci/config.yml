@@ -36,7 +36,7 @@ executors:
     docker:
       - image: mongooseim/beam-builder:erlang-<< parameters.erlang_version >>_elixir-<< parameters.elixir_version >>
       - image: mongooseim/fcm-mock-server
-      - image: mobify/apns-http2-mock-server
+      - image: kamilwaz/apns-mock-server
     working_directory: ~/app
     environment:
         MIX_ENV: << parameters.env >>
@@ -224,17 +224,18 @@ jobs:
 
   integration-tests:
     machine:
-        image: ubuntu-1604:201903-01
+        image: ubuntu-2004:2022.07.1
     steps:
       - checkout
       - run:
           name: Install elixir
           command: |
-              wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
-              sudo dpkg -i erlang-solutions_1.0_all.deb && \
+              wget https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc && \
+              sudo apt-key add erlang_solutions.asc && \
+              echo 'deb https://packages.erlang-solutions.com/ubuntu focal contrib' | sudo tee /etc/apt/sources.list.d/esl.list && \
               sudo apt-get update && \
-              sudo apt-get install -y esl-erlang=1:21.0 && \
-              sudo apt-get install -y elixir=1.8.0-1
+              sudo apt-get install -y esl-erlang=1:21.3.8.17-1 && \
+              sudo apt-get install -y elixir=1.10.2-1
               wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
               sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
               sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \

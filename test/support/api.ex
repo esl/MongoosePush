@@ -64,7 +64,7 @@ defmodule MongoosePush.Support.API do
     {:ok, conn} = get_connection(:apns)
     payload = Poison.encode!(json)
 
-    headers = headers("POST", "/error-tokens", payload)
+    headers = headers("POST", "/mock/error-tokens", payload)
     :h2_client.send_request(conn, headers, payload)
     {"200", _payload} = get_response(conn)
     :ok
@@ -81,9 +81,9 @@ defmodule MongoosePush.Support.API do
   def reset(:apns) do
     {:ok, conn} = get_connection(:apns)
     payload = ""
-    headers = headers("POST", "/reset", payload)
+    headers = headers("POST", "/mock/reset", payload)
     :h2_client.send_request(conn, headers, payload)
-    {"200", "OK"} = get_response(conn)
+    {"200", ""} = get_response(conn)
     :ok
   end
 

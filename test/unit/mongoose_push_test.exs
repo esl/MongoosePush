@@ -603,13 +603,12 @@ defmodule MongoosePushTest do
 
   defp last_activity(:apns) do
     {:ok, conn} = get_connection(:apns)
-    headers = headers("GET", "/activity")
+    headers = headers("GET", "/mock/activity")
     :h2_client.send_request(conn, headers, "")
 
     get_response(conn)
     |> Poison.decode!()
-    |> Map.get("logs")
-    |> List.last()
+    |> List.first()
   end
 
   defp headers(method, path, payload \\ "") do
