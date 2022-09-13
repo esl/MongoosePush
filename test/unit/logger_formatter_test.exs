@@ -5,13 +5,7 @@ defmodule MongoosePush.LoggerFormatterTest do
 
   describe "format/4" do
     setup do
-      {date, time} =
-        :millisecond
-        |> System.system_time()
-        |> :calendar.system_time_to_universal_time(:millisecond)
-
       %{
-        date_time: {date, Tuple.append(time, 0)},
         severity: Enum.random(["info", "debug", "error", "warn"]),
         what: "Something",
         pid: self()
@@ -19,7 +13,6 @@ defmodule MongoosePush.LoggerFormatterTest do
     end
 
     test "prints logs in JSON format", %{
-      date_time: date_time,
       severity: severity,
       what: what,
       pid: pid
@@ -28,16 +21,16 @@ defmodule MongoosePush.LoggerFormatterTest do
               %{
                 "application" => "mongoose_push",
                 "at" => "Module.function/1:1",
-                "pid" => pid,
+                "pid" => inspect(pid),
                 "severity" => severity,
                 "text" => "Some random message",
                 "what" => what,
-                "when" => date_time
-              }} =
+                "when" => "2022-09-08T09:23:14.001"
+              }} ==
                JSON.format(
                  String.to_atom(severity),
                  "Some random message",
-                 date_time,
+                 {{2022, 09, 08}, {09, 23, 14, 001}},
                  application: :mongoose_push,
                  time: :os.system_time(),
                  pid: pid,
@@ -50,7 +43,6 @@ defmodule MongoosePush.LoggerFormatterTest do
     end
 
     test "prints logs in logfmt format", %{
-      date_time: date_time,
       severity: severity,
       what: what,
       pid: pid
@@ -58,16 +50,16 @@ defmodule MongoosePush.LoggerFormatterTest do
       assert %{
                "application" => "mongoose_push",
                "at" => "Module.function/1:1",
-               "pid" => pid,
+               "pid" => inspect(pid),
                "severity" => severity,
                "text" => "Some random message",
                "what" => what,
-               "when" => date_time
-             } =
+               "when" => "2022-09-08T09:25:07.002"
+             } ==
                LogFmt.format(
                  String.to_atom(severity),
                  "Some random message",
-                 date_time,
+                 {{2022, 09, 08}, {09, 25, 07, 002}},
                  application: :mongoose_push,
                  time: :os.system_time(),
                  pid: pid,

@@ -6,6 +6,14 @@ defmodule MongoosePush.Application do
   use Application
   require Logger
 
+  # APNS supports only:
+  # - ECDHE-RSA-AES128-GCM-SHA256
+  # - ECDHE-RSA-AES256-GCM-SHA384
+  @apns_ciphers [
+    %{key_exchange: :ecdhe_rsa, cipher: :aes_128_gcm, mac: :aead, prf: :sha256},
+    %{key_exchange: :ecdhe_rsa, cipher: :aes_256_gcm, mac: :aead, prf: :sha384}
+  ]
+
   @typedoc "Possible keys in FCM config"
   @type fcm_key :: :key | :pool_size | :mode | :endpoint
   @typedoc "Possible keys in APNS config"
@@ -209,12 +217,12 @@ defmodule MongoosePush.Application do
     end
   end
 
-  defp check_apns_ciphers() do
-    apns_ciphers_present =
-      Enum.any?(:ssl.cipher_suites(), fn x ->
-        x == {:ecdhe_rsa, :aes_128_gcm, :aead, :sha256} ||
-          x == {:ecdhe_rsa, :aes_256_gcm, :aead, :sha384}
-      end)
+  def check_apns_ciphers() do
+    all_ciphers =
+      :ssl.versions()[:supported]
+      |> Enum.flat_map(&:ssl.cipher_suites(:all, &1))
+
+    apns_ciphers_present = Enum.any?(all_ciphers, &(&1 in @apns_ciphers))
 
     case apns_ciphers_present do
       true ->

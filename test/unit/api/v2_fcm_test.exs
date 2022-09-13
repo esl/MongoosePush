@@ -14,7 +14,7 @@ defmodule MongoosePush.API.V2FCMTest do
 
     Tools.mock_fcm("/error-tokens", [%{device_token: "f534534543", status: 404, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:fcm))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
   test "push to fcm with id mismatch fails" do
@@ -22,7 +22,7 @@ defmodule MongoosePush.API.V2FCMTest do
 
     Tools.mock_fcm("/error-tokens", [%{device_token: "f534534543", status: 403, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:fcm))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
   test "push to fcm with the limit exceeded fails" do
@@ -30,7 +30,7 @@ defmodule MongoosePush.API.V2FCMTest do
 
     Tools.mock_fcm("/error-tokens", [%{device_token: "f534534543", status: 429, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:fcm))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
   test "push to fcm fails with unknown internal error" do
@@ -38,7 +38,7 @@ defmodule MongoosePush.API.V2FCMTest do
 
     Tools.mock_fcm("/error-tokens", [%{device_token: "f534534543", status: 500, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:fcm))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
   test "push to fcm with invalid or missing certificate/web push fails" do
@@ -46,7 +46,7 @@ defmodule MongoosePush.API.V2FCMTest do
 
     Tools.mock_fcm("/error-tokens", [%{device_token: "f534534543", status: 401, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:fcm))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:fcm))
   end
 
   test "push to fcm fails when service is unavailable/overloaded" do
@@ -54,6 +54,6 @@ defmodule MongoosePush.API.V2FCMTest do
 
     Tools.mock_fcm("/error-tokens", [%{device_token: "f534534543", status: 503, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:fcm))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:fcm))
   end
 end

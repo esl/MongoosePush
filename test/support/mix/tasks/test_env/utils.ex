@@ -1,9 +1,7 @@
 defmodule Mix.Tasks.Test.Env.Utils do
   def compose(compose_binary, opcode_args) do
     Mix.shell().info(
-      "Running `docker-compose #{Enum.join(opcode_args, " ")}` for: #{
-        inspect(compose_files(Mix.env()))
-      }"
+      "Running `docker-compose #{Enum.join(opcode_args, " ")}` for: #{inspect(compose_files(Mix.env()))}"
     )
 
     compose_args = base_compose_args() ++ opcode_args ++ ["--remove-orphans"]

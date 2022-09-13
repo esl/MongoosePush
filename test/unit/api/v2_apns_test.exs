@@ -14,7 +14,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 400, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns with bad certificate fails" do
@@ -22,7 +22,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 403, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns with bad path fails" do
@@ -30,7 +30,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 404, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns with bad method fails" do
@@ -38,7 +38,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 405, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns with unregistered token fails" do
@@ -46,7 +46,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 410, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns with too large payload fails" do
@@ -54,7 +54,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 413, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns fails with unknown internal error" do
@@ -62,7 +62,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 500, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns fails with too many requests" do
@@ -70,7 +70,7 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 429, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 
   test "push to apns fails when service is unavailable/overloaded" do
@@ -78,6 +78,6 @@ defmodule MongoosePush.API.V2APNSTest do
 
     Tools.mock_apns([%{device_token: "f534534543", status: 503, reason: reason}])
 
-    assert {500, %{"details" => reason}} = Tools.post(@url, Tools.sample_notification(:apns))
+    assert {500, %{"details" => reason}} == Tools.post(@url, Tools.sample_notification(:apns))
   end
 end
