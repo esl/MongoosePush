@@ -26,15 +26,15 @@ executors:
     parameters:
       erlang_version:
         type: string
-        default: "22.0"
+        default: "24.3.4.5"
       elixir_version:
         type: string
-        default: "1.9"
+        default: "1.13.4"
       env:
         type: string
         default: test
     docker:
-      - image: mongooseim/beam-builder:erlang-<< parameters.erlang_version >>_elixir-<< parameters.elixir_version >>
+      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-focal-20211006
       - image: mongooseim/fcm-mock-server
       - image: kamilwaz/apns-mock-server
     working_directory: ~/app
@@ -45,6 +45,16 @@ commands:
   test:
     steps:
       - checkout
+      - run:
+          name: Install dockerize
+          command: |
+            apt-get update && apt-get install -y wget && \
+            wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
+            chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
+            tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
+            chmod +x /usr/local/bin/dockerize && \
+            rm dockerize-linux-amd64-v0.6.1.tar.gz
+      - run: apt-get update && apt-get install -y git
       - restore_cache:
           keys:
             - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -74,6 +84,7 @@ jobs:
 
     steps:
       - checkout
+      - run: apt-get update && apt-get install -y git
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get
@@ -89,6 +100,7 @@ jobs:
     executor: elixir-builder
     steps:
       - checkout
+      - run: apt-get update && apt-get install -y git
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - restore_cache:
           keys:
@@ -111,21 +123,12 @@ jobs:
           name: Execute dialyzer
           command: mix deps.get && mix dialyzer --halt-exit-status
 
-  test-erlang-22_elixir-1-9:
-    executor:
-      name: elixir-builder
-      env: test
-      erlang_version: "22.0"
-      elixir_version: "1.9"
-    steps:
-      - test
-
   build-dev-certs:
     executor:
       name: elixir-builder
       env: dev
-      erlang_version: "22.0"
-      elixir_version: "1.9"
+      erlang_version: "24.3"
+      elixir_version: "1.13"
     steps:
       - checkout
       - restore_cache:
@@ -142,48 +145,39 @@ jobs:
           paths:
             - priv
 
-  test-erlang-22_elixir-1-8:
+  test-erlang-24_elixir-1-13:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "22.0"
-      elixir_version: "1.8"
+      erlang_version: "24.3.4.5"
+      elixir_version: "1.13.4"
     steps:
       - test
 
-  test-erlang-22_elixir-1-7:
+  test-erlang-24_elixir-1-12:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "22.0"
-      elixir_version: "1.7"
+      erlang_version: "24.3.4.5"
+      elixir_version: "1.13.4"
     steps:
       - test
 
-  test-erlang-21_elixir-1-9:
+  test-erlang-23_elixir-1-13:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "21.3"
-      elixir_version: "1.9"
+      erlang_version: "23.3.4.17"
+      elixir_version: "1.12.3"
     steps:
       - test
 
-  test-erlang-21_elixir-1-8:
+  test-erlang-23_elixir-1-12:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "21.3"
-      elixir_version: "1.8"
-    steps:
-      - test
-
-  test-erlang-21_elixir-1-7:
-    executor:
-      name: elixir-builder
-      env: test
-      erlang_version: "21.3"
-      elixir_version: "1.7"
+      erlang_version: "23.3.4.17"
+      elixir_version: "1.12.3"
     steps:
       - test
 
@@ -203,6 +197,7 @@ jobs:
       env: prod
     steps:
       - checkout
+      - run: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io
       - setup_remote_docker:
           docker_layer_caching: true
       - restore_cache:
@@ -234,14 +229,14 @@ jobs:
               sudo apt-key add erlang_solutions.asc && \
               echo 'deb https://packages.erlang-solutions.com/ubuntu focal contrib' | sudo tee /etc/apt/sources.list.d/esl.list && \
               sudo apt-get update && \
-              sudo apt-get install -y esl-erlang=1:21.3.8.17-1 && \
-              sudo apt-get install -y elixir=1.10.2-1
+              sudo apt-get install -y esl-erlang=1:24.3.3-1 && \
+              sudo apt-get install -y elixir=1.13.0-1
               wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
               sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
               sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
               sudo chmod +x /usr/local/bin/dockerize && \
               sudo rm dockerize-linux-amd64-v0.6.1.tar.gz
-
+      - run: docker-compose -v
       - restore_cache:
           keys:
               - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -249,6 +244,7 @@ jobs:
           keys:
               - certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
+      - run: mix local.hex --force && mix local.rebar --force
       - run:
           name: Compile mix deps
           command: MIX_ENV=integration mix do deps.get, deps.compile
@@ -271,6 +267,7 @@ jobs:
       env: prod
     steps:
       - checkout
+      - run: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io
       - setup_remote_docker:
           docker_layer_caching: true
       - run: *DOCKER_TAGS
@@ -289,17 +286,18 @@ jobs:
 
   gh-pages-deploy:
     machine:
-        image: ubuntu-1604:201903-01
+        image: ubuntu-2004:2022.07.1
     steps:
       - checkout
       - run:
           name: Install elixir
           command: |
-              wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb && \
-              sudo dpkg -i erlang-solutions_1.0_all.deb && \
+              wget https://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc && \
+              sudo apt-key add erlang_solutions.asc && \
+              echo 'deb https://packages.erlang-solutions.com/ubuntu focal contrib' | sudo tee /etc/apt/sources.list.d/esl.list && \
               sudo apt-get update && \
-              sudo apt-get install -y esl-erlang=1:21.0 && \
-              sudo apt-get install -y elixir=1.8.0-1
+              sudo apt-get install -y esl-erlang=1:24.3.3-1 && \
+              sudo apt-get install -y elixir=1.13.0-1
       - restore_cache:
           keys:
               - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -343,19 +341,19 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-22_elixir-1-9:
+      - test-erlang-24_elixir-1-13:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-22_elixir-1-8:
+      - test-erlang-24_elixir-1-12:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-21_elixir-1-9:
+      - test-erlang-23_elixir-1-13:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-21_elixir-1-8:
+      - test-erlang-23_elixir-1-12:
           requires:
             - pre-build
           filters: *all_tags
@@ -373,7 +371,7 @@ workflows:
           requires:
             - integration-tests
             - build-docker-image
-            - test-erlang-22_elixir-1-9
+            - test-erlang-23_elixir-1-13
           filters: *all_tags
 
       - gh-pages-deploy:

@@ -1,4 +1,11 @@
-FROM rslota/beam-builder:erlang-22.0_elixir-1.9 AS builder
+ARG ELIXIR_VERSION=1.13.4
+ARG OTP_VERSION=24.3.4.5
+
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-focal-20211006 as builder
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
+    git \
+    software-properties-common
 
 USER root
 
@@ -8,7 +15,7 @@ ENV MIX_ENV=prod
 
 COPY mix.exs mix.lock ./
 COPY config config
-COPY asn.1 asn.1
+COPY asn1 asn1
 COPY rel rel
 COPY lib lib
 COPY priv priv
@@ -23,7 +30,7 @@ RUN mix do certs.dev, distillery.release
 RUN tar -czf mongoose_push.tar.gz -C _build/prod/rel/mongoose_push .
 
 
-FROM debian:stretch-slim
+FROM ubuntu:20.04
 
 
 # set locales
@@ -37,14 +44,13 @@ ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
 # required packages
-RUN echo 'deb http://deb.debian.org/debian jessie main' >> /etc/apt/sources.list
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     bash \
     bash-completion \
     curl \
     dnsutils \
+    libtinfo6 \
     libssl1.1 \
-    libssl1.0.0 \
     vim && \
     apt-get clean
 

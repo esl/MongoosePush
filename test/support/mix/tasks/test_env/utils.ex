@@ -77,7 +77,9 @@ defmodule Mix.Tasks.Test.Env.Utils do
   defp try_connect(proto, host, port) do
     url = "#{proto}://#{host}:#{port}/"
 
-    with {:ok, _} <- HTTPoison.get(url, [], hackney: [:insecure]) do
+    # TODO remove once we're on OTP >= 24.3.4.5, workaround for https://github.com/erlang/otp/issues/6241
+    with {:ok, _} <-
+           HTTPoison.get(url, [], ssl: [middlebox_comp_mode: false, verify: :verify_none]) do
       :ok
     end
   end
