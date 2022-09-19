@@ -30,7 +30,7 @@ RUN mix do certs.dev, distillery.release
 RUN tar -czf mongoose_push.tar.gz -C _build/prod/rel/mongoose_push .
 
 
-FROM ubuntu:20.04
+FROM debian:sid-slim
 
 
 # set locales
@@ -49,7 +49,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     bash-completion \
     curl \
     dnsutils \
-    libtinfo6 \
+    libtinfo5 \
     libssl1.1 \
     vim && \
     apt-get clean
