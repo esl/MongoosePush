@@ -26,7 +26,7 @@ RUN mix local.hex --force && \
 
 
 RUN mix deps.get
-RUN mix do certs.dev, distillery.release
+RUN mix do certs.dev, release
 RUN tar -czf mongoose_push.tar.gz -C _build/prod/rel/mongoose_push .
 
 
@@ -69,5 +69,5 @@ RUN ln -s $(pwd)/priv $(find lib -name mongoose_push-*)/priv
 
 VOLUME /opt/app/priv
 
-CMD ["foreground"]
+CMD ["start"]
 ENTRYPOINT ["/opt/app/bin/mongoose_push"]

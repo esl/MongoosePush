@@ -15,7 +15,7 @@
 
 The build step is really easy. Just type in the root of the repository:
 ```bash
-MIX_ENV=prod mix do deps.get, compile, certs.dev, distillery.release
+MIX_ENV=prod mix do deps.get, compile, certs.dev, release
 ```
 
 After this step you may try to run the service via:
@@ -29,7 +29,7 @@ Yeah, I know... It crashed. Running this service is fast and simple but unfortun
 
 Again, an easy step:
 ```bash
-MIX_ENV=dev mix do deps.get, compile, certs.dev, distillery.release
+MIX_ENV=dev mix do deps.get, compile, certs.dev, release
 ```
 
 The development release is by default configured to connect to a local APNS / FCM mock.

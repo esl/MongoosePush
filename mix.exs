@@ -17,6 +17,7 @@ defmodule MongoosePush.Mixfile do
       aliases: aliases(),
       elixirc_paths: elixirc_paths(Mix.env()),
       elixirc_options: elixirc_options(),
+      releases: releases(),
       test_paths: test_paths(Mix.env()),
       name: "MongoosePush",
       source_url: "https://github.com/esl/MongoosePush",
@@ -39,9 +40,7 @@ defmodule MongoosePush.Mixfile do
       {:plug_cowboy, "~> 2.2"},
       {:jason, "~> 1.4"},
       {:poison, "~> 3.0", override: true},
-      {:distillery, "~> 2.0", override: true},
       {:confex, "~> 3.2", override: true},
-      {:mix_docker, "~> 0.5"},
       {:uuid, "~> 1.1"},
       {:lager, ">= 3.7.0", override: true},
       {:phoenix, "~> 1.6"},
@@ -191,6 +190,19 @@ defmodule MongoosePush.Mixfile do
 
   defp elixirc_options do
     [warnings_as_errors: true]
+  end
+
+  defp releases do
+    [
+      mongoose_push: [
+        include_executables_for: [:unix],
+        applications: [runtime_tools: :permanent],
+        config_providers: [
+          {MongoosePush.Config.Provider.Toml, [path: "var/config.toml"]},
+          {MongoosePush.Config.Provider.Confex, []}
+        ]
+      ]
+    ]
   end
 
   defp elixirc_paths(:prod), do: ["lib"]

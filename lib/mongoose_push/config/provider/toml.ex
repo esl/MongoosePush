@@ -1,13 +1,15 @@
 defmodule MongoosePush.Config.Provider.Toml do
-  @moduledoc """
-  """
+  @moduledoc false
   alias MongoosePush.Config.Utils
 
-  @behaviour Distillery.Releases.Config.Provider
+  @behaviour Config.Provider
   @app :mongoose_push
 
-  @spec init([any()]) :: :ok
-  def init(opts) do
+  @impl true
+  def init(opts), do: opts
+
+  @impl true
+  def load(config, opts) do
     with true <- is_binary(opts[:path]),
          true <- File.exists?(opts[:path]),
          {:ok, raw_config} <- File.read(opts[:path]),
@@ -15,23 +17,24 @@ defmodule MongoosePush.Config.Provider.Toml do
       current_sysconfig = Application.get_all_env(@app)
       updated_sysconfig = update_sysconfig(current_sysconfig, toml_config)
 
-      Application.put_all_env([{@app, updated_sysconfig}])
-
-      Application.put_env(:mongoose_push, :toml_configuration,
-        status: {:ok, :loaded},
-        path: opts[:path]
+      Config.Reader.merge(
+        config,
+        [
+          {@app,
+           Keyword.merge(updated_sysconfig,
+             status: {:ok, :loaded},
+             path: opts[:path]
+           )}
+        ]
       )
     else
       {:error, reason} ->
-        Application.put_env(:mongoose_push, :toml_configuration,
-          status: {:error, reason},
-          path: opts[:path]
-        )
+        exit({:error, reason})
 
       false ->
-        Application.put_env(:mongoose_push, :toml_configuration,
-          status: {:ok, :skipped},
-          path: opts[:path]
+        Config.Reader.merge(
+          config,
+          [{@app, status: {:ok, :skipped}, path: opts[:path]}]
         )
     end
   end
