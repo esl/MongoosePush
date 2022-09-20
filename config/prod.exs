@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :mix_docker, image: "mongoose_push"
 

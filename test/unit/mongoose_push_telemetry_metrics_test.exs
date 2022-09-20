@@ -3,7 +3,6 @@ defmodule MongoosePushTelemetryMetricsTest do
   use AssertEventually
   require Integer
   import Mox
-  import MongoosePush
 
   alias MongoosePush.Service.APNS
   alias MongoosePush.Service.FCM

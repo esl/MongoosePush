@@ -9,6 +9,6 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data do
         "The FCM request with nested data can end up with error.",
     type: :object,
     example: Deep.data()[:example]["data"],
-    additionalProperties: true
+    additionalProperties: nil
   })
 end

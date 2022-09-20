@@ -16,6 +16,7 @@ defmodule MongoosePush.Mixfile do
       compilers: compilers(Mix.env()),
       aliases: aliases(),
       elixirc_paths: elixirc_paths(Mix.env()),
+      elixirc_options: elixirc_options(),
       test_paths: test_paths(Mix.env()),
       name: "MongoosePush",
       source_url: "https://github.com/esl/MongoosePush",
@@ -35,34 +36,34 @@ defmodule MongoosePush.Mixfile do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
       {:sparrow, github: "esl/sparrow", ref: "1760502"},
-      {:plug_cowboy, "~> 2.0"},
-      {:cowboy, "< 2.8.0", override: true},
-      {:jason, "~> 1.0"},
-      {:poison, "~> 3.0"},
+      {:plug_cowboy, "~> 2.2"},
+      {:jason, "~> 1.4"},
+      {:poison, "~> 3.0", override: true},
       {:distillery, "~> 2.0", override: true},
       {:confex, "~> 3.2", override: true},
       {:mix_docker, "~> 0.5"},
       {:uuid, "~> 1.1"},
       {:lager, ">= 3.7.0", override: true},
-      {:phoenix, "~> 1.4.16"},
-      {:open_api_spex, "~> 3.6"},
+      {:phoenix, "~> 1.6"},
+      {:open_api_spex, "~> 3.12"},
       {:toml, "~> 0.6.1"},
+      {:asn1_compiler, "~> 0.1.1"},
 
       # Below only :dev / :test deps
-      {:httpoison, "~> 1.6.2"},
+      {:httpoison, "~> 1.8"},
       {:excoveralls, "~> 0.7", only: :test},
-      {:dialyxir, "~> 1.0.0-rc.6", only: [:dev, :test], runtime: false},
-      {:credo, "~> 0.5", only: [:dev, :test]},
+      {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.6", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev},
       {:quixir, "~> 0.9", only: [:test, :integration]},
-      {:assert_eventually, "~> 0.2.0", only: [:test, :integration]},
-      {:mox, "~> 0.5.2", only: [:test, :integration]},
-      {:telemetry, "~>0.4.1"},
+      {:assert_eventually, "~> 1.0", only: [:test, :integration]},
+      {:mox, "~> 1.0", only: [:test, :integration]},
+      {:telemetry, "~> 0.4.1"},
       {:telemetry_metrics, "~> 0.5"},
       {:telemetry_metrics_prometheus_core, "~> 0.4"},
       {:telemetry_poller, "~> 0.5"},
-      {:logfmt, "~>3.3"},
-      {:stream_data, "~> 0.5", only: :test}
+      {:logfmt, "~> 3.3"},
+      {:stream_data, "~> 0.5", only: [:test, :integration]}
     ]
   end
 
@@ -155,10 +156,9 @@ defmodule MongoosePush.Mixfile do
       plt_core_path: ".dialyzer/",
       plt_add_apps: [:ex_unit, :mix],
       flags: [
-        "-Wunmatched_returns",
-        "-Werror_handling",
-        "-Wrace_conditions",
-        "-Wunderspecs"
+        :unmatched_returns,
+        :error_handling,
+        :underspecs
       ]
     ]
   end
@@ -180,9 +180,7 @@ defmodule MongoosePush.Mixfile do
   defp compilers(:integration), do: Mix.compilers()
 
   defp compilers(_) do
-    Mix.compilers()
-    |> List.delete(:erlang)
-    |> Enum.concat([:asn1, :erlang])
+    [:asn1] ++ Mix.compilers()
   end
 
   defp aliases do
@@ -191,8 +189,9 @@ defmodule MongoosePush.Mixfile do
     ]
   end
 
-  # All mix tasks are redundant in runtime, but we still need to compile `lib/mix/tasks/compile_asn1.ex`
-  # as it's required by build process (ASN1 compiler).
+  defp elixirc_options do
+    [warnings_as_errors: true]
+  end
 
   defp elixirc_paths(:prod), do: ["lib"]
 
