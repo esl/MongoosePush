@@ -36,10 +36,11 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
-      {:sparrow, github: "esl/sparrow", ref: "1760502"},
-      {:plug_cowboy, "~> 2.2"},
+      {:sparrow, github: "esl/sparrow", ref: "203f847"},
+      {:plug_cowboy, "~> 2.5"},
+      {:cowboy_telemetry, "~> 0.4.0", override: true},
       {:jason, "~> 1.4"},
-      {:poison, "~> 3.0", override: true},
+      {:poison, "~> 5.0", override: true},
       {:confex, "~> 3.2", override: true},
       {:uuid, "~> 1.1"},
       {:lager, ">= 3.7.0", override: true},
@@ -57,10 +58,10 @@ defmodule MongoosePush.Mixfile do
       {:quixir, "~> 0.9", only: [:test, :integration]},
       {:assert_eventually, "~> 1.0", only: [:test, :integration]},
       {:mox, "~> 1.0", only: [:test, :integration]},
-      {:telemetry, "~> 0.4.1"},
-      {:telemetry_metrics, "~> 0.5"},
-      {:telemetry_metrics_prometheus_core, "~> 0.4"},
-      {:telemetry_poller, "~> 0.5"},
+      {:telemetry, "~> 1.1"},
+      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_metrics_prometheus_core, "~> 1.1"},
+      {:telemetry_poller, "~> 1.0"},
       {:logfmt, "~> 3.3"},
       {:stream_data, "~> 0.5", only: [:test, :integration]}
     ]
