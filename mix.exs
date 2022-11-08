@@ -53,6 +53,8 @@ defmodule MongoosePush.Mixfile do
       {:httpoison, "~> 1.8"},
       {:excoveralls, "~> 0.7", only: :test},
       {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
+      {:gradient, github: "esl/gradient", branch: "139-warn-missing-spec-flags",
+        only: [:dev], runtime: false},
       {:credo, "~> 1.6", only: [:dev, :test]},
       {:ex_doc, "~> 0.14", only: :dev},
       {:quixir, "~> 0.9", only: [:test, :integration]},
