@@ -1,5 +1,7 @@
 import Config
 
+config :sparrow, google_auth_url: "http://localhost:4001/oauth2/v4/token"
+
 config :mongoose_push, :logging,
   level: :error,
   format: :logfmt
@@ -34,7 +36,7 @@ config :mongoose_push,
       tls_opts: []
     ],
     pool2: [
-      appfile: "priv/fcm/token.json",
+      appfile: "priv/fcm/token2.json",
       endpoint: "localhost",
       pool_size: 3,
       mode: :dev,

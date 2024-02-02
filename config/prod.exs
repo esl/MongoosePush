@@ -1,6 +1,8 @@
 import Config
 
-config :goth, endpoint: {:system, :string, "FCM_AUTH_ENDPOINT", "https://www.googleapis.com"}
+config :sparrow,
+  google_auth_url:
+    {:system, :string, "FCM_AUTH_ENDPOINT", "https://www.googleapis.com/oauth2/v4/token"}
 
 config :mongoose_push, MongoosePushWeb.Endpoint,
   https: [

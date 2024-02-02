@@ -10,7 +10,7 @@ config :mongoose_push, :logging,
   level: :error,
   format: :logfmt
 
-config :goth, endpoint: "http://fcm-mock:4001"
+config :sparrow, google_auth_url: "http://localhost:4001/oauth2/v4/token"
 
 config :mongoose_push,
   fcm: [

@@ -25,7 +25,7 @@ defmodule MongoosePushWeb.HealthcheckController do
       Enum.map_reduce(workers, %{connected: 0, disconnected: 0}, fn worker_info, acc ->
         {_, worker_pid, _, _} = worker_info
 
-        if Sparrow.H2Worker.is_alive_connection(worker_pid) do
+        if Sparrow.H2Worker.alive_connection?(worker_pid) do
           {worker_info, Map.update!(acc, :connected, &(&1 + 1))}
         else
           {worker_info, Map.update!(acc, :disconnected, &(&1 + 1))}

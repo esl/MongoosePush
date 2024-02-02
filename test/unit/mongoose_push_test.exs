@@ -466,7 +466,7 @@ defmodule MongoosePushTest do
           tls_opts: []
         ],
         pool2: [
-          appfile: "priv/fcm/token.json",
+          appfile: "priv/fcm/token2.json",
           endpoint: "localhost",
           pool_size: 4,
           mode: :dev,
