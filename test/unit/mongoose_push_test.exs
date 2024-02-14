@@ -661,7 +661,7 @@ defmodule MongoosePushTest do
   # FCM v1 requires "3.5s" format, need to convert back to integer
   defp convert_ttl(ttl) do
     ttl
-    |> String.slice(0..-2)
+    |> String.slice(0..-2//1)
     |> String.to_integer()
   end
 end

@@ -108,7 +108,7 @@ defmodule MongoosePush do
     mode = Map.get(request, :mode, :prod)
     tags = Map.get(request, :tags, [])
 
-    Logger.warn("Unable to send the push notification",
+    Logger.warning("Unable to send the push notification",
       what: :sending_notification,
       result: :error,
       category: category,
@@ -127,7 +127,7 @@ defmodule MongoosePush do
     mode = Map.get(request, :mode, :prod)
     tags = Map.get(request, :tags, [])
 
-    Logger.warn("Unable to send the push notification",
+    Logger.warning("Unable to send the push notification",
       what: :sending_notification,
       result: :error,
       category: :unknown,
