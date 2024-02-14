@@ -197,7 +197,7 @@ defmodule MongoosePush.Mixfile do
     [
       mongoose_push: [
         include_executables_for: [:unix],
-        applications: [runtime_tools: :permanent, goth: :load],
+        applications: [runtime_tools: :permanent],
         config_providers: [
           {MongoosePush.Config.Provider.Toml, [path: "var/config.toml"]},
           {MongoosePush.Config.Provider.Confex, []}
