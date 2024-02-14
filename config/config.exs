@@ -22,17 +22,17 @@ config :plug, :statuses, %{
 
 lager_formater_config = [
   :date,
-  'T',
+  ~c"T",
   :time,
   :color,
-  ' [',
+  ~c" [",
   :severity,
-  '] ',
-  'pid=',
+  ~c"] ",
+  ~c"pid=",
   :pid,
-  '  ',
+  ~c"  ",
   :message,
-  '\e[0m\r\n'
+  ~c"\e[0m\r\n"
 ]
 
 config :lager,
@@ -44,13 +44,13 @@ config :lager,
       formatter_config: lager_formater_config
     ],
     lager_file_backend: [
-      file: 'log/error.log',
+      file: ~c"log/error.log",
       level: :error,
       formatter: :lager_default_formatter,
       formatter_config: lager_formater_config
     ],
     lager_file_backend: [
-      file: 'log/console.log',
+      file: ~c"log/console.log",
       level: :info,
       formatter: :lager_default_formatter,
       formatter_config: lager_formater_config

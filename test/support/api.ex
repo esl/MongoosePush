@@ -92,7 +92,7 @@ defmodule MongoosePush.Support.API do
   end
 
   def get_connection(:apns) do
-    :h2_client.start_link(:https, 'localhost', 2197, [])
+    :h2_client.start_link(:https, ~c"localhost", 2197, [])
   end
 
   def headers(method, path, payload) do

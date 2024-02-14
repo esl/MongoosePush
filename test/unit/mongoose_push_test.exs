@@ -623,11 +623,11 @@ defmodule MongoosePushTest do
   end
 
   defp get_connection(:apns) do
-    :h2_client.start_link(:https, 'localhost', 2197, [])
+    :h2_client.start_link(:https, ~c"localhost", 2197, [])
   end
 
   defp get_connection(:fcm) do
-    :h2_client.start_link(:https, 'localhost', 4000, [])
+    :h2_client.start_link(:https, ~c"localhost", 4000, [])
   end
 
   defp get_response(conn) do
