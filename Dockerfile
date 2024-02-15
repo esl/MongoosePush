@@ -49,8 +49,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     bash-completion \
     curl \
     dnsutils \
-    libtinfo5 \
-    libssl1.1 \
+    libssl3 \
     vim && \
     apt-get clean
 
