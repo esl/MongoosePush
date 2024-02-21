@@ -20,7 +20,7 @@ config :mongoose_push,
       appfile: "priv/fcm/token.json",
       pool_size: 5,
       mode: :prod,
-      tls_opts: []
+      tls_opts: [verify: :verify_none]
     ]
   ]
 
@@ -36,7 +36,7 @@ config :mongoose_push,
       mode: :dev,
       use_2197: true,
       pool_size: 5,
-      tls_opts: []
+      tls_opts: [verify: :verify_none]
     ],
     prod: [
       auth: %{
@@ -48,7 +48,7 @@ config :mongoose_push,
       mode: :prod,
       use_2197: true,
       pool_size: 5,
-      tls_opts: []
+      tls_opts: [verify: :verify_none]
     ]
   ]
 

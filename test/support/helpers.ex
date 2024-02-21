@@ -4,7 +4,13 @@ defmodule TestHelper do
     Application.stop(:mongoose_push)
     Application.stop(:sparrow)
     Application.unload(:mongoose_push)
-    Application.put_env(:sparrow, :google_auth_url, "http://localhost:#{@fcm_http_port}/oauth2/v4/token")
+
+    Application.put_env(
+      :sparrow,
+      :google_auth_url,
+      "http://localhost:#{@fcm_http_port}/oauth2/v4/token"
+    )
+
     Application.load(:mongoose_push)
 
     Enum.each(opts, fn {key, value} ->
