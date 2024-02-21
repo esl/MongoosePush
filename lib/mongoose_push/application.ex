@@ -150,7 +150,7 @@ defmodule MongoosePush.Application do
   defp ensure_tls_opts(config) do
     case Application.get_env(:mongoose_push, :tls_server_cert_validation, nil) do
       false ->
-        Keyword.put(config, :tls_opts, [])
+        Keyword.put(config, :tls_opts, verify: :verify_none)
 
       _ ->
         config
