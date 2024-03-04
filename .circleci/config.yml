@@ -304,6 +304,7 @@ jobs:
       - restore_cache:
           keys:
               - certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
+      - run: mix local.hex --force && mix local.rebar --force
       - run:
           name: Compile mix deps
           command: mix do deps.get, deps.compile
