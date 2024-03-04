@@ -30,7 +30,7 @@ RUN mix do certs.dev, release
 RUN tar -czf mongoose_push.tar.gz -C _build/prod/rel/mongoose_push .
 
 
-FROM debian:sid-slim
+FROM debian:stable-slim
 
 
 # set locales
