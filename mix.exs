@@ -4,7 +4,7 @@ defmodule MongoosePush.Mixfile do
   def project do
     [
       app: :mongoose_push,
-      version: "2.1.0",
+      version: "2.1.1",
       elixir: "~> 1.6",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -35,29 +35,29 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-      {:chatterbox, github: "joedevivo/chatterbox", ref: "1f4ce4f", override: true},
-      {:sparrow, github: "esl/sparrow", ref: "203f847"},
-      {:plug_cowboy, "~> 2.5"},
+      {:chatterbox, github: "joedevivo/chatterbox", ref: "c0506c70", override: true},
+      {:sparrow, github: "esl/sparrow", tag: "1.0.2"},
+      {:plug_cowboy, "~> 2.6"},
       {:cowboy_telemetry, "~> 0.4.0", override: true},
       {:jason, "~> 1.4"},
       {:poison, "~> 5.0", override: true},
-      {:confex, "~> 3.2", override: true},
+      {:confex, "~> 3.5", override: true},
       {:uuid, "~> 1.1"},
-      {:lager, ">= 3.7.0", override: true},
-      {:phoenix, "~> 1.6"},
-      {:open_api_spex, "~> 3.12"},
-      {:toml, "~> 0.6.1"},
+      {:lager, "~> 3.9", override: true},
+      {:phoenix, "~> 1.7"},
+      {:open_api_spex, "~> 3.18"},
+      {:toml, "~> 0.7.0"},
       {:asn1_compiler, "~> 0.1.1"},
 
       # Below only :dev / :test deps
-      {:httpoison, "~> 1.8"},
-      {:excoveralls, "~> 0.7", only: :test},
-      {:dialyxir, "~> 1.2", only: [:dev, :test], runtime: false},
-      {:credo, "~> 1.6", only: [:dev, :test]},
-      {:ex_doc, "~> 0.14", only: :dev},
+      {:httpoison, "~> 2.2"},
+      {:excoveralls, "~> 0.18", only: :test},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test]},
+      {:ex_doc, "~> 0.31", only: :dev},
       {:quixir, "~> 0.9", only: [:test, :integration]},
       {:assert_eventually, "~> 1.0", only: [:test, :integration]},
-      {:mox, "~> 1.0", only: [:test, :integration]},
+      {:mox, "~> 1.1", only: [:test, :integration]},
       {:telemetry, "~> 1.1"},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_metrics_prometheus_core, "~> 1.1"},
@@ -197,7 +197,7 @@ defmodule MongoosePush.Mixfile do
     [
       mongoose_push: [
         include_executables_for: [:unix],
-        applications: [runtime_tools: :permanent, goth: :load],
+        applications: [runtime_tools: :permanent],
         config_providers: [
           {MongoosePush.Config.Provider.Toml, [path: "var/config.toml"]},
           {MongoosePush.Config.Provider.Confex, []}

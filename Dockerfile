@@ -1,7 +1,7 @@
-ARG ELIXIR_VERSION=1.13.4
-ARG OTP_VERSION=24.3.4.5
+ARG ELIXIR_VERSION=1.16.1
+ARG OTP_VERSION=26.2.2
 
-FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-focal-20211006 as builder
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-jammy-20240125 as builder
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     git \
@@ -49,8 +49,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     bash-completion \
     curl \
     dnsutils \
-    libtinfo5 \
-    libssl1.1 \
+    libssl3 \
     vim && \
     apt-get clean
 

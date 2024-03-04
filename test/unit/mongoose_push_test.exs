@@ -351,7 +351,7 @@ defmodule MongoosePushTest do
         use_2197: true,
         pool_size: 3,
         default_topic: "dev_topic1",
-        tls_opts: []
+        tls_opts: [verify: :verify_none]
       ],
       new_prod1: [
         auth: %{
@@ -365,7 +365,7 @@ defmodule MongoosePushTest do
         use_2197: true,
         pool_size: 3,
         default_topic: "prod_topic1",
-        tls_opts: []
+        tls_opts: [verify: :verify_none]
       ]
     ]
 
@@ -406,7 +406,7 @@ defmodule MongoosePushTest do
           pool_size: 3,
           default_topic: "dev_topic1",
           tags: [:tag1, :tag2],
-          tls_opts: []
+          tls_opts: [verify: :verify_none]
         ],
         dev2: [
           auth: %{
@@ -421,7 +421,7 @@ defmodule MongoosePushTest do
           pool_size: 3,
           default_topic: "prod_topic1",
           tags: [:tag2, :tag3],
-          tls_opts: []
+          tls_opts: [verify: :verify_none]
         ],
         prod1: [
           auth: %{
@@ -436,7 +436,7 @@ defmodule MongoosePushTest do
           pool_size: 3,
           default_topic: "dev_topic1",
           tags: [:tag1, :tag2],
-          tls_opts: []
+          tls_opts: [verify: :verify_none]
         ],
         prod2: [
           auth: %{
@@ -451,7 +451,7 @@ defmodule MongoosePushTest do
           pool_size: 3,
           default_topic: "prod_topic1",
           tags: [:tag2, :tag3],
-          tls_opts: []
+          tls_opts: [verify: :verify_none]
         ]
       ]
 
@@ -463,16 +463,16 @@ defmodule MongoosePushTest do
           mode: :prod,
           port: 4000,
           tags: [:tag1, :tag2, :tag3],
-          tls_opts: []
+          tls_opts: [verify: :verify_none]
         ],
         pool2: [
-          appfile: "priv/fcm/token.json",
+          appfile: "priv/fcm/token2.json",
           endpoint: "localhost",
           pool_size: 4,
           mode: :dev,
           port: 4000,
           tags: [:tag2, :tag3, :tag4],
-          tls_opts: []
+          tls_opts: [verify: :verify_none]
         ]
       ]
 
@@ -623,11 +623,11 @@ defmodule MongoosePushTest do
   end
 
   defp get_connection(:apns) do
-    :h2_client.start_link(:https, 'localhost', 2197, [])
+    :h2_client.start_link(:https, ~c"localhost", 2197, verify: :verify_none)
   end
 
   defp get_connection(:fcm) do
-    :h2_client.start_link(:https, 'localhost', 4000, [])
+    :h2_client.start_link(:https, ~c"localhost", 4000, verify: :verify_none)
   end
 
   defp get_response(conn) do
@@ -661,7 +661,7 @@ defmodule MongoosePushTest do
   # FCM v1 requires "3.5s" format, need to convert back to integer
   defp convert_ttl(ttl) do
     ttl
-    |> String.slice(0..-2)
+    |> String.slice(0..-2//1)
     |> String.to_integer()
   end
 end

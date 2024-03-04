@@ -24,7 +24,7 @@ services:
       - PUSH_FCM_PORT=4000
       - PUSH_FCM_ENDPOINT=fcm-mock
       - TLS_SERVER_CERT_VALIDATION=false
-      - FCM_AUTH_ENDPOINT=http://fcm-mock:4001
+      - FCM_AUTH_ENDPOINT=http://fcm-mock:4001/oauth2/v4/token
       - PUSH_OPENAPI_EXPOSE_SPEC=true
       - PUSH_OPENAPI_EXPOSE_UI=true
     ports:

@@ -50,4 +50,9 @@ defmodule MongoosePushWeb.Plug.CastAndValidate.StubAdapter do
   def send_resp(payload, _status, _headers, _body) do
     {:ok, nil, payload}
   end
+
+  @impl true
+  def upgrade(_payload, _protocol, _opts) do
+    {:error, :not_supported}
+  end
 end

@@ -26,15 +26,15 @@ executors:
     parameters:
       erlang_version:
         type: string
-        default: "24.3.4.5"
+        default: "26.2.2"
       elixir_version:
         type: string
-        default: "1.13.4"
+        default: "1.16.1"
       env:
         type: string
         default: test
     docker:
-      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-focal-20211006
+      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-jammy-20240125
       - image: mongooseim/fcm-mock-server
       - image: kamilwaz/apns-mock-server
     working_directory: ~/app
@@ -68,7 +68,7 @@ commands:
           name: Wait for APNS mock
           command: dockerize -wait tcp://localhost:2197 -timeout 1m
 
-      - run: MIX_ENV=test mix do certs.dev, coveralls.circle
+      - run: MIX_ENV=test mix do local.rebar, certs.dev, coveralls.circle
 
       - save_cache:
           key: build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -127,8 +127,8 @@ jobs:
     executor:
       name: elixir-builder
       env: dev
-      erlang_version: "24.3"
-      elixir_version: "1.13"
+      erlang_version: "26.2"
+      elixir_version: "1.16"
     steps:
       - checkout
       - restore_cache:
@@ -145,39 +145,39 @@ jobs:
           paths:
             - priv
 
-  test-erlang-24_elixir-1-13:
+  test-erlang-26_elixir-1-16:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "24.3.4.5"
-      elixir_version: "1.13.4"
+      erlang_version: "26.2.2"
+      elixir_version: "1.16.1"
     steps:
       - test
 
-  test-erlang-24_elixir-1-12:
+  test-erlang-26_elixir-1-15:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "24.3.4.5"
-      elixir_version: "1.13.4"
+      erlang_version: "26.2.2"
+      elixir_version: "1.15.7"
     steps:
       - test
 
-  test-erlang-23_elixir-1-13:
+  test-erlang-25_elixir-1-16:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "23.3.4.17"
-      elixir_version: "1.12.3"
+      erlang_version: "25.3.2.9"
+      elixir_version: "1.16.1"
     steps:
       - test
 
-  test-erlang-23_elixir-1-12:
+  test-erlang-25_elixir-1-15:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "23.3.4.17"
-      elixir_version: "1.12.3"
+      erlang_version: "25.3.2.9"
+      elixir_version: "1.15.7"
     steps:
       - test
 
@@ -341,19 +341,19 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-24_elixir-1-13:
+      - test-erlang-26_elixir-1-16:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-24_elixir-1-12:
+      - test-erlang-26_elixir-1-15:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-23_elixir-1-13:
+      - test-erlang-25_elixir-1-16:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-23_elixir-1-12:
+      - test-erlang-25_elixir-1-15:
           requires:
             - pre-build
           filters: *all_tags
@@ -371,7 +371,7 @@ workflows:
           requires:
             - integration-tests
             - build-docker-image
-            - test-erlang-23_elixir-1-13
+            - test-erlang-26_elixir-1-16
           filters: *all_tags
 
       - gh-pages-deploy:

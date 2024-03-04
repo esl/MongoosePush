@@ -92,7 +92,7 @@ defmodule MongoosePush.Service.APNS.State do
       end
     catch
       _, reason ->
-        Logger.warn("Unable to find default APNS topic",
+        Logger.warning("Unable to find default APNS topic",
           what: :default_apns_topic,
           result: :error,
           mode: config[:mode],

@@ -30,7 +30,10 @@ defmodule MongoosePush.Support.API do
 
   def get(path) do
     %Response{status_code: status, headers: headers, body: body} =
-      HTTPoison.get!("https://localhost:8443" <> path, [], hackney: [:insecure])
+      HTTPoison.get!("https://localhost:8443" <> path, [],
+        hackney: [:insecure],
+        ssl: [verify: :verify_none]
+      )
 
     {status, headers, body}
   end
@@ -41,7 +44,8 @@ defmodule MongoosePush.Support.API do
         "https://localhost:8443" <> path,
         Poison.encode!(json),
         [{"Content-Type", "application/json"}],
-        hackney: [:insecure]
+        hackney: [:insecure],
+        ssl: [verify: :verify_none]
       )
 
     details = Poison.decode!(body)
@@ -54,7 +58,8 @@ defmodule MongoosePush.Support.API do
         "https://localhost:8443" <> path,
         Poison.encode!(json),
         [{"Content-Type", "application/json"}],
-        hackney: [:insecure]
+        hackney: [:insecure],
+        ssl: [verify: :verify_none]
       )
 
     {status_code, body}
@@ -92,7 +97,7 @@ defmodule MongoosePush.Support.API do
   end
 
   def get_connection(:apns) do
-    :h2_client.start_link(:https, 'localhost', 2197, [])
+    :h2_client.start_link(:https, ~c"localhost", 2197, verify: :verify_none)
   end
 
   def headers(method, path, payload) do
