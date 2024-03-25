@@ -321,7 +321,7 @@ jobs:
           command: |
               set -x
               if [ -n "$CIRCLE_TAG" ]; then
-                  mix gh_pages_docs $CIRCLE_TAG
+                  mix  gh_pages_docs $CIRCLE_TAG
               elif [ "$CIRCLE_BRANCH" == "master" ]; then
                   mix gh_pages_docs latest
               fi
