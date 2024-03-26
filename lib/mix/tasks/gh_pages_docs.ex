@@ -9,16 +9,12 @@ defmodule Mix.Tasks.GhPagesDocs do
 
   @shortdoc "Update a documentation version on GH Pages."
 
-  @spec run(term) :: :ok
+  @spec run([String.t()]) :: :ok
   def run([version]) do
-    unless String.contains?(File.read!("assets/js/versions.js"), version) do
-      update_versions_js()
-    end
-
     version =
       case version do
         "latest" -> "v#{Project.config()[:version]}"
-        tag -> "v#{tag}"
+        tag -> prefix_tag(tag)
       end
 
     Mix.Task.run("docs")
@@ -37,7 +33,7 @@ defmodule Mix.Tasks.GhPagesDocs do
         0 = Mix.shell().cmd("git add #{version}/*")
 
         unless String.contains?(File.read!("assets/js/versions.js"), version) do
-          update_versions_js()
+          update_versions_js(version)
         end
 
         update_index_html()
@@ -53,30 +49,37 @@ defmodule Mix.Tasks.GhPagesDocs do
     end
   end
 
-  defp update_versions_js() do
-    current = Project.config()[:version]
-    {output, 0} = System.cmd("git", ["tag"], [])
+  def update_versions_js(current) do
+    {tags, 0} = System.cmd("git", ["tag"], [])
+
+    previous_versions =
+      tags
+      |> String.trim()
+      |> String.split("\n")
+      |> Enum.reverse()
+      |> Enum.map(&prefix_tag/1)
 
     versions = [
       current
       # we skip the old releases and generate from 1.0.6 on
-      | String.split(output, "\n") --
+      | previous_versions --
           [
-            "0.1.0",
-            "0.10.0",
-            "0.9.0",
-            "1.0.0",
-            "1.0.3",
-            "1.0.4",
-            "1.0.5"
+            "v0.1.0",
+            "v0.10.0",
+            "v0.9.0",
+            "v1.0.0",
+            "v1.0.3",
+            "v1.0.4",
+            "v1.0.5"
           ]
     ]
 
-    versions
-    |> Enum.map(&version_elem/1)
-    |> Enum.join(",\n")
+    versions_json =
+      versions
+      |> Enum.map(&version_elem/1)
+      |> Enum.join(",\n")
 
-    File.write!("assets/js/versions.js", "var versionNodes = [\n#{versions}\n]")
+    File.write!("assets/js/versions.js", "var versionNodes = [\n#{versions_json}\n]")
   end
 
   def update_index_html() do
@@ -96,7 +99,11 @@ defmodule Mix.Tasks.GhPagesDocs do
   end
 
   defp version_elem(version) do
-    "\t {\n\t\tversion: \"v#{version}\",
-     \turl: \"https://esl.github.io/MongoosePush/v#{version}/readme.html\"\n\t }"
+    "\t {\n\t\tversion: \"#{version}\",
+     \turl: \"https://esl.github.io/MongoosePush/#{version}/readme.html\"\n\t }"
+  end
+
+  defp prefix_tag(tag) do
+    "v#{tag}"
   end
 end
