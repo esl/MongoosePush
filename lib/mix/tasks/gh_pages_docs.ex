@@ -1,8 +1,6 @@
 defmodule Mix.Tasks.GhPagesDocs do
   use Mix.Task
 
-  alias Mix.Project
-
   @moduledoc """
   Task for updating existing documentation version published on GH Pages.
   """
@@ -13,35 +11,32 @@ defmodule Mix.Tasks.GhPagesDocs do
   def run([version]) do
     version =
       case version do
-        "latest" -> "v#{Project.config()[:version]}"
+        "latest" -> prefix_tag(Mix.Project.config()[:version])
         tag -> prefix_tag(tag)
       end
 
+    # firstly we need to update version.js for the mix docs task
+    update_versions_js(version)
+
     Mix.Task.run("docs")
-    File.cd!("doc")
+
     0 = Mix.shell().cmd("git stash")
-
-    # ignore all the changes, the only changes we want to track are in the
-    # doc directory which is listed in .gitignore
-
     0 = Mix.shell().cmd("git checkout gh-pages")
 
-    case File.mkdir("../#{version}") do
+    # secondly we do it again to avoid git conflicts from git stash pop
+    update_versions_js(version)
+    update_index_html(version)
+
+    # We don't want to have multiple -dev versions
+    Mix.shell().cmd("rm -rf *-dev/")
+
+    case File.mkdir("#{version}") do
       result when result in [:ok, {:error, :eexist}] ->
-        0 = Mix.shell().cmd("cp -r ./* ../#{version}")
-        File.cd!("..")
+        0 = Mix.shell().cmd("cp -r doc/* #{version}")
         0 = Mix.shell().cmd("git add #{version}/*")
-
-        unless String.contains?(File.read!("assets/js/versions.js"), version) do
-          update_versions_js(version)
-        end
-
-        update_index_html()
-
         0 = Mix.shell().cmd("git add assets/js/versions.js")
         0 = Mix.shell().cmd("git add index.html")
         0 = Mix.shell().cmd("git commit -m \"Add content for #{version}\"")
-        0 = Mix.shell().cmd("rm -rf doc")
         0 = Mix.shell().cmd("git push origin gh-pages")
 
       _ ->
@@ -76,19 +71,18 @@ defmodule Mix.Tasks.GhPagesDocs do
 
     versions_json =
       versions
+      |> Enum.uniq()
       |> Enum.map(&version_elem/1)
       |> Enum.join(",\n")
 
     File.write!("assets/js/versions.js", "var versionNodes = [\n#{versions_json}\n]")
   end
 
-  def update_index_html() do
-    current = Project.config()[:version]
-
+  def update_index_html(version) do
     content = """
     <html>
       <head>
-        <meta http-equiv="refresh" content="0;url=https://esl.github.io/MongoosePush/v#{current}/readme.html" />
+        <meta http-equiv="refresh" content="0;url=https://esl.github.io/MongoosePush/#{version}/readme.html" />
           <title></title>
       </head>
       <body></body>
