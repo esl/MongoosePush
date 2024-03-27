@@ -15,7 +15,7 @@ defmodule Mix.Tasks.GhPagesDocs do
         tag -> prefix_tag(tag)
       end
 
-    # firstly we need to update version.js for the mix docs task
+    # firstly we need to update versions.js for the mix docs task
     update_versions_js(version)
 
     Mix.Task.run("docs")
