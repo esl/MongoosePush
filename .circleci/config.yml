@@ -313,9 +313,7 @@ jobs:
           command: |
               git config --global user.email "mongoosepushbot@erlang-solutions.com"
               git config --global user.name "mongoosepushbot"
-      - add_ssh_keys:
-          fingerprints:
-            - "${GH_DEPLOY_KEY}"
+      - add_ssh_keys
       - run:
           name: Generate docs
           command: |

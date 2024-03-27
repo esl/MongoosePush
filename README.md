@@ -1,6 +1,6 @@
 # MongoosePush
 
-[![Build Status](https://travis-ci.org/esl/MongoosePush.svg?branch=master)](https://travis-ci.org/esl/MongoosePush) [![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=master)](https://coveralls.io/github/esl/MongoosePush?branch=master) [![Ebert](https://ebertapp.io/github/esl/MongoosePush.svg)](https://ebertapp.io/github/esl/MongoosePush)
+[![CircleCI](https://circleci.com/gh/esl/MongoosePush.svg?style=shield)](https://app.circleci.com/pipelines/github/esl/MongoosePush?branch=master) [![Coverage Status](https://coveralls.io/repos/github/esl/MongoosePush/badge.svg?branch=master)](https://coveralls.io/github/esl/MongoosePush?branch=master)
 
 **MongoosePush** is a simple, **RESTful** service written in **Elixir**, providing the ability to **send push
 notifications** to `FCM` (Firebase Cloud Messaging) and/or
