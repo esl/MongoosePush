@@ -15,7 +15,7 @@ defmodule Mix.Tasks.GhPagesDocs do
         tag -> prefix_tag(tag)
       end
 
-    # firstly we need to update versions.js for the mix docs task
+    # Firstly we need to update versions.js for the mix docs task
     update_versions_js(version)
 
     Mix.Task.run("docs")
@@ -23,7 +23,8 @@ defmodule Mix.Tasks.GhPagesDocs do
     0 = Mix.shell().cmd("git stash")
     0 = Mix.shell().cmd("git checkout gh-pages")
 
-    # secondly we do it again to avoid git conflicts from git stash pop
+    # Secondly we do it again to recreate it after checkout
+    # It is a simpler way than using git stash pop and resolving conflicts
     update_versions_js(version)
     update_index_html(version)
 
