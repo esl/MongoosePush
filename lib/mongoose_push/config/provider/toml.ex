@@ -21,7 +21,7 @@ defmodule MongoosePush.Config.Provider.Toml do
         config,
         [
           {@app,
-           Keyword.merge(updated_sysconfig,
+           Keyword.put(updated_sysconfig, :toml_configuration,
              status: {:ok, :loaded},
              path: opts[:path]
            )}
@@ -34,7 +34,7 @@ defmodule MongoosePush.Config.Provider.Toml do
       false ->
         Config.Reader.merge(
           config,
-          [{@app, status: {:ok, :skipped}, path: opts[:path]}]
+          [{@app, [toml_configuration: [status: {:ok, :skipped}, path: :path]]}]
         )
     end
   end
