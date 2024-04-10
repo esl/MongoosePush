@@ -4,7 +4,7 @@ defmodule MongoosePush.TomlTest do
   alias MongoosePush.Config.Provider.Toml, as: Provider
 
   test "toml overwrites log level" do
-    for level <- [:debug, :info, :warn, :error] do
+    for level <- [:debug, :info, :warning, :error] do
       sysconfig =
         Provider.update_sysconfig(
           default_sysconfig(),

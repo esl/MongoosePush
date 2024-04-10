@@ -54,7 +54,8 @@ defmodule MongoosePush.Config.Provider.Toml do
       case toml[:general][:logging][:level] do
         "debug" -> :debug
         "info" -> :info
-        "warn" -> :warn
+        "warn" -> :warning
+        "warning" -> :warning
         "error" -> :error
         nil -> sysconfig[:logging][:level]
         invalid -> raise "Invalid loglevel: #{invalid}!"
