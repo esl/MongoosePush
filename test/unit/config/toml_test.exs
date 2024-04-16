@@ -4,7 +4,7 @@ defmodule MongoosePush.TomlTest do
   alias MongoosePush.Config.Provider.Toml, as: Provider
 
   test "toml overwrites log level" do
-    for level <- [:debug, :info, :warn, :error] do
+    for level <- [:debug, :info, :warning, :error] do
       sysconfig =
         Provider.update_sysconfig(
           default_sysconfig(),
@@ -109,7 +109,7 @@ defmodule MongoosePush.TomlTest do
     assert sysconfig[MongoosePushWeb.Endpoint][:server] == true
   end
 
-  test "toml disables all services by default" do
+  test "toml leaves default services when not defined" do
     sysconfig =
       Provider.update_sysconfig(
         default_sysconfig(),
@@ -120,10 +120,10 @@ defmodule MongoosePush.TomlTest do
         )
       )
 
-    assert sysconfig[:fcm_enabled] == false
-    assert sysconfig[:fcm] == []
-    assert sysconfig[:apns_enabled] == false
-    assert sysconfig[:apns] == []
+    assert sysconfig[:fcm_enabled] == default_sysconfig()[:fcm_enabled]
+    assert sysconfig[:fcm] == default_sysconfig()[:fcm]
+    assert sysconfig[:apns_enabled] == default_sysconfig()[:apns_enabled]
+    assert sysconfig[:apns] == default_sysconfig()[:apns]
   end
 
   test "toml defines fcm pool" do
@@ -152,8 +152,8 @@ defmodule MongoosePush.TomlTest do
         )
       )
 
-    assert sysconfig[:apns_enabled] == false
-    assert sysconfig[:apns] == []
+    assert sysconfig[:apns_enabled] == default_sysconfig()[:apns_enabled]
+    assert sysconfig[:apns] == default_sysconfig()[:apns]
 
     assert sysconfig[:fcm_enabled] == true
     assert sysconfig[:fcm][:fcm_1][:endpoint] == "localhost"
@@ -218,8 +218,8 @@ defmodule MongoosePush.TomlTest do
         )
       )
 
-    assert sysconfig[:fcm_enabled] == false
-    assert sysconfig[:fcm] == []
+    assert sysconfig[:fcm_enabled] == default_sysconfig()[:fcm_enabled]
+    assert sysconfig[:fcm] == default_sysconfig()[:fcm]
 
     assert sysconfig[:apns_enabled] == true
 

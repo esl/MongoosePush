@@ -36,9 +36,9 @@ config :mongoose_push, :logging,
   level: {:system, :atom, "PUSH_LOGLEVEL", :info},
   format: {:system, :atom, "PUSH_LOGFORMAT", :json}
 
-config :mongoose_push, fcm_enabled: {:system, :boolean, "PUSH_FCM_ENABLED", true}
+config :mongoose_push, fcm_enabled: {:system, :boolean, "PUSH_FCM_ENABLED", false}
 
-config :mongoose_push, apns_enabled: {:system, :boolean, "PUSH_APNS_ENABLED", true}
+config :mongoose_push, apns_enabled: {:system, :boolean, "PUSH_APNS_ENABLED", false}
 
 config :mongoose_push,
   tls_server_cert_validation: {:system, :boolean, "TLS_SERVER_CERT_VALIDATION", true}

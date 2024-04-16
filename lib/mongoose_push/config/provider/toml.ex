@@ -17,11 +17,13 @@ defmodule MongoosePush.Config.Provider.Toml do
       current_sysconfig = Application.get_all_env(@app)
       updated_sysconfig = update_sysconfig(current_sysconfig, toml_config)
 
+      config = maybe_erase_confex_services(config, updated_sysconfig)
+
       Config.Reader.merge(
         config,
         [
           {@app,
-           Keyword.merge(updated_sysconfig,
+           Keyword.put(updated_sysconfig, :toml_configuration,
              status: {:ok, :loaded},
              path: opts[:path]
            )}
@@ -34,7 +36,7 @@ defmodule MongoosePush.Config.Provider.Toml do
       false ->
         Config.Reader.merge(
           config,
-          [{@app, status: {:ok, :skipped}, path: opts[:path]}]
+          [{@app, [toml_configuration: [status: {:ok, :skipped}, path: :path]]}]
         )
     end
   end
@@ -49,12 +51,21 @@ defmodule MongoosePush.Config.Provider.Toml do
     |> update_service(toml_config, :apns)
   end
 
+  defp maybe_erase_confex_services(config, updated_sysconfig) do
+    # If some pools are defined in TOML config, we want to remove the default ones explicitly
+    # because Config.Reader.merge/2 would keep them both, and the default would still be created
+    config
+    |> maybe_erase_default_service(:fcm, updated_sysconfig[:fcm_enabled])
+    |> maybe_erase_default_service(:apns, updated_sysconfig[:apns_enabled])
+  end
+
   defp update_logging_level(sysconfig, toml) do
     level =
       case toml[:general][:logging][:level] do
         "debug" -> :debug
         "info" -> :info
-        "warn" -> :warn
+        "warn" -> :warning
+        "warning" -> :warning
         "error" -> :error
         nil -> sysconfig[:logging][:level]
         invalid -> raise "Invalid loglevel: #{invalid}!"
@@ -129,9 +140,28 @@ defmodule MongoosePush.Config.Provider.Toml do
         {String.to_atom("#{service}_#{i}"), parsed_data}
       end)
 
-    sysconfig
-    |> Keyword.put(service, parsed_service)
-    |> Keyword.put(String.to_atom("#{service}_enabled"), length(parsed_service) > 0)
+    case parsed_service do
+      [] ->
+        sysconfig
+
+      _ ->
+        sysconfig
+        |> Keyword.put(service, parsed_service)
+        |> Keyword.put(String.to_atom("#{service}_enabled"), true)
+    end
+  end
+
+  defp maybe_erase_default_service(config, service, true) do
+    updated_app_config =
+      config[@app]
+      |> Keyword.put(service, [])
+
+    config
+    |> Keyword.put(@app, updated_app_config)
+  end
+
+  defp maybe_erase_default_service(config, _, _) do
+    config
   end
 
   defp parse_service(:fcm, toml) do

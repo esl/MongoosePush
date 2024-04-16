@@ -111,10 +111,10 @@ Environment variables to configure a production release.
 * `PUSH_HTTPS_ACCEPTORS` - Number of TCP acceptors to start
 
 #### General settings:
-* `PUSH_LOGLEVEL` - `debug`/`info`/`warn`/`error` - Log level of the application. `info` is the default one
+* `PUSH_LOGLEVEL` - `debug`/`info`/`warning`/`error` - Log level of the application. `info` is the default one
 * `PUSH_LOGFORMAT` - `logfmt`/`json` - Log format of the application. Defaults to `logfmt` for the `dev` and `test` environments, and to `json` for the `prod` environment.
-* `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Enabled by default
-* `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Enabled by default
+* `PUSH_FCM_ENABLED` - `true`/`false` - Enable or disable `FCM` support. Disabled by default
+* `PUSH_APNS_ENABLED` - `true`/`false` - Enable or disable `APNS` support. Disabled by default
 * `TLS_SERVER_CERT_VALIDATION` - `true`/`false` - Enable or disable TLS
   options for both FCM and APNS.
 * `PUSH_OPENAPI_EXPOSE_SPEC` - `true`/`false` - Enable or disable OpenAPI specification endpoint support. If enabled, it will be available on `/swagger.json` HTTP path. Disabled by default
@@ -149,9 +149,13 @@ Environment variables to configure a production release.
 
 ## TOML schema
 
+  > IMPORTANT:
+  > When a configuration option is defined in TOML file it can't be overwritten by environmental variables.
+  > You can use both methods for different options though. 
+
 #### General keys
 
-* `general.logging.level` (*string*, *optional*) - One of: `debug`/`info`/`warn`/`error`. If not set, falls back to the environment variable `PUSH_LOGLEVEL` or its default.
+* `general.logging.level` (*string*, *optional*) - One of: `debug`/`info`/`warning`/`error`. If not set, falls back to the environment variable `PUSH_LOGLEVEL` or its default.
 * `general.https.bind.addr` (*string*, *optional*) - Bind IP address of the HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_BIND_ADDR` or its default.
 * `general.https.bind.port` (*integer*, *optional*) - Port of the HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_PORT` or its default.
 * `general.https.num_acceptors` (*integer*, *optional*) - Number of TCP acceptors to start. If not set, falls back to the environment variable `PUSH_HTTPS_ACCEPTORS` or its default.
