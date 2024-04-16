@@ -52,8 +52,8 @@ defmodule MongoosePush.Config.Provider.Toml do
   end
 
   defp maybe_erase_confex_services(config, updated_sysconfig) do
-    # If some pools are defined in TOML config we want to remove the default ones explicitely
-    # because Config.Reader.merge/2 would keep them both and the default would still be created
+    # If some pools are defined in TOML config, we want to remove the default ones explicitly
+    # because Config.Reader.merge/2 would keep them both, and the default would still be created
     config
     |> maybe_erase_default_service(:fcm, updated_sysconfig[:fcm_enabled])
     |> maybe_erase_default_service(:apns, updated_sysconfig[:apns_enabled])
