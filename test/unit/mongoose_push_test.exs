@@ -358,7 +358,8 @@ defmodule MongoosePushTest do
           type: :token,
           key_id: "fake_key",
           team_id: "fake_team",
-          p8_file_path: "priv/apns/token.p8"
+          # We test if the pool will be created without error with absolute path
+          p8_file_path: Application.app_dir(:mongoose_push, "priv/apns/token.p8")
         },
         endpoint: "localhost",
         mode: :prod,

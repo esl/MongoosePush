@@ -156,6 +156,7 @@ Environment variables to configure a production release.
 #### General keys
 
 * `general.logging.level` (*string*, *optional*) - One of: `debug`/`info`/`warning`/`error`. If not set, falls back to the environment variable `PUSH_LOGLEVEL` or its default.
+* `general.logging.format` (*string*, *optional*) - One of: `logfmt`/`json` - Log format of the application. If not set, falls back to the environment variable `PUSH_LOGFORMAT` or its default.
 * `general.https.bind.addr` (*string*, *optional*) - Bind IP address of the HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_BIND_ADDR` or its default.
 * `general.https.bind.port` (*integer*, *optional*) - Port of the HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_PORT` or its default.
 * `general.https.num_acceptors` (*integer*, *optional*) - Number of TCP acceptors to start. If not set, falls back to the environment variable `PUSH_HTTPS_ACCEPTORS` or its default.

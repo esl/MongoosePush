@@ -139,12 +139,22 @@ defmodule MongoosePush.Application do
     Enum.map(config, fn {key, value} ->
       case Enum.member?(path_keys, key) do
         true ->
-          {key, Application.app_dir(:mongoose_push, value)}
+          {key, resolve_path(value)}
 
         false ->
           {key, value}
       end
     end)
+  end
+
+  defp resolve_path(path) do
+    case Path.type(path) do
+      :absolute ->
+        path
+
+      :relative ->
+        Application.app_dir(:mongoose_push, path)
+    end
   end
 
   defp ensure_tls_opts(config) do
