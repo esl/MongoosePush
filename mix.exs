@@ -79,7 +79,8 @@ defmodule MongoosePush.Mixfile do
         "guides/http_api.md": [file: "guides/http_api", title: "HTTP API"],
         "guides/healthcheck.md": [file: "guides/healthcheck", title: "Healthcheck"],
         "guides/metrics.md": [file: "guides/metrics", title: "Metrics"],
-        "guides/migrations/2.0.x_2.1.0.md": [file: "guides/migrationts/2.0.x_2.1.0", title: "2.0.x to 2.1.0"]
+        "guides/migrations/2.0.x_2.1.0.md": [file: "guides/migrationts/2.0.x_2.1.0", title: "2.0.x to 2.1.0"],
+        "guides/migrations/2.1.1_2.1.2.md": [file: "guides/migrationts/2.1.1_2.1.2", title: "2.1.1 to 2.1.2"]
         ],
       groups_for_extras: [
         "Guides": Path.wildcard("guides/*.md"),
