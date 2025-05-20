@@ -228,8 +228,7 @@ jobs:
               curl -1sLf 'https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/setup.deb.sh' | sudo -E bash && \
               sudo apt-get update && \
               sudo apt-get install -y erlang && \
-              sudo apt-get install -y elixir &&\
-              elixir -v
+              sudo apt-get install -y elixir
               wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
               sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
               sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
