@@ -219,7 +219,7 @@ jobs:
 
   integration-tests:
     machine:
-        image: ubuntu-2004:current
+        image: ubuntu-2404:current
     steps:
       - checkout
       - run:
