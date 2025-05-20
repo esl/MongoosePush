@@ -5,7 +5,7 @@ defmodule MongoosePush.Mixfile do
     [
       app: :mongoose_push,
       version: "2.2.0-dev",
-      elixir: "~> 1.6",
+      elixir: "~> 1.17",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
