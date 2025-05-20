@@ -196,7 +196,8 @@ defmodule MongoosePush.Mixfile do
 
   defp aliases do
     [
-      test: ["test.env.wait 5000", "test --no-start"]
+      test: ["test.env.wait 5000", "test --no-start"],
+      compile: "compile --warnings-as-errors"
     ]
   end
 
