@@ -48,9 +48,14 @@ defmodule MongoosePush.Mixfile do
       {:open_api_spex, "~> 3.18"},
       {:toml, "~> 0.7.0"},
       {:asn1_compiler, "~> 0.1.1"},
+      {:httpoison, "~> 2.2"},
+      {:telemetry, "~> 1.1"},
+      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_metrics_prometheus_core, "~> 1.1"},
+      {:telemetry_poller, "~> 1.0"},
+      {:logfmt, "~> 3.3"},
 
       # Below only :dev / :test deps
-      {:httpoison, "~> 2.2"},
       {:excoveralls, "~> 0.18", only: :test},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test]},
@@ -58,11 +63,6 @@ defmodule MongoosePush.Mixfile do
       {:quixir, "~> 0.9", only: [:test, :integration]},
       {:assert_eventually, "~> 1.0", only: [:test, :integration]},
       {:mox, "~> 1.1", only: [:test, :integration]},
-      {:telemetry, "~> 1.1"},
-      {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_metrics_prometheus_core, "~> 1.1"},
-      {:telemetry_poller, "~> 1.0"},
-      {:logfmt, "~> 3.3"},
       {:stream_data, "~> 0.5", only: [:test, :integration]}
     ]
   end
