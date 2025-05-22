@@ -26,15 +26,15 @@ executors:
     parameters:
       erlang_version:
         type: string
-        default: "26.2.2"
+        default: "27.3.4"
       elixir_version:
         type: string
-        default: "1.16.1"
+        default: "1.18.3"
       env:
         type: string
         default: test
     docker:
-      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-jammy-20240125
+      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-noble-20250415.1
       - image: mongooseim/fcm-mock-server
       - image: ghcr.io/kamilwaz/apns-mock-server:main
     working_directory: ~/app
@@ -145,39 +145,39 @@ jobs:
           paths:
             - priv
 
-  test-erlang-26_elixir-1-16:
+  test-erlang-27_elixir-1-18:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "26.2.2"
-      elixir_version: "1.16.1"
+      erlang_version: "27.3.4"
+      elixir_version: "1.18.3"
     steps:
       - test
 
-  test-erlang-26_elixir-1-15:
+  test-erlang-27_elixir-1-17:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "26.2.2"
-      elixir_version: "1.15.7"
+      erlang_version: "27.3.4"
+      elixir_version: "1.17.3"
     steps:
       - test
 
-  test-erlang-25_elixir-1-16:
+  test-erlang-26_elixir-1-18:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "25.3.2.9"
-      elixir_version: "1.16.1"
+      erlang_version: "26.2.5.12"
+      elixir_version: "1.18.3"
     steps:
       - test
 
-  test-erlang-25_elixir-1-15:
+  test-erlang-26_elixir-1-17:
     executor:
       name: elixir-builder
       env: test
-      erlang_version: "25.3.2.9"
-      elixir_version: "1.15.7"
+      erlang_version: "26.2.5.12"
+      elixir_version: "1.17.3"
     steps:
       - test
 
@@ -336,19 +336,19 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-26_elixir-1-16:
+      - test-erlang-27_elixir-1-18:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-26_elixir-1-15:
+      - test-erlang-27_elixir-1-17:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-25_elixir-1-16:
+      - test-erlang-26_elixir-1-18:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-25_elixir-1-15:
+      - test-erlang-26_elixir-1-17:
           requires:
             - pre-build
           filters: *all_tags
@@ -366,7 +366,7 @@ workflows:
           requires:
             - integration-tests
             - build-docker-image
-            - test-erlang-26_elixir-1-16
+            - test-erlang-27_elixir-1-18
           filters: *all_tags
 
       - gh-pages-deploy:

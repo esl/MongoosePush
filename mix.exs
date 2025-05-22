@@ -5,7 +5,7 @@ defmodule MongoosePush.Mixfile do
     [
       app: :mongoose_push,
       version: "2.2.0-dev",
-      elixir: "~> 1.6",
+      elixir: "~> 1.17",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -36,11 +36,11 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "c0506c70", override: true},
-      {:sparrow, github: "esl/sparrow", tag: "1.0.2"},
+      {:sparrow, github: "esl/sparrow", tag: "1.0.3"},
       {:plug_cowboy, "~> 2.6"},
       {:cowboy_telemetry, "~> 0.4.0", override: true},
       {:jason, "~> 1.4"},
-      {:poison, "~> 5.0", override: true},
+      {:poison, "~> 6.0", override: true},
       {:confex, "~> 3.5", override: true},
       {:uuid, "~> 1.1"},
       {:lager, "~> 3.9", override: true},
@@ -48,9 +48,14 @@ defmodule MongoosePush.Mixfile do
       {:open_api_spex, "~> 3.18"},
       {:toml, "~> 0.7.0"},
       {:asn1_compiler, "~> 0.1.1"},
+      {:httpoison, "~> 2.2"},
+      {:telemetry, "~> 1.1"},
+      {:telemetry_metrics, "~> 1.1"},
+      {:telemetry_metrics_prometheus_core, "~> 1.1"},
+      {:telemetry_poller, "~> 1.0"},
+      {:logfmt, "~> 3.3"},
 
       # Below only :dev / :test deps
-      {:httpoison, "~> 2.2"},
       {:excoveralls, "~> 0.18", only: :test},
       {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
       {:credo, "~> 1.7", only: [:dev, :test]},
@@ -58,12 +63,7 @@ defmodule MongoosePush.Mixfile do
       {:quixir, "~> 0.9", only: [:test, :integration]},
       {:assert_eventually, "~> 1.0", only: [:test, :integration]},
       {:mox, "~> 1.1", only: [:test, :integration]},
-      {:telemetry, "~> 1.1"},
-      {:telemetry_metrics, "~> 0.6"},
-      {:telemetry_metrics_prometheus_core, "~> 1.1"},
-      {:telemetry_poller, "~> 1.0"},
-      {:logfmt, "~> 3.3"},
-      {:stream_data, "~> 0.5", only: [:test, :integration]}
+      {:stream_data, "~> 1.0", only: [:test, :integration]}
     ]
   end
 
@@ -196,7 +196,8 @@ defmodule MongoosePush.Mixfile do
 
   defp aliases do
     [
-      test: ["test.env.wait 5000", "test --no-start"]
+      test: ["test.env.wait 5000", "test --no-start"],
+      compile: "compile --warnings-as-errors"
     ]
   end
 
