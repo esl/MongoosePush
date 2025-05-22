@@ -50,7 +50,7 @@ defmodule MongoosePush.Mixfile do
       {:asn1_compiler, "~> 0.1.1"},
       {:httpoison, "~> 2.2"},
       {:telemetry, "~> 1.1"},
-      {:telemetry_metrics, "~> 0.6"},
+      {:telemetry_metrics, "~> 1.1"},
       {:telemetry_metrics_prometheus_core, "~> 1.1"},
       {:telemetry_poller, "~> 1.0"},
       {:logfmt, "~> 3.3"},
