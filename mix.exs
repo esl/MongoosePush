@@ -40,7 +40,7 @@ defmodule MongoosePush.Mixfile do
       {:plug_cowboy, "~> 2.6"},
       {:cowboy_telemetry, "~> 0.4.0", override: true},
       {:jason, "~> 1.4"},
-      {:poison, "~> 5.0", override: true},
+      {:poison, "~> 6.0", override: true},
       {:confex, "~> 3.5", override: true},
       {:uuid, "~> 1.1"},
       {:lager, "~> 3.9", override: true},
