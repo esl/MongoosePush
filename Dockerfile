@@ -1,7 +1,7 @@
 ARG ELIXIR_VERSION=1.18.3
 ARG OTP_VERSION=27.3.4
 
-FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-jammy-20240125 as builder
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-jammy-20250404 as builder
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     git \
