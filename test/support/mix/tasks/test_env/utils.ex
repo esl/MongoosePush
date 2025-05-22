@@ -78,7 +78,7 @@ defmodule Mix.Tasks.Test.Env.Utils do
     url = "#{proto}://#{host}:#{port}/"
 
     with {:ok, _} <-
-           HTTPoison.get(url, [], ssl: [verify: :verify_none]) do
+           HTTPoison.get(url, [], ssl: [insecure: true]) do
       :ok
     end
   end

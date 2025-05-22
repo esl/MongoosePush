@@ -32,7 +32,7 @@ defmodule MongoosePush.Support.API do
     %Response{status_code: status, headers: headers, body: body} =
       HTTPoison.get!("https://localhost:8443" <> path, [],
         hackney: [:insecure],
-        ssl: [verify: :verify_none]
+        ssl: [insecure: true]
       )
 
     {status, headers, body}
@@ -45,7 +45,7 @@ defmodule MongoosePush.Support.API do
         Poison.encode!(json),
         [{"Content-Type", "application/json"}],
         hackney: [:insecure],
-        ssl: [verify: :verify_none]
+        ssl: [insecure: true]
       )
 
     details = Poison.decode!(body)
@@ -59,7 +59,7 @@ defmodule MongoosePush.Support.API do
         Poison.encode!(json),
         [{"Content-Type", "application/json"}],
         hackney: [:insecure],
-        ssl: [verify: :verify_none]
+        ssl: [insecure: true]
       )
 
     {status_code, body}
