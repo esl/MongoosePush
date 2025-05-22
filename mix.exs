@@ -63,7 +63,7 @@ defmodule MongoosePush.Mixfile do
       {:quixir, "~> 0.9", only: [:test, :integration]},
       {:assert_eventually, "~> 1.0", only: [:test, :integration]},
       {:mox, "~> 1.1", only: [:test, :integration]},
-      {:stream_data, "~> 0.5", only: [:test, :integration]}
+      {:stream_data, "~> 1.0", only: [:test, :integration]}
     ]
   end
 
