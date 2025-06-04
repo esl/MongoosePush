@@ -4,6 +4,10 @@ var versionNodes = [
      	url: "https://esl.github.io/MongoosePush/v2.2.0-dev/readme.html"
 	 },
 	 {
+		version: "v2.2.0",
+     	url: "https://esl.github.io/MongoosePush/v2.2.0/readme.html"
+	 },
+	 {
 		version: "v2.1.2",
      	url: "https://esl.github.io/MongoosePush/v2.1.2/readme.html"
 	 },
