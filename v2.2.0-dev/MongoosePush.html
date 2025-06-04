@@ -4,46 +4,28 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.31.1">
+    <meta name="generator" content="ExDoc v0.38.1">
     <meta name="project" content="MongoosePush v2.2.0-dev">
 
 
     <title>MongoosePush — MongoosePush v2.2.0-dev</title>
-    <link rel="stylesheet" href="dist/html-elixir-FM2CSD74.css" />
 
+    <link rel="stylesheet" href="dist/html-elixir-J3PIVQVA.css" />
 
-    <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
-    <script src="dist/handlebars.templates-43PMFBC7.js"></script>
-    <script src="dist/sidebar_items-31EBBC29.js"></script>
-
-      <script src="../assets/js/versions.js"></script>
-
-    <script async src="dist/html-L4O5OK2K.js"></script>
-
+    <script defer src="dist/sidebar_items-02010149.js"></script>
+    <script defer src="docs_config.js"></script>
+    <script defer src="dist/html-DPJLHKSM.js"></script>
 
   </head>
-  <body data-type="modules" class="page-module">
-    <script>
+  <body>
+    <script>(()=>{var t="ex_doc:settings",e="dark";var o="dark",s="light";var E="sidebar_state",n="closed";var r="sidebar_width";var a="sidebar-open";var i=new URLSearchParams(window.location.search),S=i.get("theme")||JSON.parse(localStorage.getItem(t)||"{}").theme;(S===o||S!==s&&window.matchMedia("(prefers-color-scheme: dark)").matches)&&document.body.classList.add(e);var d=sessionStorage.getItem(E),A=d!==n&&!window.matchMedia(`screen and (max-width: ${768}px)`).matches;document.body.classList.toggle(a,A);var c=sessionStorage.getItem(r);c&&document.body.style.setProperty("--sidebarWidth",`${c}px`);var p=/(Macintosh|iPhone|iPad|iPod)/.test(window.navigator.userAgent);document.documentElement.classList.toggle("apple-os",p);})();
+</script>
 
-      try {
-        var settings = JSON.parse(localStorage.getItem('ex_doc:settings') || '{}');
-
-        if (settings.theme === 'dark' ||
-           ((settings.theme === 'system' || settings.theme == null) &&
-             window.matchMedia('(prefers-color-scheme: dark)').matches)
-           ) {
-          document.body.classList.add('dark')
-        }
-      } catch (error) { }
-    </script>
-
-<div class="main">
+<div class="body-wrapper">
 
 <button id="sidebar-menu" class="sidebar-button sidebar-toggle" aria-label="toggle sidebar" aria-controls="sidebar">
   <i class="ri-menu-line ri-lg" title="Collapse/expand sidebar"></i>
 </button>
-
-<div class="background-layer"></div>
 
 <nav id="sidebar" class="sidebar">
 
@@ -59,94 +41,63 @@ MongoosePush
         </div>
       </div>
     </div>
-    <ul id="sidebar-listNav" class="sidebar-listNav" role="tablist">
-      <li>
-        <button id="extras-list-tab-button" role="tab" data-type="extras" aria-controls="extras-tab-panel" aria-selected="true" tabindex="0">
-Pages
-        </button>
-      </li>
-
-        <li>
-          <button id="modules-list-tab-button" role="tab" data-type="modules" aria-controls="modules-tab-panel" aria-selected="false" tabindex="-1">
-            Modules
-          </button>
-        </li>
-
-
-        <li>
-          <button id="tasks-list-tab-button" role="tab" data-type="tasks" aria-controls="tasks-tab-panel" aria-selected="false" tabindex="-1">
-            <span translate="no">Mix</span> Tasks
-          </button>
-        </li>
-
-    </ul>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras=""></ul>
   </div>
-
-  <div id="extras-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="extras-list-tab-button">
-    <ul id="extras-full-list" class="full-list"></ul>
-  </div>
-
-    <div id="modules-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="modules-list-tab-button" hidden>
-      <ul id="modules-full-list" class="full-list"></ul>
-    </div>
-
-
-    <div id="tasks-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="tasks-list-tab-button" hidden>
-      <ul id="tasks-full-list" class="full-list"></ul>
-    </div>
-
 </nav>
 
-<main class="content">
-  <output role="status" id="toast"></output>
-  <div class="content-outer">
-    <div id="content" class="content-inner">
-      <div class="top-search">
-        <div class="search-settings">
-          <form class="search-bar" action="search.html">
-            <label class="search-label">
-              <span class="sr-only">Search documentation of MongoosePush</span>
-              <input name="q" type="text" class="search-input" placeholder="Search Documentation (press /)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            </label>
-            <button type="submit" class="search-button" aria-label="Submit Search">
-              <i class="ri-search-2-line ri-lg" aria-hidden="true" title="Submit search"></i>
-            </button>
-            <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
-              <i class="ri-close-line ri-lg" title="Cancel search"></i>
-            </button>
-          </form>
-          <div class="autocomplete">
-          </div>
-          <button class="icon-settings display-settings">
-            <i class="ri-settings-3-line"></i>
-            <span class="sr-only">Settings</span>
+<output role="status" id="toast"></output>
+
+<main class="content page-module" id="main" data-type="modules">
+  <div id="content" class="content-inner">
+    <div class="top-search">
+      <div class="search-settings">
+        <form class="search-bar" action="search.html">
+          <label class="search-label">
+            <span class="sr-only">Search documentation of MongoosePush</span>
+            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          </label>
+          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
+            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
           </button>
+          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+            <i class="ri-close-line ri-lg" title="Cancel search"></i>
+          </button>
+        </form>
+        <div class="autocomplete">
         </div>
-
+        <button class="icon-settings display-settings">
+          <i class="ri-settings-3-line"></i>
+          <span class="sr-only">Settings</span>
+        </button>
       </div>
+    </div>
 
-<h1>
+<div id="top-content">
+  <div class="heading-with-actions top-heading">
+    <h1>
+      <span translate="no">MongoosePush</span> 
+      <small class="app-vsn" translate="no">(MongoosePush v2.2.0-dev)</small>
 
-    <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L1" title="View Source" class="icon-action" rel="help">
-      <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-      <span class="sr-only">View Source</span>
-    </a>
+    </h1>
 
-  <span translate="no">MongoosePush</span> 
-  <small class="app-vsn" translate="no">(MongoosePush v2.2.0-dev)</small>
+      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L1" title="View Source" class="icon-action" rel="help">
+        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        <span class="sr-only">View Source</span>
+      </a>
 
-</h1>
+  </div>
 
 
-  <section id="moduledoc">
+    <section id="moduledoc">
 <p>MongoosePush is simple (seriously) service providing ability to send push
 notification to <code class="inline">FCM</code> (Firebase Cloud Messaging) and/or
 <code class="inline">APNS</code> (Apple Push Notification Service). What makes it cool is not only
 simplicity but also support for newest and fastest <code class="inline">HTTP/2</code> based APIs
 for both services.</p><p>At this moment only those two services are supported but in future
 MongoosePush may and probably will support even more Push Notification Services.</p>
-  </section>
+    </section>
 
+</div>
 
   <section id="summary" class="details-list">
     <h1 class="section-heading">
@@ -162,7 +113,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:alert/0" translate="no">alert()</a>
+        <a href="#t:alert/0" data-no-tooltip="" translate="no">alert()</a>
 
       </div>
 
@@ -170,7 +121,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:alert_key/0" translate="no">alert_key()</a>
+        <a href="#t:alert_key/0" data-no-tooltip="" translate="no">alert_key()</a>
 
       </div>
 
@@ -178,7 +129,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:data/0" translate="no">data()</a>
+        <a href="#t:data/0" data-no-tooltip="" translate="no">data()</a>
 
       </div>
 
@@ -186,7 +137,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:data_key/0" translate="no">data_key()</a>
+        <a href="#t:data_key/0" data-no-tooltip="" translate="no">data_key()</a>
 
       </div>
 
@@ -194,7 +145,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:error/0" translate="no">error()</a>
+        <a href="#t:error/0" data-no-tooltip="" translate="no">error()</a>
 
       </div>
 
@@ -202,7 +153,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:mode/0" translate="no">mode()</a>
+        <a href="#t:mode/0" data-no-tooltip="" translate="no">mode()</a>
 
       </div>
 
@@ -210,7 +161,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:req_key/0" translate="no">req_key()</a>
+        <a href="#t:req_key/0" data-no-tooltip="" translate="no">req_key()</a>
 
       </div>
 
@@ -220,7 +171,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:request/0" translate="no">request()</a>
+        <a href="#t:request/0" data-no-tooltip="" translate="no">request()</a>
 
       </div>
 
@@ -230,7 +181,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#t:service/0" translate="no">service()</a>
+        <a href="#t:service/0" data-no-tooltip="" translate="no">service()</a>
 
       </div>
 
@@ -244,7 +195,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
     <div class="summary-row">
       <div class="summary-signature">
-        <a href="#push/2" translate="no">push(device_id, request)</a>
+        <a href="#push/2" data-no-tooltip="" translate="no">push(device_id, request)</a>
 
       </div>
 
@@ -272,18 +223,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:alert/0">
 
   <div class="detail-header">
-    <a href="#t:alert/0" class="detail-link" title="Link to this type">
+    <a href="#t:alert/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">alert()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L34" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">alert()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L34" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -300,18 +251,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:alert_key/0">
 
   <div class="detail-header">
-    <a href="#t:alert_key/0" class="detail-link" title="Link to this type">
+    <a href="#t:alert_key/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">alert_key()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L29" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">alert_key()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L29" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -328,18 +279,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:data/0">
 
   <div class="detail-header">
-    <a href="#t:data/0" class="detail-link" title="Link to this type">
+    <a href="#t:data/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">data()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L35" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">data()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L35" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -356,18 +307,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:data_key/0">
 
   <div class="detail-header">
-    <a href="#t:data_key/0" class="detail-link" title="Link to this type">
+    <a href="#t:data_key/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">data_key()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L30" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">data_key()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L30" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -384,18 +335,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:error/0">
 
   <div class="detail-header">
-    <a href="#t:error/0" class="detail-link" title="Link to this type">
+    <a href="#t:error/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">error()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L40" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">error()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L40" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -413,18 +364,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:mode/0">
 
   <div class="detail-header">
-    <a href="#t:mode/0" class="detail-link" title="Link to this type">
+    <a href="#t:mode/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">mode()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L38" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">mode()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L38" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -441,18 +392,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:req_key/0">
 
   <div class="detail-header">
-    <a href="#t:req_key/0" class="detail-link" title="Link to this type">
+    <a href="#t:req_key/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">req_key()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L19" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">req_key()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L19" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -478,18 +429,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:request/0">
 
   <div class="detail-header">
-    <a href="#t:request/0" class="detail-link" title="Link to this type">
+    <a href="#t:request/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">request()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L33" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">request()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L33" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -508,18 +459,18 @@ silent notifications.</p></div>
 <section class="detail" id="t:service/0">
 
   <div class="detail-header">
-    <a href="#t:service/0" class="detail-link" title="Link to this type">
+    <a href="#t:service/0" class="detail-link" data-no-tooltip="" aria-label="Link to this type">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this type</span>
     </a>
-    <h1 class="signature" translate="no">service()</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L37" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">service()</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L37" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -548,18 +499,18 @@ silent notifications.</p></div>
 <section class="detail" id="push/2">
 
   <div class="detail-header">
-    <a href="#push/2" class="detail-link" title="Link to this function">
+    <a href="#push/2" class="detail-link" data-no-tooltip="" aria-label="Link to this function">
       <i class="ri-link-m" aria-hidden="true"></i>
-      <span class="sr-only">Link to this function</span>
     </a>
-    <h1 class="signature" translate="no">push(device_id, request)</h1>
-
-      <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L67" class="icon-action" rel="help" title="View Source">
-       <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-       <span class="sr-only">View Source</span>
-     </a>
+    <div class="heading-with-actions">
+      <h1 class="signature" translate="no">push(device_id, request)</h1>
 
 
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L67" class="icon-action" rel="help" aria-label="View Source">
+          <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        </a>
+
+    </div>
   </div>
 
   <section class="docstring">
@@ -590,34 +541,33 @@ this feature (please consult APNS documentation for more information).</p>
     </div>
   </section>
 
-      <footer class="footer">
-        <p>
+    <footer class="footer">
+      <p>
 
-          <span class="line">
-            <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
-              Search HexDocs
-            </button>
+        <span class="line">
+          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
+            Search HexDocs
+          </button>
 
-              <a href="MongoosePush.epub" title="ePub version">
-                Download ePub version
-              </a>
+            <a href="MongoosePush.epub" title="ePub version">
+              Download ePub version
+            </a>
 
-          </span>
-        </p>
+        </span>
+      </p>
 
-        <p class="built-using">
-          Built using
-          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.31.1) for the
+      <p class="built-using">
+        Built using
+        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.38.1) for the
 
-            <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+          <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
 
-        </p>
-      </footer>
-    </div>
+      </p>
+
+    </footer>
   </div>
 </main>
 </div>
-
 
   </body>
 </html>

@@ -4,46 +4,28 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.31.1">
+    <meta name="generator" content="ExDoc v0.38.1">
     <meta name="project" content="MongoosePush v2.2.0-dev">
 
 
     <title>Local build — MongoosePush v2.2.0-dev</title>
-    <link rel="stylesheet" href="dist/html-elixir-FM2CSD74.css" />
 
+    <link rel="stylesheet" href="dist/html-elixir-J3PIVQVA.css" />
 
-    <script src="dist/handlebars.runtime-NWIB6V2M.js"></script>
-    <script src="dist/handlebars.templates-43PMFBC7.js"></script>
-    <script src="dist/sidebar_items-31EBBC29.js"></script>
-
-      <script src="../assets/js/versions.js"></script>
-
-    <script async src="dist/html-L4O5OK2K.js"></script>
-
+    <script defer src="dist/sidebar_items-02010149.js"></script>
+    <script defer src="docs_config.js"></script>
+    <script defer src="dist/html-DPJLHKSM.js"></script>
 
   </head>
-  <body data-type="extras" class="page-extra">
-    <script>
+  <body>
+    <script>(()=>{var t="ex_doc:settings",e="dark";var o="dark",s="light";var E="sidebar_state",n="closed";var r="sidebar_width";var a="sidebar-open";var i=new URLSearchParams(window.location.search),S=i.get("theme")||JSON.parse(localStorage.getItem(t)||"{}").theme;(S===o||S!==s&&window.matchMedia("(prefers-color-scheme: dark)").matches)&&document.body.classList.add(e);var d=sessionStorage.getItem(E),A=d!==n&&!window.matchMedia(`screen and (max-width: ${768}px)`).matches;document.body.classList.toggle(a,A);var c=sessionStorage.getItem(r);c&&document.body.style.setProperty("--sidebarWidth",`${c}px`);var p=/(Macintosh|iPhone|iPad|iPod)/.test(window.navigator.userAgent);document.documentElement.classList.toggle("apple-os",p);})();
+</script>
 
-      try {
-        var settings = JSON.parse(localStorage.getItem('ex_doc:settings') || '{}');
-
-        if (settings.theme === 'dark' ||
-           ((settings.theme === 'system' || settings.theme == null) &&
-             window.matchMedia('(prefers-color-scheme: dark)').matches)
-           ) {
-          document.body.classList.add('dark')
-        }
-      } catch (error) { }
-    </script>
-
-<div class="main">
+<div class="body-wrapper">
 
 <button id="sidebar-menu" class="sidebar-button sidebar-toggle" aria-label="toggle sidebar" aria-controls="sidebar">
   <i class="ri-menu-line ri-lg" title="Collapse/expand sidebar"></i>
 </button>
-
-<div class="background-layer"></div>
 
 <nav id="sidebar" class="sidebar">
 
@@ -59,112 +41,64 @@ MongoosePush
         </div>
       </div>
     </div>
-    <ul id="sidebar-listNav" class="sidebar-listNav" role="tablist">
-      <li>
-        <button id="extras-list-tab-button" role="tab" data-type="extras" aria-controls="extras-tab-panel" aria-selected="true" tabindex="0">
-Pages
-        </button>
-      </li>
-
-        <li>
-          <button id="modules-list-tab-button" role="tab" data-type="modules" aria-controls="modules-tab-panel" aria-selected="false" tabindex="-1">
-            Modules
-          </button>
-        </li>
-
-
-        <li>
-          <button id="tasks-list-tab-button" role="tab" data-type="tasks" aria-controls="tasks-tab-panel" aria-selected="false" tabindex="-1">
-            <span translate="no">Mix</span> Tasks
-          </button>
-        </li>
-
-    </ul>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras=""></ul>
   </div>
-
-  <div id="extras-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="extras-list-tab-button">
-    <ul id="extras-full-list" class="full-list"></ul>
-  </div>
-
-    <div id="modules-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="modules-list-tab-button" hidden>
-      <ul id="modules-full-list" class="full-list"></ul>
-    </div>
-
-
-    <div id="tasks-tab-panel" class="sidebar-tabpanel" role="tabpanel" aria-labelledby="tasks-list-tab-button" hidden>
-      <ul id="tasks-full-list" class="full-list"></ul>
-    </div>
-
 </nav>
 
-<main class="content">
-  <output role="status" id="toast"></output>
-  <div class="content-outer">
-    <div id="content" class="content-inner">
-      <div class="top-search">
-        <div class="search-settings">
-          <form class="search-bar" action="search.html">
-            <label class="search-label">
-              <span class="sr-only">Search documentation of MongoosePush</span>
-              <input name="q" type="text" class="search-input" placeholder="Search Documentation (press /)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            </label>
-            <button type="submit" class="search-button" aria-label="Submit Search">
-              <i class="ri-search-2-line ri-lg" aria-hidden="true" title="Submit search"></i>
-            </button>
-            <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
-              <i class="ri-close-line ri-lg" title="Cancel search"></i>
-            </button>
-          </form>
-          <div class="autocomplete">
-          </div>
-          <button class="icon-settings display-settings">
-            <i class="ri-settings-3-line"></i>
-            <span class="sr-only">Settings</span>
+<output role="status" id="toast"></output>
+
+<main class="content page-extra" id="main" data-type="extras">
+  <div id="content" class="content-inner">
+    <div class="top-search">
+      <div class="search-settings">
+        <form class="search-bar" action="search.html">
+          <label class="search-label">
+            <span class="sr-only">Search documentation of MongoosePush</span>
+            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          </label>
+          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
+            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
           </button>
+          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+            <i class="ri-close-line ri-lg" title="Cancel search"></i>
+          </button>
+        </form>
+        <div class="autocomplete">
         </div>
-
+        <button class="icon-settings display-settings">
+          <i class="ri-settings-3-line"></i>
+          <span class="sr-only">Settings</span>
+        </button>
       </div>
+    </div>
 
-<h1>
-
-    <a href="https://github.com/esl/MongoosePush/blob/main/guides/local_build.md#L1" title="View Source" class="icon-action" rel="help">
-      <i class="ri-code-s-slash-line" aria-hidden="true"></i>
-      <span class="sr-only">View Source</span>
-    </a>
+<div id="top-content">
+  <div class="heading-with-actions top-heading">
+    <h1>Local build</h1>
 
 
-  <span>Local build</span>
-</h1>
+      <a href="https://github.com/esl/MongoosePush/blob/main/guides/local_build.md#L1" title="View Source" class="icon-action" rel="help">
+        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        <span class="sr-only">View Source</span>
+      </a>
 
-<h2 id="prerequisites" class="section-heading">
-  <a href="#prerequisites" class="hover-link">
-    <i class="ri-link-m" aria-hidden="true"></i>
-  </a>
-  <span class="text">Prerequisites</span>
-</h2>
-<ul><li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)</li><li>Erlang/OTP 19.3+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain a TLS bug that prevents connecting to APNS servers.
+  </div>
+
+
+<h2 id="prerequisites" class="section-heading"><a href="#prerequisites" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Prerequisites</span></h2><ul><li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)</li><li>Erlang/OTP 19.3+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain a TLS bug that prevents connecting to APNS servers.
 When building with this Erlang version, please make sure that the MongoosePushRuntimeTest test suite passes.
-It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p></blockquote></li><li>Rebar3 (just enter <a href="https://hexdocs.pm/mix/Mix.Tasks.Local.Rebar.html"><code class="inline">mix local.rebar</code></a>)</li></ul><h2 id="production-release" class="section-heading">
-  <a href="#production-release" class="hover-link">
-    <i class="ri-link-m" aria-hidden="true"></i>
-  </a>
-  <span class="text">Production release</span>
-</h2>
-<p>The build step is really easy. Just type in the root of the repository:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=prod mix do deps.get, compile, certs.dev, release
+It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p></blockquote></li><li>Rebar3 (just enter <a href="https://hexdocs.pm/mix/Mix.Tasks.Local.Rebar.html"><code class="inline">mix local.rebar</code></a>)</li></ul><h2 id="production-release" class="section-heading"><a href="#production-release" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Production release</span></h2><p>The build step is really easy. Just type in the root of the repository:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=prod mix do deps.get, compile, certs.dev, release
 </span></code></pre><p>After this step you may try to run the service via:</p><pre><code class="makeup bash" translate="no"><span class="">_build/prod/rel/mongoose_push/bin/mongoose_push foreground
-</span></code></pre><p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without a properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in the <a href="configuration.html#content">configuration</a> section.</p><h2 id="development-release" class="section-heading">
-  <a href="#development-release" class="hover-link">
-    <i class="ri-link-m" aria-hidden="true"></i>
-  </a>
-  <span class="text">Development release</span>
-</h2>
-<p>Again, an easy step:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=dev mix do deps.get, compile, certs.dev, release
+</span></code></pre><p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without a properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in the <a href="configuration.html#content">configuration</a> section.</p><h2 id="development-release" class="section-heading"><a href="#development-release" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Development release</span></h2><p>Again, an easy step:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=dev mix do deps.get, compile, certs.dev, release
 </span></code></pre><p>The development release is by default configured to connect to a local APNS / FCM mock.
 This configuration may be changed as needed in the <code class="inline">config/dev.exs</code> file.
 For now, let's just start those mocks so that we can use the default dev configuration:</p><pre><code class="makeup bash" translate="no"><span class="">docker-compose -f test/docker/docker-compose.mocks.yml up -d
 </span></code></pre><p>After this step you may try to run the service via:</p><pre><code class="makeup bash" translate="no"><span class="">_build/dev/rel/mongoose_push/bin/mongoose_push console
 </span></code></pre>
-<div class="bottom-actions">
+
+</div>
+
+<div class="bottom-actions" id="bottom-actions">
   <div class="bottom-actions-item">
 
       <a href="configuration.html" class="bottom-actions-button" rel="prev">
@@ -190,34 +124,33 @@ Running tests
 
   </div>
 </div>
-      <footer class="footer">
-        <p>
+    <footer class="footer">
+      <p>
 
-          <span class="line">
-            <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
-              Search HexDocs
-            </button>
+        <span class="line">
+          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
+            Search HexDocs
+          </button>
 
-              <a href="MongoosePush.epub" title="ePub version">
-                Download ePub version
-              </a>
+            <a href="MongoosePush.epub" title="ePub version">
+              Download ePub version
+            </a>
 
-          </span>
-        </p>
+        </span>
+      </p>
 
-        <p class="built-using">
-          Built using
-          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.31.1) for the
+      <p class="built-using">
+        Built using
+        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.38.1) for the
 
-            <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+          <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
 
-        </p>
-      </footer>
-    </div>
+      </p>
+
+    </footer>
   </div>
 </main>
 </div>
-
 
   </body>
 </html>
