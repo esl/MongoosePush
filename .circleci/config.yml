@@ -378,4 +378,4 @@ workflows:
             tags:
               only: /^\d+\.\d+\.\d+([a-z0-9\-\+\.])*/
             branches:
-              only: master
+              ignore: gh-pages
