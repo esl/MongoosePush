@@ -318,6 +318,8 @@ jobs:
                   mix gh_pages_docs $CIRCLE_TAG
               elif [ "$CIRCLE_BRANCH" == "master" ]; then
                   mix gh_pages_docs latest
+              else
+                  mix gh_pages_docs dry
               fi
 
 
