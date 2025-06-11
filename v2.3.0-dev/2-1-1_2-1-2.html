@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.38.1">
+    <meta name="project" content="MongoosePush v2.3.0-dev">
+
+
+    <title>2.1.1 to 2.1.2 — MongoosePush v2.3.0-dev</title>
+
+    <link rel="stylesheet" href="dist/html-elixir-J3PIVQVA.css" />
+
+    <script defer src="dist/sidebar_items-02010149.js"></script>
+    <script defer src="docs_config.js"></script>
+    <script defer src="dist/html-DPJLHKSM.js"></script>
+
+  </head>
+  <body>
+    <script>(()=>{var t="ex_doc:settings",e="dark";var o="dark",s="light";var E="sidebar_state",n="closed";var r="sidebar_width";var a="sidebar-open";var i=new URLSearchParams(window.location.search),S=i.get("theme")||JSON.parse(localStorage.getItem(t)||"{}").theme;(S===o||S!==s&&window.matchMedia("(prefers-color-scheme: dark)").matches)&&document.body.classList.add(e);var d=sessionStorage.getItem(E),A=d!==n&&!window.matchMedia(`screen and (max-width: ${768}px)`).matches;document.body.classList.toggle(a,A);var c=sessionStorage.getItem(r);c&&document.body.style.setProperty("--sidebarWidth",`${c}px`);var p=/(Macintosh|iPhone|iPad|iPod)/.test(window.navigator.userAgent);document.documentElement.classList.toggle("apple-os",p);})();
+</script>
+
+<div class="body-wrapper">
+
+<button id="sidebar-menu" class="sidebar-button sidebar-toggle" aria-label="toggle sidebar" aria-controls="sidebar">
+  <i class="ri-menu-line ri-lg" title="Collapse/expand sidebar"></i>
+</button>
+
+<nav id="sidebar" class="sidebar">
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectInfo">
+
+      <div>
+        <a href="https://esl.github.io/MongoosePush" class="sidebar-projectName" translate="no">
+MongoosePush
+        </a>
+        <div class="sidebar-projectVersion" translate="no">
+          v2.3.0-dev
+        </div>
+      </div>
+    </div>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras=""></ul>
+  </div>
+</nav>
+
+<output role="status" id="toast"></output>
+
+<main class="content page-extra" id="main" data-type="extras">
+  <div id="content" class="content-inner">
+    <div class="top-search">
+      <div class="search-settings">
+        <form class="search-bar" action="search.html">
+          <label class="search-label">
+            <span class="sr-only">Search documentation of MongoosePush</span>
+            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+          </label>
+          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
+            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
+          </button>
+          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+            <i class="ri-close-line ri-lg" title="Cancel search"></i>
+          </button>
+        </form>
+        <div class="autocomplete">
+        </div>
+        <button class="icon-settings display-settings">
+          <i class="ri-settings-3-line"></i>
+          <span class="sr-only">Settings</span>
+        </button>
+      </div>
+    </div>
+
+<div id="top-content">
+  <div class="heading-with-actions top-heading">
+    <h1>Migration guide from 2.1.1 to 2.1.2</h1>
+
+
+      <a href="https://github.com/esl/MongoosePush/blob/main/guides/migrations/2.1.1_2.1.2.md#L1" title="View Source" class="icon-action" rel="help">
+        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        <span class="sr-only">View Source</span>
+      </a>
+
+  </div>
+
+
+<h2 id="configuration-via-environmental-variables" class="section-heading"><a href="#configuration-via-environmental-variables" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Configuration via environmental variables</span></h2><p>Configuration options <code class="inline">PUSH_APNS_ENABLED</code> and <code class="inline">PUSH_FCM_ENABLED</code> have changed their default value from <code class="inline">true</code> to <code class="inline">false</code>.
+In case of a deployment (e.g. with Docker) where those variables were not set,
+to keep the same behaviour they need to be explicitly set to <code class="inline">true</code>.</p><h3 id="example" class="section-heading"><a href="#example" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Example</span></h3><p>Old way of running MongoosePush with Docker:</p><pre><code class="makeup bash" translate="no"><span class="">docker run -v `pwd`/priv:/opt/app/priv \
+</span><span class="">  -v `pwd`/var:/opt/app/var \
+</span><span class="">  -e PUSH_HTTPS_CERTFILE=&quot;/opt/app/priv/ssl/rest_cert.pem&quot; \
+</span><span class="">  -e PUSH_HTTPS_KEYFILE=&quot;/opt/app/priv/ssl/rest_key.pem&quot; \
+</span><span class="">  -it --rm mongooseim/mongoose-push:2.1.1
+</span></code></pre><p>Now it has to be:</p><pre><code class="makeup bash" translate="no"><span class="">docker run -v `pwd`/priv:/opt/app/priv \
+</span><span class="">  -v `pwd`/var:/opt/app/var \
+</span><span class="">  -e PUSH_HTTPS_CERTFILE=&quot;/opt/app/priv/ssl/rest_cert.pem&quot; \
+</span><span class="">  -e PUSH_HTTPS_KEYFILE=&quot;/opt/app/priv/ssl/rest_key.pem&quot; \
+</span><span class="">  -e PUSH_APNS_ENABLED=true \
+</span><span class="">  -e PUSH_FCM_ENABLED=true \
+</span><span class="">  -it --rm mongooseim/mongoose-push:2.1.2
+</span></code></pre>
+
+</div>
+
+<div class="bottom-actions" id="bottom-actions">
+  <div class="bottom-actions-item">
+
+      <a href="2-0-x_2-1-0.html" class="bottom-actions-button" rel="prev">
+        <span class="subheader">
+          ← Previous Page
+        </span>
+        <span class="title">
+2.0.x to 2.1.0
+        </span>
+      </a>
+
+  </div>
+  <div class="bottom-actions-item">
+
+  </div>
+</div>
+    <footer class="footer">
+      <p>
+
+        <span class="line">
+          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
+            Search HexDocs
+          </button>
+
+            <a href="MongoosePush.epub" title="ePub version">
+              Download ePub version
+            </a>
+
+        </span>
+      </p>
+
+      <p class="built-using">
+        Built using
+        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.38.1) for the
+
+          <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+
+      </p>
+
+    </footer>
+  </div>
+</main>
+</div>
+
+  </body>
+</html>

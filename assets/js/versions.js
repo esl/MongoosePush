@@ -1,7 +1,7 @@
 var versionNodes = [
 	 {
-		version: "v2.2.0-dev",
-     	url: "https://esl.github.io/MongoosePush/v2.2.0-dev/readme.html"
+		version: "v2.3.0-dev",
+     	url: "https://esl.github.io/MongoosePush/v2.3.0-dev/readme.html"
 	 },
 	 {
 		version: "v2.2.0",
