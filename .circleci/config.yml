@@ -284,7 +284,7 @@ jobs:
 
   gh-pages-deploy:
     machine:
-        image: ubuntu-2004:current
+        image: ubuntu-2404:current
     steps:
       - checkout
       - run:
@@ -318,6 +318,8 @@ jobs:
                   mix gh_pages_docs $CIRCLE_TAG
               elif [ "$CIRCLE_BRANCH" == "master" ]; then
                   mix gh_pages_docs latest
+              else
+                  mix gh_pages_docs dry
               fi
 
 
@@ -376,4 +378,4 @@ workflows:
             tags:
               only: /^\d+\.\d+\.\d+([a-z0-9\-\+\.])*/
             branches:
-              only: master
+              ignore: gh-pages

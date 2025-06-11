@@ -9,10 +9,11 @@ defmodule Mix.Tasks.GhPagesDocs do
 
   @spec run([String.t()]) :: :ok
   def run([version]) do
-    version =
+    {version, dry} =
       case version do
-        "latest" -> prefix_tag(Mix.Project.config()[:version])
-        tag -> prefix_tag(tag)
+        "dry" -> {prefix_tag(Mix.Project.config()[:version]), true}
+        "latest" -> {prefix_tag(Mix.Project.config()[:version]), false}
+        tag -> {prefix_tag(tag), false}
       end
 
     # Firstly we need to update versions.js for the mix docs task
@@ -38,7 +39,10 @@ defmodule Mix.Tasks.GhPagesDocs do
         0 = Mix.shell().cmd("git add assets/js/versions.js")
         0 = Mix.shell().cmd("git add index.html")
         0 = Mix.shell().cmd("git commit -m \"Add content for #{version}\"")
-        0 = Mix.shell().cmd("git push origin gh-pages")
+
+        if not dry do
+          0 = Mix.shell().cmd("git push origin gh-pages")
+        end
 
       _ ->
         Mix.raise("Cannot create the #{version} directory")
