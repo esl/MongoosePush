@@ -69,7 +69,6 @@ defmodule MongoosePush.Mixfile do
 
   defp docs do
     [
-      javascript_config_path: "../assets/js/versions.js",
       extras: [
         "README.md": [file: "guides/readme", title: "Introduction"],
         "guides/configuration.md": [file: "guides/configuration", title: "Configuration"],
