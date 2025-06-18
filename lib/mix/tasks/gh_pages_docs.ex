@@ -16,9 +16,6 @@ defmodule Mix.Tasks.GhPagesDocs do
         tag -> {prefix_tag(tag), false}
       end
 
-    # Firstly we need to update versions.js for the mix docs task
-    update_versions_js(version)
-
     Mix.Task.run("docs")
 
     0 = Mix.shell().cmd("git stash")
@@ -37,6 +34,7 @@ defmodule Mix.Tasks.GhPagesDocs do
         0 = Mix.shell().cmd("cp -r doc/* #{version}")
         0 = Mix.shell().cmd("git add #{version}/*")
         0 = Mix.shell().cmd("git add assets/js/versions.js")
+        0 = Mix.shell().cmd("git add **/docs_config.js")
         0 = Mix.shell().cmd("git add index.html")
         0 = Mix.shell().cmd("git commit -m \"Add content for #{version}\"")
 
@@ -81,6 +79,15 @@ defmodule Mix.Tasks.GhPagesDocs do
       |> Enum.join(",\n")
 
     File.write!("assets/js/versions.js", "var versionNodes = [\n#{versions_json}\n]")
+    copy_versions_to_dirs()
+  end
+
+  # Newer versions of ex_docs expect a file docs_config.js to be present for versions config
+  # Old documentation still takes this from assets/js/versions.js
+  def copy_versions_to_dirs do
+    File.ls!()
+    |> Enum.filter(fn f -> String.starts_with?(f, "v") end)
+    |> Enum.each(fn dir -> File.cp!("assets/js/versions.js", "#{dir}/docs_config.js") end)
   end
 
   def update_index_html(version) do
