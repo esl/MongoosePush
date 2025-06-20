@@ -21,8 +21,6 @@ defmodule Mix.Tasks.GhPagesDocs do
     0 = Mix.shell().cmd("git stash")
     0 = Mix.shell().cmd("git checkout gh-pages")
 
-    # Secondly we do it again to recreate it after checkout
-    # It is a simpler way than using git stash pop and resolving conflicts
     update_versions_js(version)
     update_index_html(version)
 
