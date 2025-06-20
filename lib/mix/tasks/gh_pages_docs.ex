@@ -44,7 +44,7 @@ defmodule Mix.Tasks.GhPagesDocs do
     end
   end
 
-  def update_versions_js(current) do
+  defp update_versions_js(current) do
     {tags, 0} = System.cmd("git", ["tag"], [])
 
     previous_versions =
@@ -81,13 +81,13 @@ defmodule Mix.Tasks.GhPagesDocs do
 
   # Newer versions of ex_docs expect a file docs_config.js to be present for versions config
   # Old documentation still takes this from assets/js/versions.js
-  def copy_versions_to_dirs do
+  defp copy_versions_to_dirs do
     File.ls!()
     |> Enum.filter(fn f -> String.starts_with?(f, "v") end)
     |> Enum.each(fn dir -> File.cp!("assets/js/versions.js", "#{dir}/docs_config.js") end)
   end
 
-  def update_index_html(version) do
+  defp update_index_html(version) do
     content = """
     <html>
       <head>
