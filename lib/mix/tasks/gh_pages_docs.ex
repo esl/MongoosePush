@@ -18,7 +18,6 @@ defmodule Mix.Tasks.GhPagesDocs do
 
     Mix.Task.run("docs")
 
-    0 = Mix.shell().cmd("git stash")
     0 = Mix.shell().cmd("git checkout gh-pages")
 
     update_versions_js(version)
