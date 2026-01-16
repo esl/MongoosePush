@@ -197,7 +197,23 @@ jobs:
       env: prod
     steps:
       - checkout
-      - run: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io
+      - run:
+          name: Install docker and buildx
+          command: |
+            apt update
+            apt install ca-certificates curl -y
+            install -m 0755 -d /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            chmod a+r /etc/apt/keyrings/docker.asc
+            tee /etc/apt/sources.list.d/docker.sources \<<EOF
+            Types: deb
+            URIs: https://download.docker.com/linux/ubuntu
+            Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+            Components: stable
+            Signed-By: /etc/apt/keyrings/docker.asc
+            EOF
+            apt update
+            DEBIAN_FRONTEND=noninteractive apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
       - setup_remote_docker:
           docker_layer_caching: true
       - restore_cache:
@@ -209,13 +225,10 @@ jobs:
           command: docker login -u "${DOCKERHUB_USER}" -p "${DOCKERHUB_PASS}"
       - run:
           name: Build docker image
-          command: docker build -f Dockerfile --build-arg MIX_ENV=prod -t mpush:latest .
-      - run:
-          name: Push docker image but do not tag it as the latest
-          command: docker tag mpush:latest $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
-      - run:
-          name: Push docker image but do not tag it as the latest
-          command: docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+          command: |
+            docker run --privileged --rm tonistiigi/binfmt --install all
+            docker buildx create --name builder --driver docker-container --bootstrap --use
+            docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile --build-arg MIX_ENV=prod -t $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG --push .
 
   integration-tests:
     machine:
