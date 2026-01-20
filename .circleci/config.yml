@@ -296,17 +296,12 @@ jobs:
              fi
 
   gh-pages-deploy:
-    machine:
-        image: ubuntu-2404:current
+    docker:
+      - image: cimg/elixir:1.18.3-erlang-27.2.2
+        environment:
+          MIX_ENV: dev
     steps:
       - checkout
-      - run:
-          name: Install elixir
-          command: |
-              curl -1sLf 'https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/setup.deb.sh' | sudo -E bash && \
-              sudo apt-get update && \
-              sudo apt-get install -y erlang=1:27.3.4.1-1 && \
-              sudo apt-get install -y elixir
       - restore_cache:
           keys:
               - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
