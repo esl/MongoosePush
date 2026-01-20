@@ -236,16 +236,16 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install elixir
+          name: Install Erlang, Elixir and dockerize
           command: |
-              curl -1sLf 'https://dl.cloudsmith.io/public/rabbitmq/rabbitmq-erlang/setup.deb.sh' | sudo -E bash && \
-              sudo apt-get update && \
-              sudo apt-get install -y erlang=1:27.3.4.1-1 && \
-              sudo apt-get install -y elixir
-              wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
-              sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
-              sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
-              sudo chmod +x /usr/local/bin/dockerize && \
+              sudo add-apt-repository ppa:rabbitmq/rabbitmq-erlang -y
+              sudo apt update
+              sudo apt-get install -y erlang=1:27.3.4.6-1rmq1ppa1~ubuntu24.04.1
+              sudo apt-get install -y elixir=1.17.3-1rmq1ppa1~ubuntu24.04.1
+              wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz
+              sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz
+              sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz
+              sudo chmod +x /usr/local/bin/dockerize
               sudo rm dockerize-linux-amd64-v0.6.1.tar.gz
       - run: docker-compose -v
       - restore_cache:
