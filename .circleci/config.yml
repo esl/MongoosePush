@@ -298,8 +298,6 @@ jobs:
   gh-pages-deploy:
     docker:
       - image: cimg/elixir:1.18.3-erlang-27.2.2
-        environment:
-          MIX_ENV: dev
     steps:
       - checkout
       - restore_cache:
