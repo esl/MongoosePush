@@ -77,6 +77,30 @@ commands:
       - store_artifacts:
           path: cover
           destination: coverage_results
+  install_docker:
+    steps:
+      - run:
+          name: Install docker repository key
+          command: |
+            apt update
+            apt install ca-certificates curl -y
+            install -m 0755 -d /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            chmod a+r /etc/apt/keyrings/docker.asc
+      - run:
+          name: Add docker repository
+          command: |
+            tee /etc/apt/sources.list.d/docker.sources \<<EOF
+            Types: deb
+            URIs: https://download.docker.com/linux/ubuntu
+            Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+            Components: stable
+            Signed-By: /etc/apt/keyrings/docker.asc
+            EOF
+            apt update
+      - run:
+          name: Install docker and plugins
+          command: DEBIAN_FRONTEND=noninteractive apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 jobs:
   pre-build:
@@ -197,23 +221,7 @@ jobs:
       env: prod
     steps:
       - checkout
-      - run:
-          name: Install docker and buildx
-          command: |
-            apt update
-            apt install ca-certificates curl -y
-            install -m 0755 -d /etc/apt/keyrings
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-            chmod a+r /etc/apt/keyrings/docker.asc
-            tee /etc/apt/sources.list.d/docker.sources \<<EOF
-            Types: deb
-            URIs: https://download.docker.com/linux/ubuntu
-            Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-            Components: stable
-            Signed-By: /etc/apt/keyrings/docker.asc
-            EOF
-            apt update
-            DEBIAN_FRONTEND=noninteractive apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+      - install_docker
       - setup_remote_docker:
           docker_layer_caching: true
       - restore_cache:
@@ -278,7 +286,7 @@ jobs:
       env: prod
     steps:
       - checkout
-      - run: apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y docker.io
+      - install_docker
       - setup_remote_docker:
           docker_layer_caching: true
       - run: *DOCKER_TAGS
@@ -290,9 +298,7 @@ jobs:
           command: |
              set -x
              if [ "$CIRCLE_BRANCH" == "master" ]; then
-               docker pull $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
-               docker tag $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
-               docker push $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest
+               docker buildx imagetools create --tag $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
              fi
 
   gh-pages-deploy:
