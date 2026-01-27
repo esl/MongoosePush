@@ -91,7 +91,7 @@ To see how to obtain <code class="inline">team_id</code> read <a href="https://w
 </span><span class="">  -v `pwd`/var:/opt/app/var \
 </span><span class="">  -e PUSH_HTTPS_CERTFILE=&quot;/opt/app/priv/ssl/rest_cert.pem&quot; \
 </span><span class="">  -e PUSH_HTTPS_KEYFILE=&quot;/opt/app/priv/ssl/rest_key.pem&quot; \
-</span><span class="">  -it --rm erlangsolutions/mongoose-push:latest
+</span><span class="">  -it --rm mongooseim/mongoose-push:latest
 </span></code></pre><h2 id="building" class="section-heading"><a href="#building" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Building</span></h2><p>Building a docker image is really easy, just type:</p><pre><code class="makeup bash" translate="no"><span class="">docker build . -t mpush:latest
 </span></code></pre><p>As a result of this command you get access to the <code class="inline">mpush:latest</code> docker image. You may run it by typing:</p><pre><code class="makeup bash" translate="no"><span class="">docker run -it --rm mpush:latest foreground
 </span></code></pre><p>The docker image that you have just built, exposes the port <code class="inline">8443</code> for the HTTP API of MongoosePush.
