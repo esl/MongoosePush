@@ -93,7 +93,7 @@ To see how to obtain <code class="inline">team_id</code> read <a href="https://w
 </span><span class="">  -v `pwd`/var:/opt/app/var \
 </span><span class="">  -e PUSH_HTTPS_CERTFILE=&quot;/opt/app/priv/ssl/rest_cert.pem&quot; \
 </span><span class="">  -e PUSH_HTTPS_KEYFILE=&quot;/opt/app/priv/ssl/rest_key.pem&quot; \
-</span><span class="">  -it --rm mongooseim/mongoose-push:latest
+</span><span class="">  -it --rm erlangsolutions/mongoose-push:latest
 </span></code></pre><h2 id="local-build-prerequisites" class="section-heading"><a href="#local-build-prerequisites" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Local build prerequisites</span></h2><ul><li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)</li><li>Erlang/OTP 19.3+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain TLS bug that prevents connecting to APNS servers.
 When building with this Erlang version, please make sure that MongoosePushRuntimeTest test suite passes.
 It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p></blockquote></li><li>Rebar3 (just enter <a href="https://hexdocs.pm/mix/Mix.Tasks.Local.Rebar.html"><code class="inline">mix local.rebar</code></a>)</li></ul>
