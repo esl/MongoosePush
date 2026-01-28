@@ -36,7 +36,7 @@ executors:
     docker:
       - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-noble-20250415.1
       - image: erlangsolutions/fcm-mock-server
-      - image: ghcr.io/kamilwaz/apns-mock-server:main
+      - image: erlangsolutions/apns-mock-server
     working_directory: ~/app
     environment:
         MIX_ENV: << parameters.env >>
