@@ -46,7 +46,7 @@ docker run -v `pwd`/priv:/opt/app/priv \
   -v `pwd`/var:/opt/app/var \
   -e PUSH_HTTPS_CERTFILE="/opt/app/priv/ssl/rest_cert.pem" \
   -e PUSH_HTTPS_KEYFILE="/opt/app/priv/ssl/rest_key.pem" \
-  -it --rm mongooseim/mongoose-push:latest
+  -it --rm erlangsolutions/mongoose-push:latest
 ```
 
 ## Local build prerequisites
