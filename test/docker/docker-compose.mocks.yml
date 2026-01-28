@@ -2,7 +2,7 @@ version: '3'
 
 services:
   fcm-mock:
-    image: mongooseim/fcm-mock-server
+    image: erlangsolutions/fcm-mock-server
     container_name: fcm-mock
     ports:
       - "4001:4001"
