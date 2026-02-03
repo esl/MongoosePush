@@ -35,8 +35,8 @@ executors:
         default: test
     docker:
       - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-noble-20250415.1
-      - image: mongooseim/fcm-mock-server
-      - image: ghcr.io/kamilwaz/apns-mock-server:main
+      - image: erlangsolutions/fcm-mock-server
+      - image: erlangsolutions/apns-mock-server
     working_directory: ~/app
     environment:
         MIX_ENV: << parameters.env >>
@@ -236,7 +236,7 @@ jobs:
           command: |
             docker run --privileged --rm tonistiigi/binfmt --install all
             docker buildx create --name builder --driver docker-container --bootstrap --use
-            docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile --build-arg MIX_ENV=prod -t $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG --push .
+            docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile --build-arg MIX_ENV=prod -t $DOCKERHUB_ORG/$DOCKER_IMAGE:$DOCKER_TAG --push .
 
   integration-tests:
     machine:
@@ -298,7 +298,7 @@ jobs:
           command: |
              set -x
              if [ "$CIRCLE_BRANCH" == "master" ]; then
-               docker buildx imagetools create --tag $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:latest $DOCKERHUB_REPOSITORY/$DOCKER_IMAGE:$DOCKER_TAG
+               docker buildx imagetools create --tag $DOCKERHUB_ORG/$DOCKER_IMAGE:latest $DOCKERHUB_ORG/$DOCKER_IMAGE:$DOCKER_TAG
              fi
 
   gh-pages-deploy:
