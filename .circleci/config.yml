@@ -248,8 +248,8 @@ jobs:
           command: |
               sudo add-apt-repository ppa:rabbitmq/rabbitmq-erlang -y
               sudo apt update
-              sudo apt-get install -y erlang=1:27.3.4.6-1rmq1ppa1~ubuntu24.04.1
-              sudo apt-get install -y elixir=1.17.3-1rmq1ppa1~ubuntu24.04.1
+              sudo apt-get install -y erlang
+              sudo apt-get install -y elixir
               wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz
               sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz
               sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz
