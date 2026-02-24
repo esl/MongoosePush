@@ -22,11 +22,11 @@ run: &DOCKER_TAGS
         echo "export DOCKER_IMAGE=mongoose-push" >> $BASH_ENV
 
 executors:
-  elixir-builder:
+  elixir-builder: &elixir-builder
     parameters:
       erlang_version:
         type: string
-        default: "27.3.4"
+        default: "27.2.2"
       elixir_version:
         type: string
         default: "1.18.3"
@@ -34,27 +34,26 @@ executors:
         type: string
         default: test
     docker:
-      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-ubuntu-noble-20250415.1
-      - image: erlangsolutions/fcm-mock-server
-      - image: erlangsolutions/apns-mock-server
+      - image: cimg/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>
     working_directory: ~/app
     environment:
         MIX_ENV: << parameters.env >>
+  elixir-env:
+    <<: *elixir-builder
+    docker:
+      - image: cimg/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>
+      - image: erlangsolutions/fcm-mock-server
+      - image: erlangsolutions/apns-mock-server
 
 commands:
   test:
     steps:
       - checkout
       - run:
-          name: Install dockerize
+          name: Install deps
           command: |
-            apt-get update && apt-get install -y wget && \
-            wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz && \
-            chmod +x dockerize-linux-amd64-v0.6.1.tar.gz && \
-            tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz && \
-            chmod +x /usr/local/bin/dockerize && \
-            rm dockerize-linux-amd64-v0.6.1.tar.gz
-      - run: apt-get update && apt-get install -y git
+            sudo apt update
+            sudo apt install -y git netcat-openbsd
       - restore_cache:
           keys:
             - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -63,10 +62,10 @@ commands:
             - build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run:
           name: Wait for FCM mock
-          command: dockerize -wait tcp://localhost:4000 -timeout 1m
+          command: timeout 60 bash -c 'until nc -z localhost 4000; do sleep 5; done'
       - run:
           name: Wait for APNS mock
-          command: dockerize -wait tcp://localhost:2197 -timeout 1m
+          command: timeout 60 bash -c 'until nc -z localhost 2197; do sleep 5; done'
 
       - run: MIX_ENV=test mix do local.rebar, certs.dev, coveralls.circle
 
@@ -77,30 +76,36 @@ commands:
       - store_artifacts:
           path: cover
           destination: coverage_results
+  install_deps:
+    steps:
+      - run:
+          name: Install deps
+          command: |
+            sudo apt update
+            sudo apt install -y git
   install_docker:
     steps:
       - run:
           name: Install docker repository key
           command: |
-            apt update
-            apt install ca-certificates curl -y
-            install -m 0755 -d /etc/apt/keyrings
-            curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-            chmod a+r /etc/apt/keyrings/docker.asc
+            sudo apt update
+            sudo apt install ca-certificates curl -y
+            sudo install -m 0755 -d /etc/apt/keyrings
+            sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
       - run:
           name: Add docker repository
           command: |
-            tee /etc/apt/sources.list.d/docker.sources \<<EOF
+            sudo tee /etc/apt/sources.list.d/docker.sources \<<EOF
             Types: deb
             URIs: https://download.docker.com/linux/ubuntu
             Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
             Components: stable
             Signed-By: /etc/apt/keyrings/docker.asc
             EOF
-            apt update
+            sudo apt update
       - run:
           name: Install docker and plugins
-          command: DEBIAN_FRONTEND=noninteractive apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+          command: DEBIAN_FRONTEND=noninteractive sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
 jobs:
   pre-build:
@@ -108,7 +113,7 @@ jobs:
 
     steps:
       - checkout
-      - run: apt-get update && apt-get install -y git
+      - install_deps
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get
@@ -124,7 +129,7 @@ jobs:
     executor: elixir-builder
     steps:
       - checkout
-      - run: apt-get update && apt-get install -y git
+      - install_deps
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - restore_cache:
           keys:
@@ -151,8 +156,6 @@ jobs:
     executor:
       name: elixir-builder
       env: dev
-      erlang_version: "26.2"
-      elixir_version: "1.16"
     steps:
       - checkout
       - restore_cache:
@@ -171,36 +174,36 @@ jobs:
 
   test-erlang-27_elixir-1-18:
     executor:
-      name: elixir-builder
+      name: elixir-env
       env: test
-      erlang_version: "27.3.4"
+      erlang_version: "27.2.2"
       elixir_version: "1.18.3"
     steps:
       - test
 
   test-erlang-27_elixir-1-17:
     executor:
-      name: elixir-builder
+      name: elixir-env
       env: test
-      erlang_version: "27.3.4"
+      erlang_version: "27.2.2"
       elixir_version: "1.17.3"
     steps:
       - test
 
   test-erlang-26_elixir-1-18:
     executor:
-      name: elixir-builder
+      name: elixir-env
       env: test
-      erlang_version: "26.2.5.12"
+      erlang_version: "26.2.1"
       elixir_version: "1.18.3"
     steps:
       - test
 
   test-erlang-26_elixir-1-17:
     executor:
-      name: elixir-builder
+      name: elixir-env
       env: test
-      erlang_version: "26.2.5.12"
+      erlang_version: "26.2.1"
       elixir_version: "1.17.3"
     steps:
       - test
@@ -240,22 +243,15 @@ jobs:
 
   integration-tests:
     machine:
-        image: ubuntu-2404:current
+      image: ubuntu-2404:current
     steps:
       - checkout
       - run:
-          name: Install Erlang, Elixir and dockerize
+          name: Install Elixir
           command: |
-              sudo add-apt-repository ppa:rabbitmq/rabbitmq-erlang -y
-              sudo apt update
-              sudo apt-get install -y erlang=1:27.3.4.6-1rmq1ppa1~ubuntu24.04.1
-              sudo apt-get install -y elixir=1.17.3-1rmq1ppa1~ubuntu24.04.1
-              wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz
-              sudo chmod +x dockerize-linux-amd64-v0.6.1.tar.gz
-              sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-v0.6.1.tar.gz
-              sudo chmod +x /usr/local/bin/dockerize
-              sudo rm dockerize-linux-amd64-v0.6.1.tar.gz
-      - run: docker-compose -v
+            sudo add-apt-repository ppa:rabbitmq/rabbitmq-erlang -y
+            sudo apt update
+            sudo apt-get install -y erlang elixir
       - restore_cache:
           keys:
               - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}

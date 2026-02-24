@@ -1,12 +1,12 @@
 defmodule Mix.Tasks.Test.Env.Utils do
-  def compose(compose_binary, opcode_args) do
+  def compose(docker_binary, opcode_args) do
     Mix.shell().info(
-      "Running `docker-compose #{Enum.join(opcode_args, " ")}` for: #{inspect(compose_files(Mix.env()))}"
+      "Running `docker compose #{Enum.join(opcode_args, " ")}` for: #{inspect(compose_files(Mix.env()))}"
     )
 
-    compose_args = base_compose_args() ++ opcode_args ++ ["--remove-orphans"]
+    docker_args = List.flatten(["compose", base_compose_args(), opcode_args, "--remove-orphans"])
 
-    case System.cmd(compose_binary, compose_args, env: [{"PRIV", "../../priv"}]) do
+    case System.cmd(docker_binary, docker_args, env: [{"PRIV", "../../priv"}]) do
       {_output, 0} ->
         :ok
 
@@ -55,8 +55,8 @@ defmodule Mix.Tasks.Test.Env.Utils do
   defp wait_for_services(host, [{proto, port} | _rest], _) do
     flunk("""
     Unable to connect to #{proto}://#{host}:#{port}! Make sure you run `MIX_ENV=#{Mix.env()} mix test.env.up` if you haven't already.
-    If you have - you can run the following command to see the docker-compose logs:
-    $ docker-compose #{Enum.join(base_compose_args(), " ")} logs
+    If you have - you can run the following command to see the docker compose logs:
+    $ docker compose #{Enum.join(base_compose_args(), " ")} logs
     """)
   end
 
