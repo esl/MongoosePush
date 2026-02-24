@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-elixir-J3PIVQVA.css" />
 
-    <script defer src="dist/sidebar_items-C111E837.js"></script>
+    <script defer src="dist/sidebar_items-7C37AB2A.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-DPJLHKSM.js"></script>
 
@@ -92,7 +92,7 @@ It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p>
 </span></code></pre><p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without a properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in the <a href="configuration.html#content">configuration</a> section.</p><h2 id="development-release" class="section-heading"><a href="#development-release" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Development release</span></h2><p>Again, an easy step:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=dev mix do deps.get, compile, certs.dev, release
 </span></code></pre><p>The development release is by default configured to connect to a local APNS / FCM mock.
 This configuration may be changed as needed in the <code class="inline">config/dev.exs</code> file.
-For now, let's just start those mocks so that we can use the default dev configuration:</p><pre><code class="makeup bash" translate="no"><span class="">docker-compose -f test/docker/docker-compose.mocks.yml up -d
+For now, let's just start those mocks so that we can use the default dev configuration:</p><pre><code class="makeup bash" translate="no"><span class="">docker compose -f test/docker/docker compose.mocks.yml up -d
 </span></code></pre><p>After this step you may try to run the service via:</p><pre><code class="makeup bash" translate="no"><span class="">_build/dev/rel/mongoose_push/bin/mongoose_push console
 </span></code></pre>
 
