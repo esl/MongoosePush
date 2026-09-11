@@ -1,7 +1,7 @@
-ARG ELIXIR_VERSION=1.18.3
-ARG OTP_VERSION=27.3.4
+ARG ELIXIR_VERSION=1.20.4
+ARG OTP_VERSION=29.0.6
 
-FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-ubuntu-jammy-20250404 as builder
+FROM hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-bookworm-20260824 AS builder
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y \
     git \
@@ -26,11 +26,11 @@ RUN mix local.hex --force && \
 
 
 RUN mix deps.get
-RUN mix do certs.dev, release
+RUN mix do certs.dev + release
 RUN tar -czf mongoose_push.tar.gz -C _build/prod/rel/mongoose_push .
 
 
-FROM debian:stable-slim
+FROM debian:bookworm-slim
 
 
 # set locales
@@ -39,9 +39,9 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=en_US.UTF-8
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US.UTF-8
+ENV LC_ALL=en_US.UTF-8
 
 # required packages
 RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \

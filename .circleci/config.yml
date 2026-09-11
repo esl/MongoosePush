@@ -26,34 +26,34 @@ executors:
     parameters:
       erlang_version:
         type: string
-        default: "27.2.2"
+        default: "29.0.6"
       elixir_version:
         type: string
-        default: "1.18.3"
+        default: "1.20.4"
       env:
         type: string
         default: test
     docker:
-      - image: cimg/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>
+      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-debian-bookworm-20260824
     working_directory: ~/app
     environment:
         MIX_ENV: << parameters.env >>
   elixir-env:
     <<: *elixir-builder
     docker:
-      - image: cimg/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>
+      - image: hexpm/elixir:<< parameters.elixir_version >>-erlang-<< parameters.erlang_version >>-debian-bookworm-20260824
       - image: erlangsolutions/fcm-mock-server
       - image: erlangsolutions/apns-mock-server
 
 commands:
   test:
     steps:
-      - checkout
       - run:
           name: Install deps
           command: |
-            sudo apt update
-            sudo apt install -y git netcat-openbsd
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git netcat-openbsd openssh-client
+      - checkout
       - restore_cache:
           keys:
             - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -67,7 +67,10 @@ commands:
           name: Wait for APNS mock
           command: timeout 60 bash -c 'until nc -z localhost 2197; do sleep 5; done'
 
-      - run: MIX_ENV=test mix do local.rebar, certs.dev, coveralls.circle
+      - run:
+          name: Install Hex and Rebar
+          command: mix do local.hex --force + local.rebar --force
+      - run: MIX_ENV=test mix do certs.dev + coveralls.circle
 
       - save_cache:
           key: build-${CIRCLE_JOB}-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -81,39 +84,39 @@ commands:
       - run:
           name: Install deps
           command: |
-            sudo apt update
-            sudo apt install -y git
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git openssh-client
   install_docker:
     steps:
       - run:
           name: Install docker repository key
           command: |
-            sudo apt update
-            sudo apt install ca-certificates curl -y
-            sudo install -m 0755 -d /etc/apt/keyrings
-            sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y ca-certificates curl
+            install -m 0755 -d /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/debian/gpg -o /etc/apt/keyrings/docker.asc
       - run:
           name: Add docker repository
           command: |
-            sudo tee /etc/apt/sources.list.d/docker.sources \<<EOF
+            tee /etc/apt/sources.list.d/docker.sources \<<EOF
             Types: deb
-            URIs: https://download.docker.com/linux/ubuntu
-            Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+            URIs: https://download.docker.com/linux/debian
+            Suites: $(. /etc/os-release && echo "$VERSION_CODENAME")
             Components: stable
             Signed-By: /etc/apt/keyrings/docker.asc
             EOF
-            sudo apt update
+            apt-get update
       - run:
           name: Install docker and plugins
-          command: DEBIAN_FRONTEND=noninteractive sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+          command: DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 jobs:
   pre-build:
     executor: elixir-builder
 
     steps:
-      - checkout
       - install_deps
+      - checkout
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get
@@ -128,8 +131,8 @@ jobs:
   dialyzer:
     executor: elixir-builder
     steps:
-      - checkout
       - install_deps
+      - checkout
       - run: echo "$OTP_VERSION $ELIXIR_VERSION" > .version_file
       - restore_cache:
           keys:
@@ -157,6 +160,7 @@ jobs:
       name: elixir-builder
       env: dev
     steps:
+      - install_deps
       - checkout
       - restore_cache:
           keys:
@@ -172,39 +176,21 @@ jobs:
           paths:
             - priv
 
-  test-erlang-27_elixir-1-18:
+  test-erlang-28_elixir-1-19:
     executor:
       name: elixir-env
       env: test
-      erlang_version: "27.2.2"
-      elixir_version: "1.18.3"
+      erlang_version: "28.5.0.5"
+      elixir_version: "1.19.5"
     steps:
       - test
 
-  test-erlang-27_elixir-1-17:
+  test-erlang-29_elixir-1-20:
     executor:
       name: elixir-env
       env: test
-      erlang_version: "27.2.2"
-      elixir_version: "1.17.3"
-    steps:
-      - test
-
-  test-erlang-26_elixir-1-18:
-    executor:
-      name: elixir-env
-      env: test
-      erlang_version: "26.2.1"
-      elixir_version: "1.18.3"
-    steps:
-      - test
-
-  test-erlang-26_elixir-1-17:
-    executor:
-      name: elixir-env
-      env: test
-      erlang_version: "26.2.1"
-      elixir_version: "1.17.3"
+      erlang_version: "29.0.6"
+      elixir_version: "1.20.4"
     steps:
       - test
 
@@ -212,6 +198,7 @@ jobs:
     executor:
       name: elixir-builder
     steps:
+      - install_deps
       - checkout
       - restore_cache:
           keys:
@@ -223,6 +210,7 @@ jobs:
       name: elixir-builder
       env: prod
     steps:
+      - install_deps
       - checkout
       - install_docker
       - setup_remote_docker:
@@ -244,14 +232,21 @@ jobs:
   integration-tests:
     machine:
       image: ubuntu-2404:current
+    environment:
+      MPUSH_ELIXIR_IMAGE: hexpm/elixir:1.20.4-erlang-29.0.6-debian-bookworm-20260824
     steps:
       - checkout
       - run:
-          name: Install Elixir
+          name: Start Elixir environment
           command: |
-            sudo add-apt-repository ppa:rabbitmq/rabbitmq-erlang -y
-            sudo apt update
-            sudo apt-get install -y erlang elixir
+            docker run --detach --rm \
+              --name mongoose-push-elixir \
+              --network host \
+              --volume "$PWD:/app" \
+              --workdir /app \
+              --env MIX_ENV=integration \
+              "$MPUSH_ELIXIR_IMAGE" \
+              sleep infinity
       - restore_cache:
           keys:
               - mix-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
@@ -259,28 +254,45 @@ jobs:
           keys:
               - certs-cache-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ .Revision }}
       - run: *DOCKER_TAGS
-      - run: mix local.hex --force && mix local.rebar --force
       - run:
-          name: Compile mix deps
-          command: MIX_ENV=integration mix do deps.get, deps.compile
-      - run:
-          name: Generate certificates
-          command: MIX_ENV=integration mix certs.dev
+          name: Prepare integration tests
+          command: |
+            docker exec mongoose-push-elixir bash -lc '
+              apt-get update
+              DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y git
+              mix local.hex --force
+              mix local.rebar --force
+              mix deps.get
+              mix deps.compile
+              mix certs.dev
+            '
       - run:
           name: Setup MongoosePush and mocks
-          command: MIX_ENV=integration mix test.env.up
+          command: |
+            PRIV=../../priv docker compose \
+              -f test/docker/docker-compose.mocks.yml \
+              -f test/docker/docker-compose.mpush.yml \
+              up --build -d --remove-orphans
       - run:
           name: Wait for MongoosePush and mocks
-          command: MIX_ENV=integration mix test.env.wait 60000
+          command: docker exec mongoose-push-elixir mix test.env.wait 60000
       - run:
           name: Run integration tests
-          command: MIX_ENV=integration mix test
+          command: docker exec mongoose-push-elixir mix test
+      - run:
+          name: Stop Elixir environment
+          when: always
+          command: |
+            if docker inspect mongoose-push-elixir >/dev/null 2>&1; then
+              docker stop mongoose-push-elixir
+            fi
 
   push-to-dockerhub:
     executor:
       name: elixir-builder
       env: prod
     steps:
+      - install_deps
       - checkout
       - install_docker
       - setup_remote_docker:
@@ -299,8 +311,9 @@ jobs:
 
   gh-pages-deploy:
     docker:
-      - image: cimg/elixir:1.18.3-erlang-27.2.2
+      - image: hexpm/elixir:1.20.4-erlang-29.0.6-debian-bookworm-20260824
     steps:
+      - install_deps
       - checkout
       - restore_cache:
           keys:
@@ -311,7 +324,7 @@ jobs:
       - run: mix local.hex --force && mix local.rebar --force
       - run:
           name: Compile mix deps
-          command: mix do deps.get, deps.compile
+          command: mix do deps.get + deps.compile
       - run:
           name: Configure Git
           command: |
@@ -346,19 +359,13 @@ workflows:
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-27_elixir-1-18:
+      - test-erlang-28_elixir-1-19:
+          name: elixir-1.19.5-otp-28.5.0.5
           requires:
             - pre-build
           filters: *all_tags
-      - test-erlang-27_elixir-1-17:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - test-erlang-26_elixir-1-18:
-          requires:
-            - pre-build
-          filters: *all_tags
-      - test-erlang-26_elixir-1-17:
+      - test-erlang-29_elixir-1-20:
+          name: elixir-1.20.4-otp-29.0.6
           requires:
             - pre-build
           filters: *all_tags
@@ -376,7 +383,7 @@ workflows:
           requires:
             - integration-tests
             - build-docker-image
-            - test-erlang-27_elixir-1-18
+            - elixir-1.20.4-otp-29.0.6
           filters: *all_tags
 
       - gh-pages-deploy:
