@@ -5,14 +5,13 @@ defmodule MongoosePush.Mixfile do
     [
       app: :mongoose_push,
       version: "2.3.0-dev",
-      elixir: "~> 1.17",
+      elixir: "~> 1.19",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
       dialyzer: dialyzer(),
       test_coverage: test_coverage(),
-      preferred_cli_env: preferred_cli_env(),
       compilers: compilers(Mix.env()),
       aliases: aliases(),
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -23,6 +22,10 @@ defmodule MongoosePush.Mixfile do
       source_url: "https://github.com/esl/MongoosePush",
       homepage_url: "https://esl.github.io/MongoosePush"
     ]
+  end
+
+  def cli do
+    [preferred_envs: preferred_cli_env()]
   end
 
   def application do

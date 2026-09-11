@@ -3,7 +3,6 @@ defmodule MongoosePush.Service.FCM.Pool.Supervisor do
   This module is responsible for setting up Sparrow's FCM Supervisor
   """
   use Supervisor, id: :fcm_pool_supervisor
-  require Logger
   alias MongoosePush.Application
 
   @default_endpoint "fcm.googleapis.com"

@@ -11,7 +11,6 @@ defmodule MongoosePush.Service.FCM do
   alias MongoosePush.Service
   alias MongoosePush.Service.FCM.Pool.Supervisor, as: PoolSupervisor
   alias MongoosePush.Service.FCM.ErrorHandler
-  require Logger
 
   @priority_mapping %{normal: :NORMAL, high: :HIGH}
 
