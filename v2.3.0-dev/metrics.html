@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.38.1">
+    <meta name="generator" content="ExDoc v0.40.4">
     <meta name="project" content="MongoosePush v2.3.0-dev">
 
 
     <title>Metrics — MongoosePush v2.3.0-dev</title>
 
-    <link rel="stylesheet" href="dist/html-elixir-J3PIVQVA.css" />
+    <link rel="stylesheet" href="dist/html-elixir-RXHHCTJW.css" />
 
-    <script defer src="dist/sidebar_items-7C37AB2A.js"></script>
+    <script defer src="dist/sidebar_items-E7F3433F.js"></script>
     <script defer src="docs_config.js"></script>
-    <script defer src="dist/html-DPJLHKSM.js"></script>
+    <script defer src="dist/html-MI33G4N7.js"></script>
 
   </head>
   <body>
@@ -41,7 +41,7 @@ MongoosePush
         </div>
       </div>
     </div>
-    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras=""></ul>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras="Pages"></ul>
   </div>
 </nav>
 
@@ -54,16 +54,34 @@ MongoosePush
         <form class="search-bar" action="search.html">
           <label class="search-label">
             <span class="sr-only">Search documentation of MongoosePush</span>
-            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <div class="search-input-wrapper">
+              <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+              <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+                <i class="ri-close-line ri-lg" title="Cancel search"></i>
+              </button>
+            </div>
           </label>
-          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
-            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
-          </button>
-          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
-            <i class="ri-close-line ri-lg" title="Cancel search"></i>
-          </button>
         </form>
         <div class="autocomplete">
+        </div>
+        <div class="engine-selector" data-multiple="false">
+          <button type="button" class="engine-button" aria-label="Select search engine" aria-haspopup="true" aria-expanded="false">
+            <i class="ri-search-2-line" aria-hidden="true"></i>
+            <span class="engine-name">Default</span>
+            <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+          </button>
+          <div class="engine-dropdown" hidden role="menu">
+
+              <button type="button"
+                      class="engine-option"
+                      data-engine-url="search.html?q="
+                      role="menuitemradio"
+                      aria-checked="true">
+                <span class="name">Default</span>
+                <span class="help">In-browser search</span>
+              </button>
+
+          </div>
         </div>
         <button class="icon-settings display-settings">
           <i class="ri-settings-3-line"></i>
@@ -76,8 +94,13 @@ MongoosePush
   <div class="heading-with-actions top-heading">
     <h1>Metrics</h1>
 
+<a href="metrics.md" title="Copy Markdown (hold Ctrl/Cmd and click it to open as Markdown)" class="copy-markdown icon-action" rel="help">
+  <i class="ri-markdown-line" aria-hidden="true"></i>
+  <span class="sr-only">Copy Markdown</span>
+</a>
 
-      <a href="https://github.com/esl/MongoosePush/blob/main/guides/metrics.md#L1" title="View Source" class="icon-action" rel="help">
+
+      <a href="https://github.com/esl/MongoosePush/blob/main/guides/metrics.md#L1" title="View Source" class="icon-action" rel="help nofollow">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -90,8 +113,8 @@ This is a breaking change compared to previous releases.
 Existing dashboards will need to be updated.</p><p>It is important to know that metrics are created inside MongoosePush only when a certain event happens.
 This may mean that a freshly started MongoosePush node will not have all the possible metrics available yet.</p><h2 id="default-dashboard" class="section-heading"><a href="#default-dashboard" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Default dashboard</span></h2><p>MongoosePush 2.1.1 provides default Grafana dashboards where we can see some of the available metrics.
 You can create the dashboards using the following command:</p><pre><code class="makeup bash" translate="no"><span class="">make dashboards
-</span></code></pre><p>This starts and configures two containers:</p><ul><li><code class="inline">mpush-grafana</code> - running Grafana, available at <a href="http://127.0.0.1:3000/">http://127.0.0.1:3000/</a></li><li><code class="inline">mpush-prometheus</code> - running Prometheus, which scraps the metrics from the <code class="inline">/metrics</code> endpoint, available at <a href="http://127.0.0.1:9090/">http://127.0.0.1:9090/</a></li></ul><p>Once we login to the Grafana container with the default (login: admin, password: admin) credentials we can see two dashboards:</p><ul><li>MongoosePush Metrics - displaying metrics related to notification send times and successful/failed connections.</li><li>MongoosePush VM - this dashboard contains metrics related to the VM like memory allocations or lengths of the run queues.</li></ul><p>You can stop the docker containers that are running Grafana and Prometheus using the following command:</p><pre><code class="makeup bash" translate="no"><span class="">make clean-dashboards
-</span></code></pre><h2 id="available-metrics" class="section-heading"><a href="#available-metrics" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Available metrics</span></h2><h4>Histograms</h4><p>For more details about the histogram metric type please go to <a href="https://prometheus.io/docs/concepts/metric_types/#histogram">https://prometheus.io/docs/concepts/metric_types/#histogram</a></p><h6>Notification sent time</h6><p><code class="inline">mongoose_push_notification_send_time_microsecond_bucket{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS},le=${LE}}</code>
+</span></code></pre><p>This starts and configures two containers:</p><ul><li><code class="inline">mpush-grafana</code> - running Grafana, available at <a rel="nofollow" href="http://127.0.0.1:3000/">http://127.0.0.1:3000/</a></li><li><code class="inline">mpush-prometheus</code> - running Prometheus, which scraps the metrics from the <code class="inline">/metrics</code> endpoint, available at <a rel="nofollow" href="http://127.0.0.1:9090/">http://127.0.0.1:9090/</a></li></ul><p>Once we login to the Grafana container with the default (login: admin, password: admin) credentials we can see two dashboards:</p><ul><li>MongoosePush Metrics - displaying metrics related to notification send times and successful/failed connections.</li><li>MongoosePush VM - this dashboard contains metrics related to the VM like memory allocations or lengths of the run queues.</li></ul><p>You can stop the docker containers that are running Grafana and Prometheus using the following command:</p><pre><code class="makeup bash" translate="no"><span class="">make clean-dashboards
+</span></code></pre><h2 id="available-metrics" class="section-heading"><a href="#available-metrics" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Available metrics</span></h2><h4>Histograms</h4><p>For more details about the histogram metric type please go to <a rel="nofollow" href="https://prometheus.io/docs/concepts/metric_types/#histogram">https://prometheus.io/docs/concepts/metric_types/#histogram</a></p><h6>Notification sent time</h6><p><code class="inline">mongoose_push_notification_send_time_microsecond_bucket{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS},le=${LE}}</code>
 <code class="inline">mongoose_push_notification_send_time_microsecond_sum{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}</code>
 <code class="inline">mongoose_push_notification_send_time_microsecond_count{error_category=${CATEGORY},error_reason=${REASON},service=${SERVICE},status=${STATUS}}</code></p><p>Where:</p><ul><li><code class="inline">STATUS</code> is <code class="inline">&quot;success&quot;</code> for the successful notifications or <code class="inline">&quot;error&quot;</code> in all other cases</li><li><code class="inline">SERVICE</code> is either <code class="inline">&quot;apns&quot;</code> or <code class="inline">&quot;fcm&quot;</code></li><li><code class="inline">CATEGORY</code> is an arbitrary error category term (in case of <code class="inline">status=&quot;error&quot;</code>) or an empty string (when <code class="inline">status=&quot;success&quot;</code>)</li><li><code class="inline">REASON</code> is an arbitrary error reason term (in case of <code class="inline">status=&quot;error&quot;</code>) or an empty string (when <code class="inline">status=&quot;success&quot;</code>)</li><li><code class="inline">LE</code> defines the <code class="inline">upper inclusive bound</code> (<code class="inline">less than or equal</code>) values for buckets, currently <code class="inline">1000</code>, <code class="inline">10_000</code>, <code class="inline">25_000</code>, <code class="inline">50_000</code>, <code class="inline">100_000</code>, <code class="inline">250_000</code>, <code class="inline">500_000</code>, <code class="inline">1000_000</code> or <code class="inline">+Inf</code></li></ul><p>This histogram metric shows the distribution of times needed to:</p><ol><li>Select a worker (this may include waiting time when all workers are busy).</li><li>Send a request.</li><li>Get a response from push notifications provider.</li></ol><h6>HTTP/2 requests</h6><p><code class="inline">sparrow_h_worker_handle_duration_microsecond_bucket{le=${LE}}</code>
 <code class="inline">sparrow_h_worker_handle_duration_microsecond_sum{le=${LE}}</code>
@@ -141,27 +164,34 @@ Healthcheck
   </div>
 </div>
     <footer class="footer">
-      <p>
 
-        <span class="line">
-          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
-            Search HexDocs
-          </button>
+        <p>
 
-            <a href="MongoosePush.epub" title="ePub version">
-              Download ePub version
-            </a>
+          <span class="line">
+            <button class="a-main footer-button display-quick-switch" title="Go to package docs">
+              Go to package docs
+            </button>
 
-        </span>
-      </p>
+              <a href="llms.txt" target="_blank">
+                View llms.txt
+              </a>
 
-      <p class="built-using">
-        Built using
-        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.38.1) for the
 
-          <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+              <a href="MongoosePush.epub">
+                Download ePub version
+              </a>
 
-      </p>
+          </span>
+        </p>
+
+        <p class="built-using">
+          Built using
+          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.40.4) for the
+
+            <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+
+        </p>
+
 
     </footer>
   </div>

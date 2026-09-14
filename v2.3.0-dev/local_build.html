@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.38.1">
+    <meta name="generator" content="ExDoc v0.40.4">
     <meta name="project" content="MongoosePush v2.3.0-dev">
 
 
     <title>Local build — MongoosePush v2.3.0-dev</title>
 
-    <link rel="stylesheet" href="dist/html-elixir-J3PIVQVA.css" />
+    <link rel="stylesheet" href="dist/html-elixir-RXHHCTJW.css" />
 
-    <script defer src="dist/sidebar_items-7C37AB2A.js"></script>
+    <script defer src="dist/sidebar_items-E7F3433F.js"></script>
     <script defer src="docs_config.js"></script>
-    <script defer src="dist/html-DPJLHKSM.js"></script>
+    <script defer src="dist/html-MI33G4N7.js"></script>
 
   </head>
   <body>
@@ -41,7 +41,7 @@ MongoosePush
         </div>
       </div>
     </div>
-    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras=""></ul>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras="Pages"></ul>
   </div>
 </nav>
 
@@ -54,16 +54,34 @@ MongoosePush
         <form class="search-bar" action="search.html">
           <label class="search-label">
             <span class="sr-only">Search documentation of MongoosePush</span>
-            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <div class="search-input-wrapper">
+              <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+              <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+                <i class="ri-close-line ri-lg" title="Cancel search"></i>
+              </button>
+            </div>
           </label>
-          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
-            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
-          </button>
-          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
-            <i class="ri-close-line ri-lg" title="Cancel search"></i>
-          </button>
         </form>
         <div class="autocomplete">
+        </div>
+        <div class="engine-selector" data-multiple="false">
+          <button type="button" class="engine-button" aria-label="Select search engine" aria-haspopup="true" aria-expanded="false">
+            <i class="ri-search-2-line" aria-hidden="true"></i>
+            <span class="engine-name">Default</span>
+            <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+          </button>
+          <div class="engine-dropdown" hidden role="menu">
+
+              <button type="button"
+                      class="engine-option"
+                      data-engine-url="search.html?q="
+                      role="menuitemradio"
+                      aria-checked="true">
+                <span class="name">Default</span>
+                <span class="help">In-browser search</span>
+              </button>
+
+          </div>
         </div>
         <button class="icon-settings display-settings">
           <i class="ri-settings-3-line"></i>
@@ -76,8 +94,13 @@ MongoosePush
   <div class="heading-with-actions top-heading">
     <h1>Local build</h1>
 
+<a href="local_build.md" title="Copy Markdown (hold Ctrl/Cmd and click it to open as Markdown)" class="copy-markdown icon-action" rel="help">
+  <i class="ri-markdown-line" aria-hidden="true"></i>
+  <span class="sr-only">Copy Markdown</span>
+</a>
 
-      <a href="https://github.com/esl/MongoosePush/blob/main/guides/local_build.md#L1" title="View Source" class="icon-action" rel="help">
+
+      <a href="https://github.com/esl/MongoosePush/blob/main/guides/local_build.md#L1" title="View Source" class="icon-action" rel="help nofollow">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -87,7 +110,7 @@ MongoosePush
 
 <h2 id="prerequisites" class="section-heading"><a href="#prerequisites" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Prerequisites</span></h2><ul><li>Elixir 1.5+ (<a href="http://elixir-lang.org/install.html">http://elixir-lang.org/install.html</a>)</li><li>Erlang/OTP 19.3+<blockquote><p>NOTE: Some Erlang/OTP 20.x releases / builds contain a TLS bug that prevents connecting to APNS servers.
 When building with this Erlang version, please make sure that the MongoosePushRuntimeTest test suite passes.
-It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p></blockquote></li><li>Rebar3 (just enter <a href="https://hexdocs.pm/mix/Mix.Tasks.Local.Rebar.html"><code class="inline">mix local.rebar</code></a>)</li></ul><h2 id="production-release" class="section-heading"><a href="#production-release" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Production release</span></h2><p>The build step is really easy. Just type in the root of the repository:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=prod mix do deps.get, compile, certs.dev, release
+It is however highly recommended to build MongoosePush with Erlang/OTP 21.x.</p></blockquote></li><li>Rebar3 (just enter <a href="https://mix.hexdocs.pm/Mix.Tasks.Local.Rebar.html"><code class="inline">mix local.rebar</code></a>)</li></ul><h2 id="production-release" class="section-heading"><a href="#production-release" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Production release</span></h2><p>The build step is really easy. Just type in the root of the repository:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=prod mix do deps.get, compile, certs.dev, release
 </span></code></pre><p>After this step you may try to run the service via:</p><pre><code class="makeup bash" translate="no"><span class="">_build/prod/rel/mongoose_push/bin/mongoose_push foreground
 </span></code></pre><p>Yeah, I know... It crashed. Running this service is fast and simple but unfortunately you can't have push notifications without a properly configured <code class="inline">FCM</code> and/or <code class="inline">APNS</code> service. You can find out how to properly configure it in the <a href="configuration.html#content">configuration</a> section.</p><h2 id="development-release" class="section-heading"><a href="#development-release" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Development release</span></h2><p>Again, an easy step:</p><pre><code class="makeup bash" translate="no"><span class="">MIX_ENV=dev mix do deps.get, compile, certs.dev, release
 </span></code></pre><p>The development release is by default configured to connect to a local APNS / FCM mock.
@@ -125,27 +148,34 @@ Running tests
   </div>
 </div>
     <footer class="footer">
-      <p>
 
-        <span class="line">
-          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
-            Search HexDocs
-          </button>
+        <p>
 
-            <a href="MongoosePush.epub" title="ePub version">
-              Download ePub version
-            </a>
+          <span class="line">
+            <button class="a-main footer-button display-quick-switch" title="Go to package docs">
+              Go to package docs
+            </button>
 
-        </span>
-      </p>
+              <a href="llms.txt" target="_blank">
+                View llms.txt
+              </a>
 
-      <p class="built-using">
-        Built using
-        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.38.1) for the
 
-          <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+              <a href="MongoosePush.epub">
+                Download ePub version
+              </a>
 
-      </p>
+          </span>
+        </p>
+
+        <p class="built-using">
+          Built using
+          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.40.4) for the
+
+            <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+
+        </p>
+
 
     </footer>
   </div>

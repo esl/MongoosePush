@@ -4,17 +4,17 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="ExDoc v0.38.1">
+    <meta name="generator" content="ExDoc v0.40.4">
     <meta name="project" content="MongoosePush v2.3.0-dev">
 
 
     <title>Docker — MongoosePush v2.3.0-dev</title>
 
-    <link rel="stylesheet" href="dist/html-elixir-J3PIVQVA.css" />
+    <link rel="stylesheet" href="dist/html-elixir-RXHHCTJW.css" />
 
-    <script defer src="dist/sidebar_items-7C37AB2A.js"></script>
+    <script defer src="dist/sidebar_items-E7F3433F.js"></script>
     <script defer src="docs_config.js"></script>
-    <script defer src="dist/html-DPJLHKSM.js"></script>
+    <script defer src="dist/html-MI33G4N7.js"></script>
 
   </head>
   <body>
@@ -41,7 +41,7 @@ MongoosePush
         </div>
       </div>
     </div>
-    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras=""></ul>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras="Pages"></ul>
   </div>
 </nav>
 
@@ -54,16 +54,34 @@ MongoosePush
         <form class="search-bar" action="search.html">
           <label class="search-label">
             <span class="sr-only">Search documentation of MongoosePush</span>
-            <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <div class="search-input-wrapper">
+              <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+              <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+                <i class="ri-close-line ri-lg" title="Cancel search"></i>
+              </button>
+            </div>
           </label>
-          <button type="submit" class="search-button" aria-label="Submit Search" tabindex="-1">
-            <i class="ri-search-2-line ri-lg" aria-hidden="true"></i>
-          </button>
-          <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
-            <i class="ri-close-line ri-lg" title="Cancel search"></i>
-          </button>
         </form>
         <div class="autocomplete">
+        </div>
+        <div class="engine-selector" data-multiple="false">
+          <button type="button" class="engine-button" aria-label="Select search engine" aria-haspopup="true" aria-expanded="false">
+            <i class="ri-search-2-line" aria-hidden="true"></i>
+            <span class="engine-name">Default</span>
+            <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+          </button>
+          <div class="engine-dropdown" hidden role="menu">
+
+              <button type="button"
+                      class="engine-option"
+                      data-engine-url="search.html?q="
+                      role="menuitemradio"
+                      aria-checked="true">
+                <span class="name">Default</span>
+                <span class="help">In-browser search</span>
+              </button>
+
+          </div>
         </div>
         <button class="icon-settings display-settings">
           <i class="ri-settings-3-line"></i>
@@ -76,8 +94,13 @@ MongoosePush
   <div class="heading-with-actions top-heading">
     <h1>Docker</h1>
 
+<a href="docker.md" title="Copy Markdown (hold Ctrl/Cmd and click it to open as Markdown)" class="copy-markdown icon-action" rel="help">
+  <i class="ri-markdown-line" aria-hidden="true"></i>
+  <span class="sr-only">Copy Markdown</span>
+</a>
 
-      <a href="https://github.com/esl/MongoosePush/blob/main/guides/docker.md#L1" title="View Source" class="icon-action" rel="help">
+
+      <a href="https://github.com/esl/MongoosePush/blob/main/guides/docker.md#L1" title="View Source" class="icon-action" rel="help nofollow">
         <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         <span class="sr-only">View Source</span>
       </a>
@@ -86,8 +109,8 @@ MongoosePush
 
 
 <h2 id="running-from-dockerhub" class="section-heading"><a href="#running-from-dockerhub" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Running from DockerHub</span></h2><p>We provide prebuilt MongoosePush images. Configuration requires either an FCM token, APNS certificates or an APNS token. Depending on your usecase, you can have some or all of them in a standalone MongoosePush instance or using a docker container.
-For the full configuration you need to set up the following directory structure:</p><ul><li>priv/<ul><li>ssl/<ul><li>rest_cert.pem - The HTTP endpoint certificate</li><li>rest_key.pem - private key for the HTTP endpoint certificate (has to be unencrypted)</li></ul></li><li>apns/<ul><li>prod_cert.pem - Production APNS app certificate</li><li>prod_key.pem - Production APNS app certificate's private key (has to be unencrypted)</li><li>dev_cert.pem - Development APNS app certificate</li><li>dev_key.pem - Development APNS app certificate's private key (has to be unencrypted)</li><li>token.p8 - <code class="inline">APNS</code> authentication token</li></ul></li><li>fcm/<ul><li>token.json - <code class="inline">FCM</code> service account JSON file</li></ul></li></ul></li><li>var/<ul><li>config.toml - TOML configuration file (optional)</li></ul></li></ul><p>If you want to use the <code class="inline">APNS</code> token authentication you need to provide the token and set both <code class="inline">key_id</code> and <code class="inline">team_id</code> environment variables. To see how to obtain the token and <code class="inline">key_id</code> read <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token_based_connection_to_apns">this</a>.
-To see how to obtain <code class="inline">team_id</code> read <a href="https://www.mobiloud.com/help/knowledge-base/ios-app-transfer/">this</a>.</p><p><code class="inline">FCM</code> JSON file can be generated by the Firebase console (<a href="https://console.firebase.google.com">https://console.firebase.google.com</a>). Go to your project -&gt; <code class="inline">Project Settings</code> -&gt; <code class="inline">Service accounts</code> -&gt; <code class="inline">Generate new private key</code>.</p><p>TOML config file is optional. It allows to fully configure the service but basic configuration can be achieved via environmental variables only.</p><p>Assuming that you have the <code class="inline">priv</code> directory with all certificates and fcm token in current directory and <code class="inline">var</code> directory with a config file, then you may start MongoosePush with the following command:</p><pre><code class="makeup bash" translate="no"><span class="">docker run -v `pwd`/priv:/opt/app/priv \
+For the full configuration you need to set up the following directory structure:</p><ul><li>priv/<ul><li>ssl/<ul><li>rest_cert.pem - The HTTP endpoint certificate</li><li>rest_key.pem - private key for the HTTP endpoint certificate (has to be unencrypted)</li></ul></li><li>apns/<ul><li>prod_cert.pem - Production APNS app certificate</li><li>prod_key.pem - Production APNS app certificate's private key (has to be unencrypted)</li><li>dev_cert.pem - Development APNS app certificate</li><li>dev_key.pem - Development APNS app certificate's private key (has to be unencrypted)</li><li>token.p8 - <code class="inline">APNS</code> authentication token</li></ul></li><li>fcm/<ul><li>token.json - <code class="inline">FCM</code> service account JSON file</li></ul></li></ul></li><li>var/<ul><li>config.toml - TOML configuration file (optional)</li></ul></li></ul><p>If you want to use the <code class="inline">APNS</code> token authentication you need to provide the token and set both <code class="inline">key_id</code> and <code class="inline">team_id</code> environment variables. To see how to obtain the token and <code class="inline">key_id</code> read <a rel="nofollow" href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token_based_connection_to_apns">this</a>.
+To see how to obtain <code class="inline">team_id</code> read <a rel="nofollow" href="https://www.mobiloud.com/help/knowledge-base/ios-app-transfer/">this</a>.</p><p><code class="inline">FCM</code> JSON file can be generated by the Firebase console (<a rel="nofollow" href="https://console.firebase.google.com">https://console.firebase.google.com</a>). Go to your project -&gt; <code class="inline">Project Settings</code> -&gt; <code class="inline">Service accounts</code> -&gt; <code class="inline">Generate new private key</code>.</p><p>TOML config file is optional. It allows to fully configure the service but basic configuration can be achieved via environmental variables only.</p><p>Assuming that you have the <code class="inline">priv</code> directory with all certificates and fcm token in current directory and <code class="inline">var</code> directory with a config file, then you may start MongoosePush with the following command:</p><pre><code class="makeup bash" translate="no"><span class="">docker run -v `pwd`/priv:/opt/app/priv \
 </span><span class="">  -v `pwd`/var:/opt/app/var \
 </span><span class="">  -e PUSH_HTTPS_CERTFILE=&quot;/opt/app/priv/ssl/rest_cert.pem&quot; \
 </span><span class="">  -e PUSH_HTTPS_KEYFILE=&quot;/opt/app/priv/ssl/rest_key.pem&quot; \
@@ -126,27 +149,34 @@ HTTP API
   </div>
 </div>
     <footer class="footer">
-      <p>
 
-        <span class="line">
-          <button class="a-main footer-button display-quick-switch" title="Search HexDocs packages">
-            Search HexDocs
-          </button>
+        <p>
 
-            <a href="MongoosePush.epub" title="ePub version">
-              Download ePub version
-            </a>
+          <span class="line">
+            <button class="a-main footer-button display-quick-switch" title="Go to package docs">
+              Go to package docs
+            </button>
 
-        </span>
-      </p>
+              <a href="llms.txt" target="_blank">
+                View llms.txt
+              </a>
 
-      <p class="built-using">
-        Built using
-        <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.38.1) for the
 
-          <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+              <a href="MongoosePush.epub">
+                Download ePub version
+              </a>
 
-      </p>
+          </span>
+        </p>
+
+        <p class="built-using">
+          Built using
+          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.40.4) for the
+
+            <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+
+        </p>
+
 
     </footer>
   </div>

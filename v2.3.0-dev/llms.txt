@@ -1,0 +1,121 @@
+# MongoosePush v2.3.0-dev - Table of Contents
+
+## Pages
+
+- [Introduction](readme.md)
+
+- Guides
+  - [Configuration](configuration.md)
+  - [Local build](local_build.md)
+  - [Running tests](test.md)
+  - [Docker](docker.md)
+  - [HTTP API](http_api.md)
+  - [Healthcheck](healthcheck.md)
+  - [Metrics](metrics.md)
+
+- Migration Guides
+  - [2.0.x to 2.1.0](2-0-x_2-1-0.md)
+  - [2.1.1 to 2.1.2](2-1-1_2-1-2.md)
+
+## Modules
+
+- [MongoosePush](MongoosePush.md): MongoosePush is simple (seriously) service providing ability to send push
+notification to `FCM` (Firebase Cloud Messaging) and/or
+`APNS` (Apple Push Notification Service). What makes it cool is not only
+simplicity but also support for newest and fastest `HTTP/2` based APIs
+for both services.
+- [MongoosePushWeb.HealthcheckController](MongoosePushWeb.HealthcheckController.md)
+
+- API
+  - [MongoosePush.API](MongoosePush.API.md)
+  - [MongoosePush.API.V1.ResponseEncoder](MongoosePush.API.V1.ResponseEncoder.md): Module for handling internal responses to V1 HTTP2 codes
+
+  - [MongoosePush.API.V2.ResponseEncoder](MongoosePush.API.V2.ResponseEncoder.md): Module for handling internal responses to V2 HTTP2 codes
+
+  - [MongoosePush.API.V3.ResponseEncoder](MongoosePush.API.V3.ResponseEncoder.md): Module for handling internal responses to V3 HTTP2 codes
+
+- Configuration
+  - [MongoosePush.Config.Utils](MongoosePush.Config.Utils.md)
+
+- Logs format
+  - [MongoosePush.Logger.Common](MongoosePush.Logger.Common.md): Common logs formatters' helper functions
+
+  - [MongoosePush.Logger.JSON](MongoosePush.Logger.JSON.md): Module responsible for JSON-specific logs formatting
+
+  - [MongoosePush.Logger.LogFmt](MongoosePush.Logger.LogFmt.md): Module responsible for FMT-specific logs formatting
+
+- Metrics
+  - [MongoosePush.Metrics.TelemetryMetrics](MongoosePush.Metrics.TelemetryMetrics.md): Module responsible for updating `Telemetry` metrics
+
+- Push notification services
+  - [MongoosePush.Service](MongoosePush.Service.md): Generic interface for push notifications services.
+
+  - [MongoosePush.Service.APNS](MongoosePush.Service.APNS.md): APNS (apple Push Notification Service) service provider implementation.
+
+  - [MongoosePush.Service.APNS.ErrorHandler](MongoosePush.Service.APNS.ErrorHandler.md): Module responsible for handling errors returned by APNS service
+
+  - [MongoosePush.Service.APNS.State](MongoosePush.Service.APNS.State.md): Module for storing state of apns APNS configurations, namely default topics
+
+  - [MongoosePush.Service.APNS.Supervisor](MongoosePush.Service.APNS.Supervisor.md): APNS module supervising Sparrow's PoolSupervisor and APNS State
+
+  - [MongoosePush.Service.FCM](MongoosePush.Service.FCM.md): FCM (Firebase Cloud Messaging) service provider implementation.
+
+  - [MongoosePush.Service.FCM.ErrorHandler](MongoosePush.Service.FCM.ErrorHandler.md): Module responsible for handling errors returned by FCM service.
+
+  - [MongoosePush.Service.FCM.Pool.Supervisor](MongoosePush.Service.FCM.Pool.Supervisor.md): This module is responsible for setting up Sparrow's FCM Supervisor
+
+  - [MongoosePush.Service.FCM.Pools](MongoosePush.Service.FCM.Pools.md): This module is responsible for worker pools management. It provides several
+utility functions that help with e.g. selecting workers for given pool of the
+service.
+
+- Web
+  - [MongoosePushWeb](MongoosePushWeb.md): The entrypoint for defining your web interface, such
+as controllers, views, channels and so on.
+  - [MongoosePushWeb.APIv1.NotificationController](MongoosePushWeb.APIv1.NotificationController.md)
+  - [MongoosePushWeb.APIv2.NotificationController](MongoosePushWeb.APIv2.NotificationController.md)
+  - [MongoosePushWeb.APIv3.NotificationController](MongoosePushWeb.APIv3.NotificationController.md)
+  - [MongoosePushWeb.ApiSpec](MongoosePushWeb.ApiSpec.md)
+  - [MongoosePushWeb.Endpoint](MongoosePushWeb.Endpoint.md)
+  - [MongoosePushWeb.PrometheusMetricsController](MongoosePushWeb.PrometheusMetricsController.md)
+  - [MongoosePushWeb.Router](MongoosePushWeb.Router.md)
+
+- Protocols and plugs
+  - [MongoosePushWeb.Plug.CastAndValidate](MongoosePushWeb.Plug.CastAndValidate.md): Module plug that serves as a wrapper for OpenApiSpex.Plug.CastAndValidate plug,
+to overcome difficulties with proper message validating. For more details,
+please refer to update_schema_and_do_call/2 function comment.
+
+  - [MongoosePushWeb.Plug.CastAndValidate.StubAdapter](MongoosePushWeb.Plug.CastAndValidate.StubAdapter.md): Module which is an almost empty Plug.Conn.Adapter behavior implementation.
+It is used by the MongoosePushWeb.Plug.CastAndValidate plug
+as part of the workaround this module introduces.
+
+  - [MongoosePushWeb.Plug.MaybePutSwaggerUI](MongoosePushWeb.Plug.MaybePutSwaggerUI.md)
+  - [MongoosePushWeb.Plug.MaybeRenderSpec](MongoosePushWeb.Plug.MaybeRenderSpec.md)
+  - [MongoosePushWeb.Protocols.RequestDecoder](MongoosePushWeb.Protocols.RequestDecoder.md)
+  - [MongoosePushWeb.Protocols.RequestDecoderHelper](MongoosePushWeb.Protocols.RequestDecoderHelper.md)
+
+- Schemas
+  - [MongoosePushWeb.Schemas](MongoosePushWeb.Schemas.md)
+  - [MongoosePushWeb.Schemas.Request.SendNotification.Deep](MongoosePushWeb.Schemas.Request.SendNotification.Deep.md)
+  - [MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification](MongoosePushWeb.Schemas.Request.SendNotification.Deep.AlertNotification.md): Request.SendNotification.Deep.AlertNotification
+  - [MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert](MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Alert.md): Request.SendNotification.Deep.Common.Alert
+  - [MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data](MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data.md): Request.SendNotification.Deep.Common.Data
+  - [MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification](MongoosePushWeb.Schemas.Request.SendNotification.Deep.MixedNotification.md): Request.SendNotification.Deep.MixedNotification
+  - [MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification](MongoosePushWeb.Schemas.Request.SendNotification.Deep.SilentNotification.md): Request.SendNotification.Deep.SilentNotification
+  - [MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification](MongoosePushWeb.Schemas.Request.SendNotification.FlatNotification.md): Request.SendNotification.FlatNotification
+  - [MongoosePushWeb.Schemas.Response.SendNotification.GenericError](MongoosePushWeb.Schemas.Response.SendNotification.GenericError.md): Response.SendNotification.GenericError
+  - [MongoosePushWeb.Schemas.Response.SendNotification.Gone](MongoosePushWeb.Schemas.Response.SendNotification.Gone.md): Response.SendNotification.Gone
+  - [MongoosePushWeb.Schemas.Response.SendNotification.PayloadTooLarge](MongoosePushWeb.Schemas.Response.SendNotification.PayloadTooLarge.md): Response.SendNotification.PayloadTooLarge
+  - [MongoosePushWeb.Schemas.Response.SendNotification.ServiceUnavailable](MongoosePushWeb.Schemas.Response.SendNotification.ServiceUnavailable.md): Response.SendNotification.ServiceUnavailable
+  - [MongoosePushWeb.Schemas.Response.SendNotification.TooManyRequests](MongoosePushWeb.Schemas.Response.SendNotification.TooManyRequests.md): Response.SendNotification.TooManyRequests
+  - [MongoosePushWeb.Schemas.Response.SendNotification.UnknownError](MongoosePushWeb.Schemas.Response.SendNotification.UnknownError.md): Response.SendNotification.UnknownError
+
+## Mix Tasks
+
+- [mix certs.dev](Mix.Tasks.Certs.Dev.md): Generate fake certs (placeholders) for `HTTPS` endpoint and `APNS` service.
+- [mix gh_pages_docs](Mix.Tasks.GhPagesDocs.md): Task for updating existing documentation version published on GH Pages.
+
+- [mix test.env.down](Mix.Tasks.Test.Env.Down.md)
+- [mix test.env.up](Mix.Tasks.Test.Env.Up.md)
+- [mix test.env.utils](Mix.Tasks.Test.Env.Utils.md)
+- [mix test.env.wait](Mix.Tasks.Test.Env.Wait.md)
+
