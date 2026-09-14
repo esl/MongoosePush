@@ -188,7 +188,8 @@ defmodule MongoosePush.Application do
   defp set_logformat(:json), do: set_logformat(MongoosePush.Logger.JSON)
 
   defp set_logformat(module) do
-    Logger.configure_backend(:console, format: {module, :format}, metadata: :all)
+    formatter = Logger.Formatter.new(format: {module, :format}, metadata: :all)
+    :logger.update_handler_config(:default, :formatter, formatter)
   end
 
   defp check_runtime_configuration_status() do

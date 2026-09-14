@@ -19,7 +19,7 @@ defmodule MongoosePushWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: MongoosePushWeb
+      use Phoenix.Controller, formats: []
 
       import Plug.Conn
       alias MongoosePushWeb.Router.Helpers, as: Routes

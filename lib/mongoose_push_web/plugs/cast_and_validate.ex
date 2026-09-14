@@ -12,7 +12,7 @@ defmodule MongoosePushWeb.Plug.CastAndValidate do
   end
 
   @impl Plug
-  def call(conn, opts) do
+  def call(%Plug.Conn{} = conn, opts) do
     stub_conn = %Plug.Conn{
       conn
       | adapter: {MongoosePushWeb.Plug.CastAndValidate.StubAdapter, %{}}

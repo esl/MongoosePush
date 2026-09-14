@@ -5,14 +5,13 @@ defmodule MongoosePush.Mixfile do
     [
       app: :mongoose_push,
       version: "2.3.0-dev",
-      elixir: "~> 1.17",
+      elixir: "~> 1.19",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
       dialyzer: dialyzer(),
       test_coverage: test_coverage(),
-      preferred_cli_env: preferred_cli_env(),
       compilers: compilers(Mix.env()),
       aliases: aliases(),
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -23,6 +22,10 @@ defmodule MongoosePush.Mixfile do
       source_url: "https://github.com/esl/MongoosePush",
       homepage_url: "https://esl.github.io/MongoosePush"
     ]
+  end
+
+  def cli do
+    [preferred_envs: preferred_cli_env()]
   end
 
   def application do
@@ -36,8 +39,9 @@ defmodule MongoosePush.Mixfile do
   defp deps do
     [
       {:chatterbox, github: "joedevivo/chatterbox", ref: "c0506c70", override: true},
-      {:sparrow, github: "esl/sparrow", tag: "1.0.4"},
-      {:plug_cowboy, "~> 2.6"},
+      {:sparrow, github: "esl/sparrow", tag: "1.1.0"},
+      {:plug, "~> 1.20"},
+      {:plug_cowboy, "~> 2.9"},
       {:cowboy_telemetry, "~> 0.4.0", override: true},
       {:jason, "~> 1.4"},
       {:poison, "~> 6.0", override: true},
@@ -48,7 +52,7 @@ defmodule MongoosePush.Mixfile do
       {:open_api_spex, "~> 3.18"},
       {:toml, "~> 0.7.0"},
       {:asn1_compiler, "~> 0.1.1"},
-      {:httpoison, "~> 2.2"},
+      {:httpoison, "~> 3.0", only: [:dev, :test, :integration]},
       {:telemetry, "~> 1.1"},
       {:telemetry_metrics, "~> 1.1"},
       {:telemetry_metrics_prometheus_core, "~> 1.1"},

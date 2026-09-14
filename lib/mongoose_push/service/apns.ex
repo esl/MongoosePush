@@ -4,7 +4,6 @@ defmodule MongoosePush.Service.APNS do
   """
 
   @behaviour MongoosePush.Service
-  require Logger
   alias Sparrow.APNS
   alias Sparrow.APNS.Notification
   alias MongoosePush.Application
