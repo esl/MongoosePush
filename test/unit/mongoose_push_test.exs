@@ -215,7 +215,8 @@ defmodule MongoosePushTest do
       fcm_data = fcm_message["android"]["data"]
 
       assert device_token == fcm_message["token"]
-      assert Atom.to_string(priority) == String.downcase(fcm_message["android"]["priority"])
+      assert nil == fcm_message["notification"]
+      assert Atom.to_string(priority) == fcm_message["android"]["priority"]
 
       assert notification.alert[:title] == fcm_notification["title"]
       assert notification.alert[:body] == fcm_notification["body"]
@@ -241,13 +242,10 @@ defmodule MongoosePushTest do
     fcm_request_data = last_activity(:fcm)["request_data"]
     fcm_message = fcm_request_data["message"]
     fcm_data = fcm_message["android"]["data"]
-    fcm_notification = fcm_message["android"]["notification"]
+    assert nil == fcm_message["notification"]
+    assert nil == fcm_message["android"]["notification"]
 
     assert "androidtestdeviceid12" == fcm_message["token"]
-    assert nil == fcm_notification["title"]
-    assert nil == fcm_notification["body"]
-    assert nil == fcm_notification["click_action"]
-    assert nil == fcm_notification["tag"]
     assert notification[:data] == fcm_data
   end
 
