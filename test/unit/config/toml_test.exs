@@ -84,6 +84,39 @@ defmodule MongoosePush.TomlTest do
     assert sysconfig[:openapi][:expose_ui] == true
   end
 
+  test "toml configures FCM JMI defaults" do
+    sysconfig =
+      Provider.update_sysconfig(
+        default_sysconfig(),
+        Toml.decode!(
+          """
+          [[service.fcm]]
+          jmi_ttl = 45
+          jmi_priority = "normal"
+          """,
+          keys: :atoms
+        )
+      )
+
+    assert sysconfig[:fcm][:fcm_1][:jmi_ttl] == 45
+    assert sysconfig[:fcm][:fcm_1][:jmi_priority] == :normal
+  end
+
+  test "toml rejects invalid FCM JMI priority" do
+    invalid_toml =
+      Toml.decode!(
+        """
+        [[service.fcm]]
+        jmi_priority = "urgent"
+        """,
+        keys: :atoms
+      )
+
+    assert_raise RuntimeError, ~r"expected normal or high", fn ->
+      Provider.update_sysconfig(default_sysconfig(), invalid_toml)
+    end
+  end
+
   test "toml overwrites some endpoint settings" do
     sysconfig =
       Provider.update_sysconfig(

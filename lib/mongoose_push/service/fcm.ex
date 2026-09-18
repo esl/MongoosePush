@@ -12,19 +12,25 @@ defmodule MongoosePush.Service.FCM do
   alias MongoosePush.Service.FCM.Pool.Supervisor, as: PoolSupervisor
   alias MongoosePush.Service.FCM.ErrorHandler
 
+  @default_jmi_ttl 30
+  @default_jmi_priority :high
   @priority_mapping %{normal: :NORMAL, high: :HIGH}
 
   @spec prepare_notification(String.t(), MongoosePush.request(), atom()) ::
           Service.notification()
-  def prepare_notification(device_id, %{alert: nil} = request, _pool) do
+  def prepare_notification(device_id, %{alert: nil} = request, pool) do
     # Setup silent notification
+    defaults = default_jmi_options(request[:data], pool)
+    ttl = request[:time_to_live] || defaults[:ttl]
+    priority = request[:priority] || defaults[:priority]
+
     android =
       Android.new()
-      |> maybe(:add_priority, @priority_mapping[request[:priority]])
-      |> maybe(:add_ttl, request[:time_to_live])
-      |> maybe(:add_data, request[:data])
+      |> maybe(:add_priority, @priority_mapping[priority])
+      |> maybe(:add_ttl, ttl)
+      |> maybe(:add_collapse_key, collapse_key(request[:data]))
 
-    Notification.new(:token, device_id)
+    Notification.new(:token, device_id, nil, nil, request[:data] || %{})
     |> Notification.add_android(android)
   end
 
@@ -38,12 +44,11 @@ defmodule MongoosePush.Service.FCM do
       |> Android.add_body(alert.body)
       |> maybe(:add_priority, @priority_mapping[request[:priority]])
       |> maybe(:add_ttl, request[:time_to_live])
-      |> maybe(:add_data, request[:data])
       |> maybe(:add_click_action, alert[:click_action])
       |> maybe(:add_tag, alert[:tag])
       |> maybe(:add_sound, alert[:sound])
 
-    Notification.new(:token, device_id)
+    Notification.new(:token, device_id, nil, nil, request[:data] || %{})
     |> Notification.add_android(android)
   end
 
@@ -84,4 +89,24 @@ defmodule MongoosePush.Service.FCM do
         {type, reason_}
     end
   end
+
+  defp collapse_key(%{"type" => "jmi", "jmi-sid" => sid})
+       when is_binary(sid) and sid != "",
+       do: "jmi-" <> sid
+
+  defp collapse_key(_), do: nil
+
+  defp default_jmi_options(%{"type" => "jmi"}, pool) do
+    config =
+      :mongoose_push
+      |> Elixir.Application.fetch_env!(:fcm)
+      |> Keyword.fetch!(pool)
+
+    [
+      ttl: config[:jmi_ttl] || @default_jmi_ttl,
+      priority: config[:jmi_priority] || @default_jmi_priority
+    ]
+  end
+
+  defp default_jmi_options(_, _pool), do: []
 end

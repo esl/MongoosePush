@@ -41,6 +41,8 @@ config :mongoose_push,
       pool_size: 3,
       mode: :dev,
       port: 4000,
+      jmi_ttl: 45,
+      jmi_priority: :normal,
       tags: [:these, :are, :not],
       tls_opts: [verify: :verify_none]
     ]

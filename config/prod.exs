@@ -50,6 +50,10 @@ config :mongoose_push,
       port: {:system, :integer, "PUSH_FCM_PORT", nil},
       appfile: {:system, :string, "PUSH_FCM_APP_FILE", "priv/fcm/token.json"},
       pool_size: {:system, :integer, "PUSH_FCM_POOL_SIZE", 5},
+      jmi_ttl: {:system, :integer, "PUSH_FCM_JMI_TTL", 30},
+      jmi_priority:
+        {:system, {MongoosePush.Config.Utils, :parse_fcm_jmi_priority, []},
+         "PUSH_FCM_JMI_PRIORITY", :high},
       mode: :prod
     ]
   ]
