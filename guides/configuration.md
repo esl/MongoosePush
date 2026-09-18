@@ -29,6 +29,8 @@ config :mongoose_push, fcm: [
         endpoint: "localhost",
         pool_size: 5,
         mode: :prod,
+        jmi_ttl: 30,
+        jmi_priority: :high,
         tls_opts: []
     ]
   ]
@@ -43,6 +45,8 @@ Each `FCM` pool may be configured by setting the following fields:
 * **endpoint** (*optional*) - URL override for the `FCM` service. Useful mainly in tests
 * **port** (*optional*) - Port number override for `the FCM` service. Useful mainly in tests
 * **tags** (*optional*) - a list of tags. Used when choosing a pool to match the request tags when sending a notification. More details: https://github.com/esl/sparrow#tags
+* **jmi_ttl** (*optional*) - default TTL in seconds for JMI notifications sent through this pool. Default: `30`
+* **jmi_priority** (*optional*, `:normal` or `:high`) - default JMI priority for this pool. Default: `:high`
 * **tls_opts** (*optional*) - a list of raw options passed to the `ssl:connect` function call while connecting to `FCM`. When this option is omitted, it will default to a set of values that will verify the server certificate based on an internal CA chain. Providing this option overrides all defaults, effectively disabling certificate validation. Therefore passing this option is not recommended outside dev and test environments.
 
 You may entirely skip the `FCM` config entry to disable `FCM` support.
@@ -124,6 +128,8 @@ Environment variables to configure a production release.
 * `PUSH_FCM_ENDPOINT` - Hostname of the `FCM` service. Set only for local testing. By default this option points to the Google's official hostname
 * `PUSH_FCM_APP_FILE` - Path to the `FCM` service account JSON file. For details look at [Running from DockerHub](docker.md#running-from-dockerhub) section
 * `PUSH_FCM_POOL_SIZE` - Connection pool size for the `FCM` service
+* `PUSH_FCM_JMI_TTL` - Default TTL in seconds for JMI notifications in the default FCM pool. Default: `30`
+* `PUSH_FCM_JMI_PRIORITY` - Default priority (`normal` or `high`) for JMI notifications in the default FCM pool. Default: `high`
 
 #### Settings for development APNS service:
 * `PUSH_APNS_DEV_ENDPOINT` - Hostname of the `APNS` service. Set only for local testing. By default this option points to the Apple's official hostname
@@ -165,7 +171,6 @@ Environment variables to configure a production release.
 * `general.https.cacertfile` (*string*, *optional*) - Path to a PEM cacertfile used for HTTPS endpoint. If not set, falls back to the environment variable `PUSH_HTTPS_CERTFILE` or its default. See `PUSH_HTTPS_CERTFILE` documentation for more details.
 * `general.openapi.expose_spec` (*boolean*, *optional*) - Enable or disable OpenAPI specification endpoint. If enabled, it will be available on `/swagger.json` HTTP path. If not set, falls back to the environment variable `PUSH_OPENAPI_EXPOSE_SPEC` or its default.
 * `general.openapi.expose_ui` (*boolean*, *optional*) - Enable or disable SwaggerUI. If enabled, it will be available on `/swaggerui` HTTP path.  If not set, falls back to the environment variable `PUSH_OPENAPI_EXPOSE_UI` or its default.
-
 #### FCM keys
 
 `[[service.fcm]]` (*array*, *optional*) - TOML Array representing a single FCM connection pool. Can have its own connection details like auth, and can be defined with a unique set of `tags` that can be later used when sending notifications to find a proper connection pool. If no `service.fcm` array entry is provided, FCM will be disabled. All following TOML keys are valid for any `service.fcm` array entry:
@@ -175,6 +180,8 @@ Environment variables to configure a production release.
 * `service.fcm.connection.port` (*integer*, *optional*) - Port of the FCM server. You should leave this not set to use official FCM servers.
 * `service.fcm.connection.count` (*integer*, *optional*) - Number of connections to open. Default is 5.
 * `service.fcm.auth.appfile` (*string*, *optional*) - Path to the FCM "app file" from the FCM admin console. This path should be either absolute, or relative to root dir of the release (in Docker container that would be `/opt/app`). Default: `priv/fcm/token.json`.
+* `service.fcm.jmi_ttl` (*integer*, *optional*) - Default TTL in seconds for JMI notifications sent through this pool. Default: `30`.
+* `service.fcm.jmi_priority` (*string*, *optional*) - Default JMI priority for this pool: `normal` or `high`. Default: `high`.
 
 #### APNS keys
 
@@ -216,6 +223,8 @@ Please note that only one method of authentication can be used for any given poo
     expose_ui = false
 
 [[service.fcm]]
+  jmi_ttl = 30
+  jmi_priority = "high"
   tags = ["tag1", "tag2"]
   [service.fcm.connection]
     endpoint = "localhost"
