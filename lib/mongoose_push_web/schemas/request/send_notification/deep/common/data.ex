@@ -4,9 +4,10 @@ defmodule MongoosePushWeb.Schemas.Request.SendNotification.Deep.Common.Data do
 
   OpenApiSpex.schema(%{
     title: "Request.SendNotification.Deep.Common.Data",
-    description:
-      "Custom key-values pairs of the message's payload. " <>
-        "The FCM request with nested data can end up with error.",
+    description: """
+    Custom key-value data sent to the target device, for example as a JMI payload.
+    See the [HTTP API guide](https://github.com/esl/MongoosePush/blob/master/guides/http_api.md#jmi-call-notifications) for the exact JMI format.
+    """,
     type: :object,
     example: Deep.data()[:example]["data"],
     additionalProperties: nil

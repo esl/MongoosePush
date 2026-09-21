@@ -12,27 +12,18 @@ defmodule MongoosePush.Service.APNS do
   alias MongoosePush.Service.APNS.ErrorHandler
 
   @priority_mapping %{normal: "5", high: "10"}
-  @push_type "apns-push-type"
   @type_background "background"
+  @type_voip "voip"
 
   @spec prepare_notification(String.t(), MongoosePush.request(), atom()) ::
           Service.notification()
   def prepare_notification(device_id, %{alert: nil} = request, _pool) do
     # Setup silent notification
-    notification =
-      Notification.new(device_id, Map.get(request, :mode, :prod))
-      |> Notification.add_content_available(1)
-      |> maybe(:add_apns_topic, request[:topic])
-      |> maybe(:add_mutable_content, request[:mutable_content])
-      |> maybe(:add_apns_priority, @priority_mapping[request[:priority]])
-      |> add_data(request[:data])
-
-    # `apns-push-type` must be set to `background` for iOS 13+.
-    headers =
-      notification
-      |> Map.get(:headers, [])
-
-    Map.put(notification, :headers, headers ++ [{@push_type, @type_background}])
+    Notification.new(device_id, Map.get(request, :mode, :prod))
+    |> maybe(:add_apns_topic, request[:topic])
+    |> maybe(:add_apns_priority, @priority_mapping[request[:priority]])
+    |> add_data(request[:data])
+    |> prepare_silent_notification(request)
   end
 
   def prepare_notification(device_id, request, pool) do
@@ -93,6 +84,19 @@ defmodule MongoosePush.Service.APNS do
   defp maybe(notification, :add_mutable_content, _), do: notification
   defp maybe(notification, _function, nil), do: notification
   defp maybe(notification, function, arg), do: apply(Notification, function, [notification, arg])
+
+  defp prepare_silent_notification(notification, %{data: %{"type" => "jmi"}}) do
+    notification
+    |> Notification.add_apns_push_type(@type_voip)
+    |> Notification.add_apns_expiration("0")
+  end
+
+  defp prepare_silent_notification(notification, request) do
+    notification
+    |> Notification.add_apns_push_type(@type_background)
+    |> Notification.add_content_available(1)
+    |> maybe(:add_mutable_content, request[:mutable_content])
+  end
 
   defp add_data(notification, arg) do
     List.foldl(Map.keys(arg || %{}), notification, fn key, notification ->

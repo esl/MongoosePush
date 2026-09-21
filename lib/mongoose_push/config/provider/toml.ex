@@ -171,6 +171,8 @@ defmodule MongoosePush.Config.Provider.Toml do
       appfile: toml[:auth][:appfile],
       pool_size: toml[:connection][:count] || 5,
       tags: toml[:tags],
+      jmi_ttl: toml[:jmi_ttl],
+      jmi_priority: parse_fcm_jmi_priority(toml[:jmi_priority]),
       mode: :prod
     ]
   end
@@ -210,4 +212,13 @@ defmodule MongoosePush.Config.Provider.Toml do
 
   defp parse_bind_addr(nil), do: {:ok, nil}
   defp parse_bind_addr(addr), do: Utils.parse_bind_addr(addr)
+
+  defp parse_fcm_jmi_priority(nil), do: nil
+
+  defp parse_fcm_jmi_priority(value) do
+    case Utils.parse_fcm_jmi_priority(value) do
+      {:ok, priority} -> priority
+      {:error, reason} -> raise reason
+    end
+  end
 end

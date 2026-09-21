@@ -212,17 +212,18 @@ defmodule MongoosePushTest do
       fcm_request_data = last_activity(:fcm)["request_data"]
       fcm_message = fcm_request_data["message"]
       fcm_notification = fcm_message["android"]["notification"]
-      fcm_data = fcm_message["android"]["data"]
 
       assert device_token == fcm_message["token"]
-      assert Atom.to_string(priority) == String.downcase(fcm_message["android"]["priority"])
+      assert nil == fcm_message["notification"]
+      assert nil == fcm_message["android"]["data"]
+      assert Atom.to_string(priority) == fcm_message["android"]["priority"]
 
       assert notification.alert[:title] == fcm_notification["title"]
       assert notification.alert[:body] == fcm_notification["body"]
       assert notification.alert[:click_action] == fcm_notification["click_action"]
       assert notification.alert[:tag] == fcm_notification["tag"]
       assert notification.alert[:sound] == fcm_notification["sound"]
-      assert notification[:data] == fcm_data
+      assert notification[:data] == fcm_message["data"]
       assert notification[:time_to_live] == convert_ttl(fcm_message["android"]["ttl"])
     end
   end
@@ -240,15 +241,53 @@ defmodule MongoosePushTest do
     assert :ok == push("androidtestdeviceid12", notification)
     fcm_request_data = last_activity(:fcm)["request_data"]
     fcm_message = fcm_request_data["message"]
-    fcm_data = fcm_message["android"]["data"]
-    fcm_notification = fcm_message["android"]["notification"]
+    assert nil == fcm_message["notification"]
+    assert nil == fcm_message["android"]["notification"]
+    assert nil == fcm_message["android"]["data"]
+    assert nil == fcm_message["android"]["collapse_key"]
 
     assert "androidtestdeviceid12" == fcm_message["token"]
-    assert nil == fcm_notification["title"]
-    assert nil == fcm_notification["body"]
-    assert nil == fcm_notification["click_action"]
-    assert nil == fcm_notification["tag"]
-    assert notification[:data] == fcm_data
+    assert notification[:data] == fcm_message["data"]
+  end
+
+  test "JMI push to FCM sets collapse key, TTL and priority" do
+    sid = "ca3cf894-5325-482f-a412-a6e9f832298d"
+    device_token = "android-device-fcm-token"
+
+    notification = %{
+      :service => :fcm,
+      :data => %{
+        "type" => "jmi",
+        "jmi-sid" => sid,
+        "jmi-from" => "romeo@montague.example/orchard"
+      }
+    }
+
+    assert :ok == push(device_token, notification)
+    fcm_request_data = last_activity(:fcm)["request_data"]
+
+    assert Map.take(fcm_request_data, ["message"]) == %{
+             "message" => %{
+               "token" => device_token,
+               "android" => %{
+                 "priority" => "high",
+                 "ttl" => "30s",
+                 "collapse_key" => "jmi-" <> sid
+               },
+               "data" => notification[:data]
+             }
+           }
+
+    assert :ok == push(device_token, Map.put(notification, :mode, :dev))
+    fcm_message = last_activity(:fcm)["request_data"]["message"]
+    assert "45s" == fcm_message["android"]["ttl"]
+    assert "normal" == fcm_message["android"]["priority"]
+
+    override = Map.merge(notification, %{mode: :dev, time_to_live: 15, priority: :high})
+    assert :ok == push(device_token, override)
+    fcm_message = last_activity(:fcm)["request_data"]["message"]
+    assert "15s" == fcm_message["android"]["ttl"]
+    assert "high" == fcm_message["android"]["priority"]
   end
 
   test "push to apns assign correct message fields when sending silent notification" do
@@ -273,6 +312,33 @@ defmodule MongoosePushTest do
     assert nil == aps_data["category"]
     assert 1 == aps_data["content-available"]
     assert notification[:data] == aps_custom
+  end
+
+  test "JMI push to APNS sets VoIP headers" do
+    sid = "ca3cf894-5325-482f-a412-a6e9f832298d"
+    device_token = "voip-pushkit-device-token"
+    topic = "com.example.app.voip"
+
+    notification = %{
+      :service => :apns,
+      :topic => topic,
+      :data => %{
+        "type" => "jmi",
+        "jmi-sid" => sid,
+        "jmi-from" => "romeo@montague.example/orchard"
+      }
+    }
+
+    assert :ok == push(device_token, notification)
+    apns_request = last_activity(:apns)
+
+    assert device_token == apns_request["device_token"]
+    assert notification[:data] == apns_request["request_data"]
+
+    headers = apns_request["request_headers"]
+    assert "voip" == headers["apns-push-type"]
+    assert topic == headers["apns-topic"]
+    assert "0" == headers["apns-expiration"]
   end
 
   test "push to fcm with unknown token fails" do

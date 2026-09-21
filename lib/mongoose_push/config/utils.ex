@@ -1,4 +1,10 @@
 defmodule MongoosePush.Config.Utils do
+  def parse_fcm_jmi_priority("normal"), do: {:ok, :normal}
+  def parse_fcm_jmi_priority("high"), do: {:ok, :high}
+
+  def parse_fcm_jmi_priority(value),
+    do: {:error, "expected normal or high, got: #{inspect(value)}"}
+
   @doc """
   Used by `prod.exs` to parse env variables to inet-style IP addresses
   """
