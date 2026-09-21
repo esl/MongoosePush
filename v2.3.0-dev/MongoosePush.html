@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="dist/html-elixir-RXHHCTJW.css" />
 
-    <script defer src="dist/sidebar_items-E7F3433F.js"></script>
+    <script defer src="dist/sidebar_items-F749BFC6.js"></script>
     <script defer src="docs_config.js"></script>
     <script defer src="dist/html-MI33G4N7.js"></script>
 
@@ -200,7 +200,7 @@ MongoosePush may and probably will support even more Push Notification Services.
 
       </div>
 
-        <div class="summary-synopsis"><p>Raw push request. The keys: <code class="inline">:service</code> and at least one of <code class="inline">:alert</code> or <code class="inline">:body</code> are required</p></div>
+        <div class="summary-synopsis"><p>Raw push request. <code class="inline">:service</code> and at least one of <code class="inline">:alert</code> or <code class="inline">:data</code> are required.</p></div>
 
     </div>
 
@@ -225,10 +225,8 @@ MongoosePush may and probably will support even more Push Notification Services.
       </div>
 
         <div class="summary-synopsis"><p>Push notification defined by <code class="inline">request</code> to device with <code class="inline">device_id</code>.
-<code class="inline">request</code> has to define at least <code class="inline">:service</code> type (<code class="inline">:fcm</code> or <code class="inline">:apns</code>) and
-at least one of <code class="inline">:alert</code> or <code class="inline">:data</code>. If <code class="inline">alert</code> is not present, the notification will be send as 'silent'.
-Please refer to yours push notification service provider's documentation for more details on
-silent notifications.</p></div>
+The request requires <code class="inline">:service</code> (<code class="inline">:fcm</code> or <code class="inline">:apns</code>) and at least one of
+<code class="inline">:alert</code> or <code class="inline">:data</code>. Without <code class="inline">:alert</code>, the notification is silent.</p></div>
 
     </div>
 
@@ -479,7 +477,7 @@ silent notifications.</p></div>
 
       </div>
 
-<p>Raw push request. The keys: <code class="inline">:service</code> and at least one of <code class="inline">:alert</code> or <code class="inline">:body</code> are required</p>
+<p>Raw push request. <code class="inline">:service</code> and at least one of <code class="inline">:alert</code> or <code class="inline">:data</code> are required.</p>
   </section>
 </section>
 <section class="detail" id="t:service/0">
@@ -533,7 +531,7 @@ silent notifications.</p></div>
       <h1 class="signature" translate="no">push(device_id, request)</h1>
 
 
-        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L67" class="icon-action" rel="help nofollow" aria-label="View Source">
+        <a href="https://github.com/esl/MongoosePush/blob/main/lib/mongoose_push.ex#L63" class="icon-action" rel="help nofollow" aria-label="View Source">
           <i class="ri-code-s-slash-line" aria-hidden="true"></i>
         </a>
 
@@ -550,18 +548,12 @@ silent notifications.</p></div>
       </div>
 
 <p>Push notification defined by <code class="inline">request</code> to device with <code class="inline">device_id</code>.
-<code class="inline">request</code> has to define at least <code class="inline">:service</code> type (<code class="inline">:fcm</code> or <code class="inline">:apns</code>) and
-at least one of <code class="inline">:alert</code> or <code class="inline">:data</code>. If <code class="inline">alert</code> is not present, the notification will be send as 'silent'.
-Please refer to yours push notification service provider's documentation for more details on
-silent notifications.</p><p>Field <code class="inline">:data</code> may contain any custom data that have to be delivered to the target device, while
-field <code class="inline">:alert</code>, if present, must contain at least <code class="inline">:title</code> and <code class="inline">:body</code>. The <code class="inline">:alert</code> field may also
-contain: :sound, <code class="inline">:tag</code> (option specific to FCM service), <code class="inline">:topic</code> and <code class="inline">:bagde</code> (specific to APNS).
-Please consult push notification service provider's documentation for more informations on those
-optional fields.</p><p>Field <code class="inline">:priority</code> may be used to set priority for message on both FCM and APNS. The values are
-native for FCM and for APNS - :normal is &quot;5&quot; and :high is 10.</p><p><code class="inline">:mode</code> option is also specific to APNS but it only selects appropriate
-worker pool (with <code class="inline">:mode</code> set to either <code class="inline">:prod</code> or <code class="inline">:dev</code>).
-Default value to <code class="inline">:mode</code> is <code class="inline">:prod</code>.</p><p>Field <code class="inline">:mutable_content</code> (specific to APNS) can be set to <code class="inline">true</code> (by default <code class="inline">false</code>) to enable
-this feature (please consult APNS documentation for more information).</p>
+The request requires <code class="inline">:service</code> (<code class="inline">:fcm</code> or <code class="inline">:apns</code>) and at least one of
+<code class="inline">:alert</code> or <code class="inline">:data</code>. Without <code class="inline">:alert</code>, the notification is silent.</p><p><code class="inline">:data</code> contains application-specific key-value data. In a data-only request,
+<code class="inline">%{&quot;type&quot; =&gt; &quot;jmi&quot;}</code> identifies a Jingle Message Initiation call notification.
+FCM derives its collapse key from a non-empty <code class="inline">&quot;jmi-sid&quot;</code>. For APNS, this creates
+a VoIP notification and requires a PushKit token and a <code class="inline">.voip</code> topic.</p><p>An <code class="inline">:alert</code> requires <code class="inline">:title</code> and <code class="inline">:body</code> and may include <code class="inline">:sound</code>,
+<code class="inline">:click_action</code>, <code class="inline">:tag</code> (FCM), or <code class="inline">:badge</code> (APNS).</p><p><code class="inline">:priority</code> accepts <code class="inline">:normal</code> or <code class="inline">:high</code>; APNS maps them to <code class="inline">&quot;5&quot;</code> and <code class="inline">&quot;10&quot;</code>.</p><p><code class="inline">:mode</code> selects the <code class="inline">:prod</code> (default) or <code class="inline">:dev</code> pool.</p><p><code class="inline">:mutable_content</code> enables the corresponding APS option for non-JMI notifications.</p>
   </section>
 </section>
 

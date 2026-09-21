@@ -3,7 +3,8 @@
 
 Request.SendNotification.Deep.Common.Data
 
-Custom key-values pairs of the message's payload. The FCM request with nested data can end up with error.
+Custom key-value data sent to the target device, for example as a JMI payload.
+See the [HTTP API guide](https://github.com/esl/MongoosePush/blob/master/guides/http_api.md#jmi-call-notifications) for the exact JMI format.
 
 # `t`
 

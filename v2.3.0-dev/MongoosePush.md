@@ -72,7 +72,7 @@ Available keys in `request` map
 }
 ```
 
-Raw push request. The keys: `:service` and at least one of `:alert` or `:body` are required
+Raw push request. `:service` and at least one of `:alert` or `:data` are required.
 
 # `service`
 
@@ -88,24 +88,20 @@ Raw push request. The keys: `:service` and at least one of `:alert` or `:body` a
 ```
 
 Push notification defined by `request` to device with `device_id`.
-`request` has to define at least `:service` type (`:fcm` or `:apns`) and
-at least one of `:alert` or `:data`. If `alert` is not present, the notification will be send as 'silent'.
-Please refer to yours push notification service provider's documentation for more details on
-silent notifications.
+The request requires `:service` (`:fcm` or `:apns`) and at least one of
+`:alert` or `:data`. Without `:alert`, the notification is silent.
 
-Field `:data` may contain any custom data that have to be delivered to the target device, while
-field `:alert`, if present, must contain at least `:title` and `:body`. The `:alert` field may also
-contain: :sound, `:tag` (option specific to FCM service), `:topic` and `:bagde` (specific to APNS).
-Please consult push notification service provider's documentation for more informations on those
-optional fields.
+`:data` contains application-specific key-value data. In a data-only request,
+`%{"type" => "jmi"}` identifies a Jingle Message Initiation call notification.
+FCM derives its collapse key from a non-empty `"jmi-sid"`. For APNS, this creates
+a VoIP notification and requires a PushKit token and a `.voip` topic.
 
-Field `:priority` may be used to set priority for message on both FCM and APNS. The values are
-native for FCM and for APNS - :normal is "5" and :high is 10.
+An `:alert` requires `:title` and `:body` and may include `:sound`,
+`:click_action`, `:tag` (FCM), or `:badge` (APNS).
 
-`:mode` option is also specific to APNS but it only selects appropriate
-worker pool (with `:mode` set to either `:prod` or `:dev`).
-Default value to `:mode` is `:prod`.
+`:priority` accepts `:normal` or `:high`; APNS maps them to `"5"` and `"10"`.
 
-Field `:mutable_content` (specific to APNS) can be set to `true` (by default `false`) to enable
-this feature (please consult APNS documentation for more information).
+`:mode` selects the `:prod` (default) or `:dev` pool.
+
+`:mutable_content` enables the corresponding APS option for non-JMI notifications.
 
