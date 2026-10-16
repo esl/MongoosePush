@@ -16,7 +16,7 @@ defmodule Mix.Tasks.Test.Env.Utils do
   end
 
   def wait_for_services(time_ms) do
-    HTTPoison.start()
+    {:ok, _} = Application.ensure_all_started(:req)
     wait_for_services("localhost", services(Mix.env()), time_ms)
   end
 
@@ -77,11 +77,13 @@ defmodule Mix.Tasks.Test.Env.Utils do
   defp try_connect(proto, host, port) do
     url = "#{proto}://#{host}:#{port}/"
 
-    with {:ok, _} <-
-           HTTPoison.get(url, [], ssl: [insecure: true]) do
+    with {:ok, _} <- Req.get(url, [retry: false, decode_body: false] ++ connect_options(proto)) do
       :ok
     end
   end
+
+  defp connect_options(:https), do: [connect_options: [transport_opts: [verify: :verify_none]]]
+  defp connect_options(_proto), do: []
 
   defp services(:dev), do: services(:test)
 
