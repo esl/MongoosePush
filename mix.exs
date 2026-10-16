@@ -38,8 +38,7 @@ defmodule MongoosePush.Mixfile do
 
   defp deps do
     [
-      {:chatterbox, github: "joedevivo/chatterbox", ref: "c0506c70", override: true},
-      {:sparrow, github: "esl/sparrow", tag: "1.2.0"},
+      {:sparrow, github: "esl/sparrow", branch: "spike-finch"},
       {:plug, "~> 1.20"},
       {:plug_cowboy, "~> 2.9"},
       {:cowboy_telemetry, "~> 0.4.0", override: true},
@@ -52,7 +51,6 @@ defmodule MongoosePush.Mixfile do
       {:open_api_spex, "~> 3.18"},
       {:toml, "~> 0.7.0"},
       {:asn1_compiler, "~> 0.1.1"},
-      {:httpoison, "~> 3.0", only: [:dev, :test, :integration]},
       {:telemetry, "~> 1.1"},
       {:telemetry_metrics, "~> 1.1"},
       {:telemetry_metrics_prometheus_core, "~> 1.1"},
@@ -65,6 +63,7 @@ defmodule MongoosePush.Mixfile do
       {:credo, "~> 1.7", only: [:dev, :test]},
       {:ex_doc, "~> 0.31", only: :dev},
       {:quixir, "~> 0.9", only: [:test, :integration]},
+      {:req, "~> 0.5", only: [:dev, :test, :integration]},
       {:assert_eventually, "~> 1.0", only: [:test, :integration]},
       {:mox, "~> 1.1", only: [:test, :integration]},
       {:stream_data, "~> 1.0", only: [:test, :integration]}

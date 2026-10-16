@@ -85,7 +85,7 @@ Description of the possible server responses
 * **410** `{"reason" : "unregistered"}` - the device was not registered.
 * **413** `{"reason" : "payload_too_large"}` - the payload was too large.
 * **429** `{"reason" : "too_many_requests"}` - there were too many requests to the server.
-* **503** `{"reason" : "service_internal"|"internal_config"|"unspecified"}` - the internal service or configuration error occurred.
+* **503** `{"reason" : "service_internal"|"internal_config"|"unspecified"|"unable_to_connect"|"connection_lost"|"request_timeout"|"too_many_concurrent_requests"}` - the internal service or configuration error occurred, or the push notification service could not be reached or did not respond in time.
 * **520** `{"reason" : "unspecified"}` - the unknown error occurred.
 * **500** `{"reason" : reason}` - the server internal error occurred,
   specified by **reason**.

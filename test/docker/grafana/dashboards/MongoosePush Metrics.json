@@ -128,7 +128,7 @@
       "reverseYBuckets": false,
       "targets": [
         {
-          "expr": "sum(rate(sparrow_h_worker_handle_duration_microsecond_bucket[1h])) by (le)",
+          "expr": "sum(rate(sparrow_pool_request_duration_microsecond_bucket[1h])) by (le)",
           "format": "heatmap",
           "hide": false,
           "instant": false,
@@ -140,7 +140,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "h2_worker handle request",
+      "title": "request to push notification service duration",
       "tooltip": {
         "show": true,
         "showHistogram": false
@@ -212,10 +212,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sparrow_h_worker_request_success_count",
+          "expr": "sum(increase(sparrow_pool_request_count{result=\"ok\"}[1m])) by (pool, status)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "request success",
+          "legendFormat": "{{pool}} pool, status {{status}}",
           "refId": "A"
         }
       ],
@@ -223,7 +223,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "request success",
+      "title": "requests with a response (per minute)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -243,7 +243,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": true
         },
         {
@@ -308,10 +308,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sparrow_h_worker_request_error_count",
+          "expr": "sum(increase(sparrow_pool_request_count{result=\"error\"}[1m])) by (pool, reason)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "request error",
+          "legendFormat": "{{pool}} pool, {{reason}}",
           "refId": "A"
         }
       ],
@@ -319,7 +319,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "request error",
+      "title": "requests without a response (per minute)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -339,7 +339,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": true
         },
         {
@@ -368,7 +368,7 @@
         },
         "overrides": []
       },
-      "fill": 1,
+      "fill": 0,
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
@@ -404,18 +404,25 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sparrow_h_worker_conn_success_count - sparrow_h_worker_conn_lost_count",
+          "expr": "sparrow_pool_connected_gauge",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "connection success - lost",
+          "legendFormat": "{{pool}} pool, established",
           "refId": "A"
+        },
+        {
+          "expr": "sparrow_pool_connections_gauge",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{pool}} pool, configured",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "h2_worker connection success -  connection lost",
+      "title": "connections: established and configured",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -435,7 +442,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": true
         },
         {
@@ -450,7 +457,8 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
-      }
+      },
+      "description": "Established connections of a pool below the configured number mean that some of them are being (re)established"
     },
     {
       "aliasColors": {},
@@ -500,10 +508,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sparrow_h_worker_conn_fail_count",
+          "expr": "sum(increase(sparrow_pool_connect_count{result=\"error\"}[1m])) by (pool, reason)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "Connection fail count",
+          "legendFormat": "{{pool}} pool, {{reason}}",
           "refId": "A"
         }
       ],
@@ -511,7 +519,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "h2_worker  failed connections",
+      "title": "failed attempts to connect (per minute)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -531,7 +539,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": true
         },
         {
@@ -554,7 +562,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "Provides insight into how many workers and worker pools are running",
+      "description": "Requests which could not be sent at the first attempt, e.g. because the connection was being reestablished",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -564,7 +572,7 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 10,
+        "h": 9,
         "w": 12,
         "x": 0,
         "y": 27
@@ -597,25 +605,18 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sparrow_pools_warden_pools_gauge",
+          "expr": "sum(increase(sparrow_pool_retry_count[1m])) by (pool, reason)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "pools count",
+          "legendFormat": "{{pool}} pool, {{reason}}",
           "refId": "A"
-        },
-        {
-          "expr": "sparrow_pools_warden_workers_gauge",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "{{pool}} pool",
-          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "h2_worker pools",
+      "title": "requests which had to be sent again (per minute)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -635,7 +636,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": 0,
           "show": true
         },
         {

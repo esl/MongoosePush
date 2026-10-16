@@ -61,7 +61,7 @@ MIX_ENV=integration mix test.env.down
 ## Test environment setup
 
 * `mix test.env.up` - runs `docker compose up -d --build` with the following compose files:
-  * for `MIX_ENV=test` and `MIX_ENV=dev`: *test/docker/docker compose.mocks.yml*
-  * for `MIX_ENV=integration`: *test/docker/docker compose.mocks.yml* and *test/docker/docker compose.mpush.yml*
+  * for `MIX_ENV=test` and `MIX_ENV=dev`: *test/docker/docker-compose.mocks.yml*
+  * for `MIX_ENV=integration`: *test/docker/docker-compose.mocks.yml* and *test/docker/docker-compose.mpush.yml*
 * `mix test.env.down` - runs `docker compose down` on the same compose files as `mix test.env.up`
 * `mix test.env.wait X` - waits up to X milliseconds for the services from `mix test.env.up` to become available. Prints an error if they don't.

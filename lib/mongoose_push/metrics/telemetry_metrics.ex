@@ -42,60 +42,77 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
       ),
       counter("mongoose_push.apns.state.get_default_topic.count",
         description: "Counts the number of APNS default topic reads from the ETS cache"
-      ),
+      )
+    ] ++ sparrow_metrics() ++ vm_metrics()
+  end
 
+  defp sparrow_metrics do
+    [
       # Sparrow events
+      counter("sparrow.pool.request.count",
+        event_name: [:sparrow, :pool, :request],
+        tags: [:pool, :result, :reason, :status],
+        tag_values: &__MODULE__.sparrow_tags/1,
+        description:
+          "Counts the number of requests sent to push notification services, with their results."
+      ),
       distribution(
-        "sparrow.h2_worker.handle.duration.microsecond",
-        event_name: [:sparrow, :h2_worker, :handle],
+        "sparrow.pool.request.duration.microsecond",
+        event_name: [:sparrow, :pool, :request],
         measurement: :time,
+        tags: [:pool, :result],
+        tag_values: &__MODULE__.sparrow_tags/1,
         reporter_options: [
           buckets: [10_000, 25_000, 50_000, 100_000, 200_000, 500_000, 1000_000]
         ],
-        description: "A histogram showing time it takes for h2_worker to handle request."
+        description: "A histogram showing time it takes to send request and receive response."
       ),
-      counter("sparrow.h2_worker.init.count",
-        event_name: [:sparrow, :h2_worker, :init],
-        description: "Counts the number of h2_worker starts."
+      counter("sparrow.pool.retry.count",
+        event_name: [:sparrow, :pool, :retry],
+        tags: [:pool, :reason],
+        tag_values: &__MODULE__.sparrow_tags/1,
+        description:
+          "Counts the number of requests which were not sent at the first attempt and had to be sent again."
       ),
-      counter("sparrow.h2_worker.terminate.count",
-        event_name: [:sparrow, :h2_worker, :terminate],
-        description: "Counts the number of h2_worker terminations."
+      counter("sparrow.pool.connect.count",
+        event_name: [:sparrow, :pool, :connect],
+        tags: [:pool, :result, :reason],
+        tag_values: &__MODULE__.sparrow_tags/1,
+        description:
+          "Counts the number of attempts to connect to push notification services, with their results."
       ),
-      counter("sparrow.h2_worker.conn_success.count",
-        event_name: [:sparrow, :h2_worker, :conn_success],
-        description: "Counts the number of successful h2_worker connections."
-      ),
-      counter("sparrow.h2_worker.conn_fail.count",
-        event_name: [:sparrow, :h2_worker, :conn_fail],
-        description: "Counts the number of failed h2_worker connections."
-      ),
-      counter("sparrow.h2_worker.conn_lost.count",
-        event_name: [:sparrow, :h2_worker, :conn_lost],
-        description: "Counts the number of lost h2_worker connections."
-      ),
-      counter("sparrow.h2_worker.request_success.count",
-        event_name: [:sparrow, :h2_worker, :request_success],
-        description: "Counts the number of successful h2_worker requests."
-      ),
-      counter("sparrow.h2_worker.request_error.count",
-        event_name: [:sparrow, :h2_worker, :request_error],
-        description: "Counts the number of failed h2_worker requests."
+      distribution(
+        "sparrow.pool.connect.duration.microsecond",
+        event_name: [:sparrow, :pool, :connect],
+        measurement: :time,
+        tags: [:pool, :result],
+        tag_values: &__MODULE__.sparrow_tags/1,
+        reporter_options: [
+          buckets: [10_000, 25_000, 50_000, 100_000, 250_000, 500_000, 1000_000, 5000_000]
+        ],
+        description:
+          "A histogram showing time it takes to connect to a push notification service."
       ),
       # Telemetry Poller metrics
       last_value(
-        "sparrow.pools_warden.workers.gauge",
-        event_name: [:sparrow, :pools_warden, :workers],
-        measurement: :count,
+        "sparrow.pool.connections.gauge",
+        event_name: [:mongoose_push, :sparrow, :pool],
+        measurement: :connections,
         tags: [:pool],
-        description: "Total count of workers handled by worker_pool."
+        description: "Number of connections the pool is configured to keep."
       ),
       last_value(
-        "sparrow.pools_warden.pools.gauge",
-        event_name: [:sparrow, :pools_warden, :pools],
-        measurement: :count,
-        description: "Total count of the connection pools."
-      ),
+        "sparrow.pool.connected.gauge",
+        event_name: [:mongoose_push, :sparrow, :pool],
+        measurement: :connected,
+        tags: [:pool],
+        description: "Number of currently established connections of the pool."
+      )
+    ]
+  end
+
+  defp vm_metrics do
+    [
       # Default Telemetry Poller VM metrics
       last_value(
         "vm.memory.total",
@@ -144,20 +161,28 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
   end
 
   def running_pools do
-    stats = :wpool.stats()
-
-    Enum.map(stats, fn stat ->
+    Enum.each(Sparrow.Pool.stats(), fn stat ->
       :telemetry.execute(
-        [:sparrow, :pools_warden, :workers],
-        %{count: length(stat[:workers])},
-        %{pool: stat[:pool]}
+        [:mongoose_push, :sparrow, :pool],
+        %{connections: stat.connections, connected: stat.connected},
+        %{pool: stat.pool}
       )
     end)
-
-    :telemetry.execute(
-      [:sparrow, :pools_warden, :pools],
-      %{count: length(stats)},
-      %{}
-    )
   end
+
+  @doc false
+  # Tags of Sparrow pool events. The values which are not in the event are empty.
+  def sparrow_tags(metadata) do
+    %{
+      pool: metadata.pool_name,
+      result: metadata[:result],
+      reason: reason_tag(metadata[:reason]),
+      status: metadata[:status]
+    }
+  end
+
+  # Details of the reason are skipped to keep the number of time series low
+  defp reason_tag(reason) when is_atom(reason), do: reason
+  defp reason_tag({reason, _details}) when is_atom(reason), do: reason
+  defp reason_tag(_reason), do: :other
 end
