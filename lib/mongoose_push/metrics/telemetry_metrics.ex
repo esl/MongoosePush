@@ -52,15 +52,7 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
         reporter_options: [
           buckets: [10_000, 25_000, 50_000, 100_000, 200_000, 500_000, 1000_000]
         ],
-        description: "A histogram showing time it takes for h2_worker to handle request."
-      ),
-      counter("sparrow.h2_worker.init.count",
-        event_name: [:sparrow, :h2_worker, :init],
-        description: "Counts the number of h2_worker starts."
-      ),
-      counter("sparrow.h2_worker.terminate.count",
-        event_name: [:sparrow, :h2_worker, :terminate],
-        description: "Counts the number of h2_worker terminations."
+        description: "A histogram showing time it takes to send request and receive response."
       ),
       counter("sparrow.h2_worker.conn_success.count",
         event_name: [:sparrow, :h2_worker, :conn_success],
@@ -69,10 +61,6 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
       counter("sparrow.h2_worker.conn_fail.count",
         event_name: [:sparrow, :h2_worker, :conn_fail],
         description: "Counts the number of failed h2_worker connections."
-      ),
-      counter("sparrow.h2_worker.conn_lost.count",
-        event_name: [:sparrow, :h2_worker, :conn_lost],
-        description: "Counts the number of lost h2_worker connections."
       ),
       counter("sparrow.h2_worker.request_success.count",
         event_name: [:sparrow, :h2_worker, :request_success],
@@ -88,7 +76,7 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
         event_name: [:sparrow, :pools_warden, :workers],
         measurement: :count,
         tags: [:pool],
-        description: "Total count of workers handled by worker_pool."
+        description: "Total count of connections of the pool."
       ),
       last_value(
         "sparrow.pools_warden.pools.gauge",
@@ -144,13 +132,13 @@ defmodule MongoosePush.Metrics.TelemetryMetrics do
   end
 
   def running_pools do
-    stats = :wpool.stats()
+    stats = Sparrow.Pool.stats()
 
     Enum.map(stats, fn stat ->
       :telemetry.execute(
         [:sparrow, :pools_warden, :workers],
-        %{count: length(stat[:workers])},
-        %{pool: stat[:pool]}
+        %{count: stat.connections},
+        %{pool: stat.pool}
       )
     end)
 

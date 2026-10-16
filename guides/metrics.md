@@ -63,9 +63,10 @@ This histogram metric shows the distribution of times needed to:
 Where:
 * `LE` defines the `upper inclusive bound` (`less than or equal`) values for buckets, currently `1000`, `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` or `+Inf`
 
-This histogram metric shows the distribution of times needed to handle and send a request. This includes:
-1. Open a new stream within an already established channel.
-2. Send a request.
+This histogram metric shows the distribution of times needed to send a request and receive a response. This includes:
+1. Open a new stream within an already established connection.
+2. Send a request, again if it could not be sent.
+3. Receive a response.
 
 > **NOTE**
 >
@@ -81,18 +82,15 @@ This histogram metric shows the distribution of times needed to handle and send 
 * `mongoose_push_apns_state_init_count` - Counts the number of APNS state initialisations.
 * `mongoose_push_apns_state_terminate_count` - Counts the number of APNS state terminations.
 * `mongoose_push_apns_state_get_default_topic_count` - Counts the number of default topic reads from cache.
-* `sparrow_h_worker_init_count` - Counts the number of h2_worker starts.
-* `sparrow_h_worker_terminate_count` - Counts the number of h2_worker terminations.
-* `sparrow_h_worker_conn_success_count` - Counts the number of successful h2_worker connections.
-* `sparrow_h_worker_conn_fail_count` - Counts the number of failed h2_worker connections.
-* `sparrow_h_worker_conn_lost_count` - Counts the number of lost h2_worker connections.
-* `sparrow_h_worker_request_success_count` - Counts the number of successful h2_worker requests.
-* `sparrow_h_worker_request_error_count` - Counts the number of failed h2_worker requests.
+* `sparrow_h_worker_conn_success_count` - Counts the number of established connections to push notification services.
+* `sparrow_h_worker_conn_fail_count` - Counts the number of failed attempts to connect to push notification services.
+* `sparrow_h_worker_request_success_count` - Counts the number of requests which got a response from a push notification service.
+* `sparrow_h_worker_request_error_count` - Counts the number of requests which failed without a response.
 
 #### Gauge
 
-* `sparrow_pools_warden_pools_gauge` - Current number of worker pools.
-* `sparrow_pools_warden_workers_gauge{pool=${POOL}}` - Current number of workers operated by a given worker `POOL`.
+* `sparrow_pools_warden_pools_gauge` - Current number of connection pools.
+* `sparrow_pools_warden_workers_gauge{pool=${POOL}}` - Current number of connections of a given `POOL`.
 * `vm_memory_total` - Total amount of currently allocated memory.
 * `vm_memory_processes` - Amount of memory currently allocated for processes.
 * `vm_memory_processes_used` - Amount of memory currently used for processes.

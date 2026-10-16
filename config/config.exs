@@ -57,8 +57,6 @@ config :lager,
     ]
   ]
 
-config :sparrow, Sparrow.PoolsWarden, %{enabled: true}
-
 config :mongoose_push, MongoosePush.Service,
   fcm: MongoosePush.Service.FCM,
   apns: MongoosePush.Service.APNS
