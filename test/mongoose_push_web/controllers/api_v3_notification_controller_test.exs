@@ -182,6 +182,19 @@ defmodule MongoosePushWeb.APIv3NotificationControllerTest do
     post_and_assert_error(conn, 503, {:generic, :connection_lost}, :connection_lost)
   end
 
+  test "generic request timeout error", %{conn: conn} do
+    post_and_assert_error(conn, 503, {:generic, :request_timeout}, :request_timeout)
+  end
+
+  test "generic too many concurrent requests error", %{conn: conn} do
+    post_and_assert_error(
+      conn,
+      503,
+      {:generic, :too_many_concurrent_requests},
+      :too_many_concurrent_requests
+    )
+  end
+
   test "generic invalid notification error", %{conn: conn} do
     post_and_assert_error(conn, 400, {:generic, :invalid_notification}, :invalid_notification)
   end

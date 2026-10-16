@@ -20,11 +20,7 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
         {:auth, _} -> {503, :service_internal}
         {:internal_config, _} -> {503, type}
         {:unspecified, _} -> {520, type}
-        {:generic, :no_matching_pool} -> {400, reason}
-        {:generic, :unable_to_connect} -> {503, reason}
-        {:generic, :connection_lost} -> {503, reason}
-        {:generic, :invalid_notification} -> {400, reason}
-        {:generic, _} -> {500, reason}
+        {:generic, _} -> {generic_status(reason), reason}
       end
 
     {status, %{:reason => error_reason}}
@@ -33,4 +29,19 @@ defmodule MongoosePush.API.V3.ResponseEncoder do
   def to_status({:error, _reason}) do
     {500, nil}
   end
+
+  defp generic_status(:no_matching_pool), do: 400
+  defp generic_status(:invalid_notification), do: 400
+
+  # The push notification service could not be reached or did not respond
+  defp generic_status(reason)
+       when reason in [
+              :unable_to_connect,
+              :connection_lost,
+              :request_timeout,
+              :too_many_concurrent_requests
+            ],
+       do: 503
+
+  defp generic_status(_reason), do: 500
 end
