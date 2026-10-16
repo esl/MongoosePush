@@ -15,6 +15,8 @@ defmodule MongoosePushWeb.Schemas.Response.SendNotification.ServiceUnavailable d
           "internal_config",
           "connection_lost",
           "unable_to_connect",
+          "request_timeout",
+          "too_many_concurrent_requests",
           "unspecified"
         ]
       }
