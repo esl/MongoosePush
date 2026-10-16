@@ -2,6 +2,8 @@ defmodule MongoosePushTest do
   use ExUnit.Case, async: false
   use Quixir
 
+  alias MongoosePush.Support.API
+
   @test_token "testdeviceid1234"
   @apns_priority_mapping %{normal: "5", high: "10"}
   @dev_topic "dev_topic"
@@ -623,86 +625,31 @@ defmodule MongoosePushTest do
   end
 
   defp reset(:apns) do
-    {:ok, conn} = get_connection(:apns)
-    headers = headers("POST", "/reset")
-    :h2_client.send_request(conn, headers, "")
-    get_response(conn)
+    API.mock_request(:apns, :post, "/reset")
     :ok
   end
 
   defp reset(:fcm) do
-    {:ok, conn} = get_connection(:fcm)
-    headers = headers("POST", "/mock/reset")
-    :h2_client.send_request(conn, headers, "")
-    get_response(conn)
+    API.mock_request(:fcm, :post, "/mock/reset")
     :ok
   end
 
   defp fail_tokens(:apns, json) do
-    {:ok, conn} = get_connection(:apns)
-    payload = Poison.encode!(json)
-
-    headers = headers("POST", "/error-tokens", payload)
-    :h2_client.send_request(conn, headers, payload)
-    get_response(conn)
+    API.mock_request(:apns, :post, "/error-tokens", Poison.encode!(json))
     :ok
   end
 
   defp fail_tokens(:fcm, json) do
-    {:ok, conn} = get_connection(:fcm)
-    payload = Poison.encode!(json)
-
-    headers = headers("POST", "/mock/error-tokens", payload)
-    :h2_client.send_request(conn, headers, payload)
-    get_response(conn)
+    API.mock_request(:fcm, :post, "/mock/error-tokens", Poison.encode!(json))
     :ok
   end
 
-  defp last_activity(:fcm) do
-    {:ok, conn} = get_connection(:fcm)
-    headers = headers("GET", "/mock/activity")
-    :h2_client.send_request(conn, headers, "")
+  defp last_activity(service) do
+    {_status, body} = API.mock_request(service, :get, "/mock/activity")
 
-    get_response(conn)
+    body
     |> Poison.decode!()
     |> List.first()
-  end
-
-  defp last_activity(:apns) do
-    {:ok, conn} = get_connection(:apns)
-    headers = headers("GET", "/mock/activity")
-    :h2_client.send_request(conn, headers, "")
-
-    get_response(conn)
-    |> Poison.decode!()
-    |> List.first()
-  end
-
-  defp headers(method, path, payload \\ "") do
-    [
-      {":method", method},
-      {":authority", "localhost"},
-      {":scheme", "https"},
-      {":path", path},
-      {"content-length", "#{byte_size(payload)}"},
-      {"content-type", "application/json"}
-    ]
-  end
-
-  defp get_connection(:apns) do
-    :h2_client.start_link(:https, ~c"localhost", 2197, verify: :verify_none)
-  end
-
-  defp get_connection(:fcm) do
-    :h2_client.start_link(:https, ~c"localhost", 4000, verify: :verify_none)
-  end
-
-  defp get_response(conn) do
-    receive do
-      {:END_STREAM, stream_id} ->
-        {:ok, {_headers, body}} = :h2_client.get_response(conn, stream_id)
-        Enum.join(body)
-    end
   end
 
   defp push(token, notification), do: MongoosePush.push(token, notification)

@@ -1,5 +1,18 @@
 defmodule MongoosePush.Support.API do
-  alias HTTPoison.Response
+  alias Req.Response
+
+  @api_url "https://localhost:8443"
+  # The connections are closed, so that they do not delay stopping the endpoint
+  @api_opts [
+    headers: [{"connection", "close"}],
+    retry: false,
+    decode_body: false,
+    connect_options: [transport_opts: [verify: :verify_none]]
+  ]
+
+  @mock_client __MODULE__.MockClient
+  @mock_urls %{apns: "https://localhost:2197", fcm: "https://localhost:4000"}
+  @mock_connect_retries 100
 
   def sample_notification(service) do
     %{
@@ -29,94 +42,89 @@ defmodule MongoosePush.Support.API do
   end
 
   def get(path) do
-    %Response{status_code: status, headers: headers, body: body} =
-      HTTPoison.get!("https://localhost:8443" <> path, [],
-        hackney: [:insecure],
-        ssl: [verify: :verify_none]
-      )
+    %Response{status: status, headers: headers, body: body} =
+      Req.get!(@api_url <> path, @api_opts)
 
-    {status, headers, body}
+    {status, for({name, values} <- headers, value <- values, do: {name, value}), body}
   end
 
   def post(path, json) do
-    %Response{status_code: status_code, body: body} =
-      HTTPoison.post!(
-        "https://localhost:8443" <> path,
-        Poison.encode!(json),
-        [{"Content-Type", "application/json"}],
-        hackney: [:insecure],
-        ssl: [verify: :verify_none]
-      )
-
-    details = Poison.decode!(body)
-    {status_code, details}
+    {status_code, body} = post_conn_error(path, json)
+    {status_code, Poison.decode!(body)}
   end
 
   def post_conn_error(path, json) do
-    %Response{status_code: status_code, body: body} =
-      HTTPoison.post!(
-        "https://localhost:8443" <> path,
-        Poison.encode!(json),
-        [{"Content-Type", "application/json"}],
-        hackney: [:insecure],
-        ssl: [verify: :verify_none]
+    %Response{status: status_code, body: body} =
+      Req.post!(
+        @api_url <> path,
+        Keyword.merge(@api_opts,
+          body: Poison.encode!(json),
+          headers: [{"content-type", "application/json"} | @api_opts[:headers]]
+        )
       )
 
     {status_code, body}
   end
 
   def mock_apns(json) do
-    {:ok, conn} = get_connection(:apns)
-    payload = Poison.encode!(json)
-
-    headers = headers("POST", "/mock/error-tokens", payload)
-    :h2_client.send_request(conn, headers, payload)
-    {"200", _payload} = get_response(conn)
+    {200, _payload} = mock_request(:apns, :post, "/mock/error-tokens", Poison.encode!(json))
     :ok
   end
 
   def mock_fcm(path, json) do
-    HTTPoison.post!(
+    Req.post!(
       "http://localhost:4001/mock" <> path,
-      Poison.encode!(json),
-      [{"Content-Type", "application/json"}]
+      body: Poison.encode!(json),
+      headers: [{"content-type", "application/json"}],
+      retry: false,
+      decode_body: false
     )
   end
 
   def reset(:apns) do
-    {:ok, conn} = get_connection(:apns)
-    payload = ""
-    headers = headers("POST", "/mock/reset", payload)
-    :h2_client.send_request(conn, headers, payload)
-    {"200", ""} = get_response(conn)
+    {200, ""} = mock_request(:apns, :post, "/mock/reset")
     :ok
   end
 
   def reset(:fcm) do
-    %Response{status_code: 200} = mock_fcm("/reset", "")
+    %Response{status: 200} = mock_fcm("/reset", "")
   end
 
-  def get_connection(:apns) do
-    :h2_client.start_link(:https, ~c"localhost", 2197, verify: :verify_none)
+  def start_mock_client do
+    {:ok, _} = Application.ensure_all_started(:finch)
+
+    {:ok, _} =
+      Finch.start_link(
+        name: @mock_client,
+        pools: %{
+          default: [
+            protocols: [:http2],
+            conn_opts: [transport_opts: [verify: :verify_none]]
+          ]
+        }
+      )
+
+    :ok
   end
 
-  def headers(method, path, payload) do
-    [
-      {":method", method},
-      {":authority", "localhost"},
-      {":scheme", "https"},
-      {":path", path},
-      {"content-length", "#{byte_size(payload)}"},
-      {"content-type", "application/json"}
-    ]
+  def mock_request(service, method, path, payload \\ "") do
+    {:ok, %Finch.Response{status: status, body: body}} =
+      method
+      |> Finch.build(@mock_urls[service] <> path, [{"content-type", "application/json"}], payload)
+      |> request_when_connected(@mock_connect_retries)
+
+    {status, body}
   end
 
-  def get_response(conn) do
-    receive do
-      {:END_STREAM, stream_id} ->
-        {:ok, {headers, body}} = :h2_client.get_response(conn, stream_id)
-        {":status", code} = List.keyfind(headers, ":status", 0)
-        {code, Enum.join(body)}
+  # A HTTP/2 pool of Finch is not available until its connection is established
+  defp request_when_connected(request, retries) do
+    case Finch.request(request, @mock_client) do
+      {:error, %Finch.Error{reason: :pool_not_available}} when retries > 0 ->
+        Process.sleep(50)
+        request_when_connected(request, retries - 1)
+
+      result ->
+        result
     end
   end
 end
