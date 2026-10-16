@@ -62,7 +62,7 @@ defmodule MongoosePush.Service.APNS do
 
   @spec choose_pool(MongoosePush.mode(), [any]) :: Application.pool_name() | nil
   def choose_pool(mode, tags \\ []) do
-    Sparrow.PoolsWarden.choose_pool({:apns, mode}, tags)
+    Sparrow.Pool.choose({:apns, mode}, tags)
   end
 
   @spec unify_error(Service.error_reason()) :: Service.error() | MongoosePush.error()
