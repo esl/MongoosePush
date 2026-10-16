@@ -56,17 +56,34 @@ This histogram metric shows the distribution of times needed to:
 
 ###### HTTP/2 requests
 
-`sparrow_h_worker_handle_duration_microsecond_bucket{le=${LE}}`
-`sparrow_h_worker_handle_duration_microsecond_sum{le=${LE}}`
-`sparrow_h_worker_handle_duration_microsecond_count{le=${LE}}`
+`sparrow_pool_request_duration_microsecond_bucket{pool=${POOL},result=${RESULT},le=${LE}}`
+`sparrow_pool_request_duration_microsecond_sum{pool=${POOL},result=${RESULT}}`
+`sparrow_pool_request_duration_microsecond_count{pool=${POOL},result=${RESULT}}`
 
 Where:
-* `LE` defines the `upper inclusive bound` (`less than or equal`) values for buckets, currently `1000`, `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000` or `+Inf`
+* `POOL` is the name of the connection pool
+* `RESULT` is `"ok"` when a response was received (whatever its status is) or `"error"` when the request failed without a response
+* `LE` defines the `upper inclusive bound` (`less than or equal`) values for buckets, currently `10_000`, `25_000`, `50_000`, `100_000`, `200_000`, `500_000`, `1000_000` or `+Inf`
 
 This histogram metric shows the distribution of times needed to send a request and receive a response. This includes:
 1. Open a new stream within an already established connection.
 2. Send a request, again if it could not be sent.
 3. Receive a response.
+
+Requests with `result="error"` include the ones which could not be sent until their time was up, so they take as long as the timeout of the request.
+
+###### Connecting to push notification services
+
+`sparrow_pool_connect_duration_microsecond_bucket{pool=${POOL},result=${RESULT},le=${LE}}`
+`sparrow_pool_connect_duration_microsecond_sum{pool=${POOL},result=${RESULT}}`
+`sparrow_pool_connect_duration_microsecond_count{pool=${POOL},result=${RESULT}}`
+
+Where:
+* `POOL` is the name of the connection pool
+* `RESULT` is `"ok"` when the connection was established or `"error"` when the attempt failed
+* `LE` defines the `upper inclusive bound` (`less than or equal`) values for buckets, currently `10_000`, `25_000`, `50_000`, `100_000`, `250_000`, `500_000`, `1000_000`, `5000_000` or `+Inf`
+
+This histogram metric shows the distribution of times taken by attempts to connect to a push notification service, including the TLS handshake.
 
 > **NOTE**
 >
@@ -82,15 +99,17 @@ This histogram metric shows the distribution of times needed to send a request a
 * `mongoose_push_apns_state_init_count` - Counts the number of APNS state initialisations.
 * `mongoose_push_apns_state_terminate_count` - Counts the number of APNS state terminations.
 * `mongoose_push_apns_state_get_default_topic_count` - Counts the number of default topic reads from cache.
-* `sparrow_h_worker_conn_success_count` - Counts the number of established connections to push notification services.
-* `sparrow_h_worker_conn_fail_count` - Counts the number of failed attempts to connect to push notification services.
-* `sparrow_h_worker_request_success_count` - Counts the number of requests which got a response from a push notification service.
-* `sparrow_h_worker_request_error_count` - Counts the number of requests which failed without a response.
+* `sparrow_pool_request_count{pool=${POOL},result=${RESULT},reason=${REASON},status=${STATUS}}` - Counts the number of requests sent to push notification services.
+  `RESULT` is `"ok"` when a response was received, and then `STATUS` is its HTTP status, e.g. `"200"` or `"410"`.
+  `RESULT` is `"error"` when the request failed without a response, and then `REASON` tells why, e.g. `"request_timeout"`, `"connection_lost"` or `"unable_to_connect"`.
+* `sparrow_pool_retry_count{pool=${POOL},reason=${REASON}}` - Counts the number of requests which could not be sent at the first attempt and had to be sent again, e.g. because the connection was being reestablished (`"disconnected"`, `"pool_not_available"`) or the server had no free streams (`"too_many_concurrent_requests"`).
+* `sparrow_pool_connect_count{pool=${POOL},result=${RESULT},reason=${REASON}}` - Counts the number of attempts to connect to push notification services.
+  `RESULT` is `"ok"` for established connections and `"error"` for failed attempts, and then `REASON` tells why, e.g. `"econnrefused"` or `"tls_alert"`.
 
 #### Gauge
 
-* `sparrow_pools_warden_pools_gauge` - Current number of connection pools.
-* `sparrow_pools_warden_workers_gauge{pool=${POOL}}` - Current number of connections of a given `POOL`.
+* `sparrow_pool_connections_gauge{pool=${POOL}}` - Number of connections a given `POOL` is configured to keep.
+* `sparrow_pool_connected_gauge{pool=${POOL}}` - Number of currently established connections of a given `POOL`. It is lower than `sparrow_pool_connections_gauge` when some connections are being (re)established.
 * `vm_memory_total` - Total amount of currently allocated memory.
 * `vm_memory_processes` - Amount of memory currently allocated for processes.
 * `vm_memory_processes_used` - Amount of memory currently used for processes.
