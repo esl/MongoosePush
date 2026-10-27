@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="ExDoc v0.40.4">
+    <meta name="project" content="MongoosePush v2.3.0">
+
+
+    <title>HTTP API — MongoosePush v2.3.0</title>
+
+    <link rel="stylesheet" href="dist/html-elixir-RXHHCTJW.css" />
+
+    <script defer src="dist/sidebar_items-F749BFC6.js"></script>
+    <script defer src="docs_config.js"></script>
+    <script defer src="dist/html-MI33G4N7.js"></script>
+
+  </head>
+  <body>
+    <script>(()=>{var t="ex_doc:settings",e="dark";var o="dark",s="light";var E="sidebar_state",n="closed";var r="sidebar_width";var a="sidebar-open";var i=new URLSearchParams(window.location.search),S=i.get("theme")||JSON.parse(localStorage.getItem(t)||"{}").theme;(S===o||S!==s&&window.matchMedia("(prefers-color-scheme: dark)").matches)&&document.body.classList.add(e);var d=sessionStorage.getItem(E),A=d!==n&&!window.matchMedia(`screen and (max-width: ${768}px)`).matches;document.body.classList.toggle(a,A);var c=sessionStorage.getItem(r);c&&document.body.style.setProperty("--sidebarWidth",`${c}px`);var p=/(Macintosh|iPhone|iPad|iPod)/.test(window.navigator.userAgent);document.documentElement.classList.toggle("apple-os",p);})();
+</script>
+
+<div class="body-wrapper">
+
+<button id="sidebar-menu" class="sidebar-button sidebar-toggle" aria-label="toggle sidebar" aria-controls="sidebar">
+  <i class="ri-menu-line ri-lg" title="Collapse/expand sidebar"></i>
+</button>
+
+<nav id="sidebar" class="sidebar">
+
+  <div class="sidebar-header">
+    <div class="sidebar-projectInfo">
+
+      <div>
+        <a href="https://esl.github.io/MongoosePush" class="sidebar-projectName" translate="no">
+MongoosePush
+        </a>
+        <div class="sidebar-projectVersion" translate="no">
+          v2.3.0
+        </div>
+      </div>
+    </div>
+    <ul id="sidebar-list-nav" class="sidebar-list-nav" role="tablist" data-extras="Pages"></ul>
+  </div>
+</nav>
+
+<output role="status" id="toast"></output>
+
+<main class="content page-extra" id="main" data-type="extras">
+  <div id="content" class="content-inner">
+    <div class="top-search">
+      <div class="search-settings">
+        <form class="search-bar" action="search.html">
+          <label class="search-label">
+            <span class="sr-only">Search documentation of MongoosePush</span>
+            <div class="search-input-wrapper">
+              <input name="q" type="text" class="search-input" placeholder="Press / to search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+              <button type="button" tabindex="-1" class="search-close-button" aria-hidden="true">
+                <i class="ri-close-line ri-lg" title="Cancel search"></i>
+              </button>
+            </div>
+          </label>
+        </form>
+        <div class="autocomplete">
+        </div>
+        <div class="engine-selector" data-multiple="false">
+          <button type="button" class="engine-button" aria-label="Select search engine" aria-haspopup="true" aria-expanded="false">
+            <i class="ri-search-2-line" aria-hidden="true"></i>
+            <span class="engine-name">Default</span>
+            <i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+          </button>
+          <div class="engine-dropdown" hidden role="menu">
+
+              <button type="button"
+                      class="engine-option"
+                      data-engine-url="search.html?q="
+                      role="menuitemradio"
+                      aria-checked="true">
+                <span class="name">Default</span>
+                <span class="help">In-browser search</span>
+              </button>
+
+          </div>
+        </div>
+        <button class="icon-settings display-settings">
+          <i class="ri-settings-3-line"></i>
+          <span class="sr-only">Settings</span>
+        </button>
+      </div>
+    </div>
+
+<div id="top-content">
+  <div class="heading-with-actions top-heading">
+    <h1>HTTP API</h1>
+
+<a href="http_api.md" title="Copy Markdown (hold Ctrl/Cmd and click it to open as Markdown)" class="copy-markdown icon-action" rel="help">
+  <i class="ri-markdown-line" aria-hidden="true"></i>
+  <span class="sr-only">Copy Markdown</span>
+</a>
+
+
+      <a href="https://github.com/esl/MongoosePush/blob/main/guides/http_api.md#L1" title="View Source" class="icon-action" rel="help nofollow">
+        <i class="ri-code-s-slash-line" aria-hidden="true"></i>
+        <span class="sr-only">View Source</span>
+      </a>
+
+  </div>
+
+
+<p>If for some reason you need <code class="inline">Swagger</code> specs for this <code class="inline">RESTful</code> service, there is a swagger endpoint available via an <code class="inline">HTTP</code> path <code class="inline">/swagger.json</code></p><h2 id="request" class="section-heading"><a href="#request" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Request</span></h2><p>MongoosePush exposes one notification endpoint:</p><ul><li><code class="inline">POST /{version}/notification/{device_id}</code></li></ul><p><code class="inline">{device_id}</code> is the token issued by FCM or APNS. Send the notification as a JSON body, for example:</p><pre><code class="json">{
+  &quot;service&quot;: &quot;apns&quot;,
+  &quot;alert&quot;:
+    {
+      &quot;body&quot;: &quot;notification's text body&quot;,
+      &quot;title&quot;: &quot;notification's title&quot;
+    }
+}</code></pre><p>The available options are:</p><ul><li><strong>service</strong> (<em>required</em>, <code class="inline">apns</code> or <code class="inline">fcm</code>) - push notifications provider to be used for this notification</li><li><strong>mode</strong> (<em>optional</em>, <code class="inline">prod</code> (default) or <code class="inline">dev</code>) - allows for selecting named pool configured in <a href="MongoosePush.html"><code class="inline">MongoosePush</code></a></li><li><strong>priority</strong> (<em>optional</em>, <code class="inline">normal</code> or <code class="inline">high</code>) - passed through to FCM; for APNS, <code class="inline">normal</code> maps to <code class="inline">5</code> and <code class="inline">high</code> to <code class="inline">10</code>. FCM JMI notifications default to the selected pool's <strong>jmi_priority</strong> (<code class="inline">high</code> if unset); otherwise the provider chooses the default.</li><li><strong>time_to_live</strong> (<em>optional</em>, FCM specific) - maximum notification lifespan in seconds, as an integer. FCM JMI notifications default to the selected pool's <strong>jmi_ttl</strong> (<code class="inline">30</code> if unset). See the <a rel="nofollow" href="https://firebase.google.com/docs/cloud-messaging/concept-options#ttl">FCM documentation</a>.</li><li><strong>mutable_content</strong> (<em>optional</em>, <code class="inline">true</code> / <code class="inline">false</code> (default)) - for non-JMI APNS notifications, sets &quot;mutable-content=1&quot; in the APNS payload.</li><li><strong>topic</strong> (<em>optional</em>, APNS specific) - selects the application when the configured credentials allow multiple topics.</li><li><strong>tags</strong> (<em>optional</em>) - a list of tags used to choose a pool with matching tags. To see how tags work read: <a rel="nofollow" href="https://github.com/esl/sparrow#tags">https://github.com/esl/sparrow#tags</a></li><li><strong>data</strong> (<em>optional</em>) - custom JSON sent to the target device. APNS places its keys at the payload root; FCM puts them in <code class="inline">message.data</code>. JMI delivery options are described below.</li><li><strong>alert</strong> (<em>optional</em>) - JSON structure that if provided will send a non-silent notification with the following fields:<ul><li><strong>body</strong> (<em>required</em>) - text body of the notification</li><li><strong>title</strong> (<em>required</em>) - short title of the notification</li><li><strong>click_action</strong> (<em>optional</em>) - for <code class="inline">FCM</code> its <code class="inline">activity</code> to run when notification is clicked. For <code class="inline">APNS</code> its <code class="inline">category</code> to invoke. Please refer to the Android/iOS documentation for more details about this action</li><li><strong>tag</strong> (<em>optional</em>, <code class="inline">FCM</code> specific) - notifications aggregation key</li><li><strong>badge</strong> (<em>optional</em>, <code class="inline">APNS</code> specific) - unread notifications count</li><li><strong>sound</strong> (<em>optional</em>) - sound that should be play when the notification arrives. Please refer to the FCM / APNS documentation for more details.</li></ul></li></ul><p>At least one of <strong>alert</strong> and <strong>data</strong> is required. Supplying only <strong>data</strong> creates a silent notification; supplying <strong>alert</strong> creates a visible notification, optionally with custom <strong>data</strong>.</p><h3 id="jmi-call-notifications" class="section-heading"><a href="#jmi-call-notifications" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">JMI call notifications</span></h3><p>Set <code class="inline">data.type</code> to <code class="inline">jmi</code> and omit <code class="inline">alert</code> to send an incoming Jingle Message Initiation call notification. For FCM, a non-empty <code class="inline">data.jmi-sid</code> is recommended so MongoosePush can generate a collapse key.</p><p>For FCM, post to <code class="inline">/v3/notification/{fcm_token}</code>:</p><pre><code class="json">{
+  &quot;service&quot;: &quot;fcm&quot;,
+  &quot;data&quot;: {
+    &quot;type&quot;: &quot;jmi&quot;,
+    &quot;jmi-sid&quot;: &quot;ca3cf894-5325-482f-a412-a6e9f832298d&quot;,
+    &quot;jmi-from&quot;: &quot;romeo@montague.example/orchard&quot;
+  }
+}</code></pre><p>MongoosePush puts the data at the FCM message level and, when <code class="inline">jmi-sid</code> is a non-empty string, derives <code class="inline">collapse_key</code> as <code class="inline">&quot;jmi-&quot; + jmi-sid</code>. Priority and TTL come from the selected pool's <code class="inline">jmi_priority</code> and <code class="inline">jmi_ttl</code>; request-level <code class="inline">priority</code> and <code class="inline">time_to_live</code> override them.</p><p>For APNS, use the PushKit token as <code class="inline">{device_id}</code> and post to <code class="inline">/v3/notification/{device_id}</code>:</p><pre><code class="json">{
+  &quot;service&quot;: &quot;apns&quot;,
+  &quot;topic&quot;: &quot;com.example.app.voip&quot;,
+  &quot;data&quot;: {
+    &quot;type&quot;: &quot;jmi&quot;,
+    &quot;jmi-sid&quot;: &quot;ca3cf894-5325-482f-a412-a6e9f832298d&quot;,
+    &quot;jmi-from&quot;: &quot;romeo@montague.example/orchard&quot;
+  }
+}</code></pre><p>The topic must end in <code class="inline">.voip</code>. MongoosePush sets the APNS push type to <code class="inline">voip</code> and expiration to <code class="inline">0</code>, puts the data at the payload root, and omits <code class="inline">aps</code>.</p><h2 id="response" class="section-heading"><a href="#response" class="hover-link"><i class="ri-link-m" aria-hidden="true"></i></a><span class="text">Response</span></h2><p>Description of the possible server responses</p><ul><li><strong>200</strong> <code class="inline">&quot;OK&quot;</code> - the request was successful.</li><li><strong>400</strong> <code class="inline">{&quot;reason&quot; : &quot;invalid_request&quot;|&quot;no_matching_pool&quot;}</code> - the request was invalid.</li><li><strong>410</strong> <code class="inline">{&quot;reason&quot; : &quot;unregistered&quot;}</code> - the device was not registered.</li><li><strong>413</strong> <code class="inline">{&quot;reason&quot; : &quot;payload_too_large&quot;}</code> - the payload was too large.</li><li><strong>429</strong> <code class="inline">{&quot;reason&quot; : &quot;too_many_requests&quot;}</code> - there were too many requests to the server.</li><li><strong>503</strong> <code class="inline">{&quot;reason&quot; : &quot;service_internal&quot;|&quot;internal_config&quot;|&quot;unspecified&quot;}</code> - the internal service or configuration error occurred.</li><li><strong>520</strong> <code class="inline">{&quot;reason&quot; : &quot;unspecified&quot;}</code> - the unknown error occurred.</li><li><strong>500</strong> <code class="inline">{&quot;reason&quot; : reason}</code> - the server internal error occurred,
+specified by <strong>reason</strong>.</li></ul>
+
+</div>
+
+<div class="bottom-actions" id="bottom-actions">
+  <div class="bottom-actions-item">
+
+      <a href="docker.html" class="bottom-actions-button" rel="prev">
+        <span class="subheader">
+          ← Previous Page
+        </span>
+        <span class="title">
+Docker
+        </span>
+      </a>
+
+  </div>
+  <div class="bottom-actions-item">
+
+      <a href="healthcheck.html" class="bottom-actions-button" rel="next">
+        <span class="subheader">
+          Next Page →
+        </span>
+        <span class="title">
+Healthcheck
+        </span>
+      </a>
+
+  </div>
+</div>
+    <footer class="footer">
+
+        <p>
+
+          <span class="line">
+            <button class="a-main footer-button display-quick-switch" title="Go to package docs">
+              Go to package docs
+            </button>
+
+              <a href="llms.txt" target="_blank">
+                View llms.txt
+              </a>
+
+
+              <a href="MongoosePush.epub">
+                Download ePub version
+              </a>
+
+          </span>
+        </p>
+
+        <p class="built-using">
+          Built using
+          <a href="https://github.com/elixir-lang/ex_doc" title="ExDoc" target="_blank" rel="help noopener" translate="no">ExDoc</a> (v0.40.4) for the
+
+            <a href="https://elixir-lang.org" title="Elixir" target="_blank" translate="no">Elixir programming language</a>
+
+        </p>
+
+
+    </footer>
+  </div>
+</main>
+</div>
+
+  </body>
+</html>
