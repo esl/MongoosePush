@@ -2,6 +2,7 @@
   "asn1_compiler": {:hex, :asn1_compiler, "0.1.1", "64a4e52b59d1f225878445ace2c75cd2245b13a5a81182304fd9dc5acfc8994e", [:mix], [], "hexpm", "c250d24c22f1a3f305d88864400f9ac2df55c6886e1e3a030e2946efeb94695e"},
   "assert_eventually": {:hex, :assert_eventually, "1.0.0", "f1539f28ba3ffa99a712433c77723c7103986932aa341d05eee94c333a920d15", [:mix], [{:ex_doc, ">= 0.0.0", [hex: :ex_doc, repo: "hexpm", optional: true]}], "hexpm", "c658ac4103c8bd82d0cf72a2fdb77477ba3fbc6b15228c5c801003d239625c69"},
   "bunt": {:hex, :bunt, "1.0.0", "081c2c665f086849e6d57900292b3a161727ab40431219529f13c4ddcf3e7a44", [:mix], [], "hexpm", "dc5f86aa08a5f6fa6b8096f0735c4e76d54ae5c9fa2c143e5a1fc7c1cd9bb6b5"},
+  "castore": {:hex, :castore, "1.0.22", "a01978e6a5d42fa3a34143630588f92036e7d90e2309ecdd466722d1279a2213", [:mix], [], "hexpm", "c2a4d42723b4affbc1c3e15d8f6df3f7d8f1f627c84de643383634cce58493d5"},
   "certifi": {:hex, :certifi, "2.17.0", "835748414307e15e05b17d0e518190228ce648b08d569a5cc93a85a40f3e5c9b", [:rebar3], [], "hexpm", "8122798a17f0293c80daada25d0f81c7f4d708c73fef782c7c9b1950e26e4d21"},
   "chatterbox": {:git, "https://github.com/joedevivo/chatterbox.git", "c0506c707bd10d2d2071647f53e188b9740041f2", [ref: "c0506c70"]},
   "confex": {:hex, :confex, "3.5.1", "c29ea741715de06afe6294ea2e127ee7a54382f2b33656b9ed7eedf3e7b6fcaf", [:mix], [], "hexpm", "c72824a267edc96c09a35f6556f48c139d00393dd1b726b18faeb8efee62c0b0"},

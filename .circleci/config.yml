@@ -280,6 +280,13 @@ jobs:
           name: Run integration tests
           command: docker exec mongoose-push-elixir mix test
       - run:
+          name: Verify that CAStore is available in the Docker image
+          command: |
+            docker exec mongoose-push /opt/app/bin/mongoose_push eval '
+              [{:Certificate, _, :not_encrypted} | _] =
+                CAStore.file_path() |> File.read!() |> :public_key.pem_decode()
+            '
+      - run:
           name: Stop Elixir environment
           when: always
           command: |

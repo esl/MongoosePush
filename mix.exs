@@ -58,6 +58,7 @@ defmodule MongoosePush.Mixfile do
       {:telemetry_metrics_prometheus_core, "~> 1.1"},
       {:telemetry_poller, "~> 1.0"},
       {:logfmt, "~> 3.3"},
+      {:castore, "~> 1.0"},
 
       # Below only :dev / :test deps
       {:excoveralls, "~> 0.18", only: :test},
