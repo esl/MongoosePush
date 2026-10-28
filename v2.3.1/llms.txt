@@ -1,4 +1,4 @@
-# MongoosePush v2.3.0 - Table of Contents
+# MongoosePush v2.3.1 - Table of Contents
 
 ## Pages
 
