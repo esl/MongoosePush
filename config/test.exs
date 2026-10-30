@@ -128,5 +128,3 @@ config :mongoose_push,
       tls_opts: [verify: :verify_none]
     ]
   ]
-
-config :hackney, default_protocols: [:http1]

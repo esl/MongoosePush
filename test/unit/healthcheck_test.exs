@@ -10,6 +10,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
   end
 
   test "Successful connection to services" do
+    wait_until_connected(pool_sizes(:fcm) + pool_sizes(:apns))
     {200, _, body} = API.get("/healthcheck")
     pools = Jason.decode!(body)
 
@@ -61,6 +62,7 @@ defmodule MongoosePushWeb.HealthcheckTest do
     end
 
     test "is reflected in heathcheck endpoint" do
+      wait_until_connected(pool_sizes(:apns))
       {200, _, body} = API.get("/healthcheck")
       pools = Jason.decode!(body)
 
@@ -187,5 +189,24 @@ defmodule MongoosePushWeb.HealthcheckTest do
         assert response == pool_connection_status
       end
     end
+  end
+
+  # Connections are established in the background after the application starts
+  defp wait_until_connected(connections) do
+    MongoosePush.Support.TimeHelper.wait_until(5_000, fn ->
+      connected =
+        Sparrow.Pool.stats()
+        |> Enum.map(& &1.connected)
+        |> Enum.sum()
+
+      assert connected == connections
+    end)
+  end
+
+  defp pool_sizes(service) do
+    :mongoose_push
+    |> Application.get_env(service)
+    |> Enum.map(fn {_name, info} -> Keyword.get(info, :pool_size) end)
+    |> Enum.sum()
   end
 end

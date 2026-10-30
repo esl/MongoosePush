@@ -132,27 +132,81 @@ defmodule MongoosePushTelemetryMetricsTest do
     assert nil != fcm_match
   end
 
-  test "sparrow periodic metrics" do
-    :telemetry.execute(
-      [:sparrow, :pools_warden, :workers],
-      %{count: 5},
-      %{pool: :periodic_pool}
-    )
+  test "sparrow pool metrics" do
+    stats = Sparrow.Pool.stats()
+    assert [_ | _] = stats
 
-    :telemetry.execute(
-      [:sparrow, :pools_warden, :pools],
-      %{count: 3},
-      %{}
-    )
+    MongoosePush.Metrics.TelemetryMetrics.running_pools()
 
     metrics = TelemetryMetricsPrometheus.Core.scrape()
-    workers_regex = ~r/sparrow_pools_warden_workers_gauge{pool=\"periodic_pool\"} 5/
-    workers_match = Regex.match?(workers_regex, metrics)
-    pools_regex = ~r/sparrow_pools_warden_pools_gauge [\d]+/
-    pools_match = Regex.match?(pools_regex, metrics)
 
-    assert true == workers_match
-    assert true == pools_match
+    for %{pool: pool, connections: connections} <- stats do
+      assert metrics =~ ~s(sparrow_pool_connections_gauge{pool="#{pool}"} #{connections}\n)
+      assert metrics =~ ~r/sparrow_pool_connected_gauge{pool="#{pool}"} \d+\n/
+    end
+  end
+
+  test "sparrow request, retry and connection metrics" do
+    pool_info = %{
+      domain: "localhost",
+      port: 443,
+      pool_type: :fcm,
+      pool_name: :metrics_pool,
+      pool_tags: []
+    }
+
+    request = fn metadata ->
+      :telemetry.execute(
+        [:sparrow, :pool, :request],
+        %{time: 20_000},
+        Map.merge(pool_info, metadata)
+      )
+    end
+
+    connect = fn metadata ->
+      :telemetry.execute(
+        [:sparrow, :pool, :connect],
+        %{time: 20_000},
+        Map.merge(pool_info, metadata)
+      )
+    end
+
+    request.(%{result: :ok, reason: nil, status: 200})
+    request.(%{result: :ok, reason: nil, status: 410})
+
+    request.(%{
+      result: :error,
+      reason: {:unable_to_connect, :pool_not_available},
+      status: nil
+    })
+
+    request.(%{result: :error, reason: "not an atom", status: nil})
+
+    :telemetry.execute(
+      [:sparrow, :pool, :retry],
+      %{},
+      Map.put(pool_info, :reason, :disconnected)
+    )
+
+    connect.(%{result: :ok, reason: nil})
+    connect.(%{result: :error, reason: {:tls_alert, {:bad_certificate, ~c"alert"}}})
+
+    metrics = TelemetryMetricsPrometheus.Core.scrape()
+
+    for line <- [
+          ~s(sparrow_pool_request_count{pool="metrics_pool",reason="",result="ok",status="200"} 1),
+          ~s(sparrow_pool_request_count{pool="metrics_pool",reason="",result="ok",status="410"} 1),
+          ~s(sparrow_pool_request_count{pool="metrics_pool",reason="unable_to_connect",result="error",status=""} 1),
+          ~s(sparrow_pool_request_count{pool="metrics_pool",reason="other",result="error",status=""} 1),
+          ~s(sparrow_pool_request_duration_microsecond_count{pool="metrics_pool",result="ok"} 2),
+          ~s(sparrow_pool_request_duration_microsecond_count{pool="metrics_pool",result="error"} 2),
+          ~s(sparrow_pool_retry_count{pool="metrics_pool",reason="disconnected"} 1),
+          ~s(sparrow_pool_connect_count{pool="metrics_pool",reason="",result="ok"} 1),
+          ~s(sparrow_pool_connect_count{pool="metrics_pool",reason="tls_alert",result="error"} 1),
+          ~s(sparrow_pool_connect_duration_microsecond_count{pool="metrics_pool",result="ok"} 1)
+        ] do
+      assert metrics =~ line <> "\n"
+    end
   end
 
   defp do_push(push_result, service, repeat_no) do

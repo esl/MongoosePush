@@ -40,7 +40,7 @@ This is a definition of a pool - each pool has a name and a configuration. It is
 
 Each `FCM` pool may be configured by setting the following fields:
 * **appfile** (*required*) - path to an `FCM` service account JSON file. Details on how to get one are in the [Running from DockerHub](docker.md#running-from-dockerhub) section
-* **pool_size** (*required*) - maximum number of used `HTTP/2` connections to google's service
+* **pool_size** (*required*) - number of `HTTP/2` connections kept open to google's service
 * **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select a pool used to push a notification by specifying a matching option in the request
 * **endpoint** (*optional*) - URL override for the `FCM` service. Useful mainly in tests
 * **port** (*optional*) - Port number override for `the FCM` service. Useful mainly in tests
@@ -79,7 +79,7 @@ Just like for `FCM`, at the top level we can specify the named pools that have d
 Each `APNS` pool may be configured by setting the following fields:
 * **cert** (*required*) - relative path to `APNS` `PEM` certificate issued by Apple. This certificate has to be somewhere in the `priv` directory
 * **key** (*required*) - relative path to `PEM` private key for `APNS` certificate issued by Apple. This file has to be somewhere in the `priv` directory
-* **pool_size** (*required*) - maximum number of used `HTTP/2` connections to the google's service
+* **pool_size** (*required*) - number of `HTTP/2` connections kept open to the `APNS` service
 * **mode** (*either `:prod` or `:dev`*) - pool's mode. The `HTTP` client may select a pool used to push a notification by specifying the matching option in the request
 * **endpoint** (*optional*) - URL override for `APNS` service. Useful mainly in tests
 * **port** (*optional*) - Port number override for `APNS` service. Useful mainly in tests
