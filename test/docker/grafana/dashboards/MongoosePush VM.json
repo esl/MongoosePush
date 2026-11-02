@@ -24,7 +24,6 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": null,
-        "description": "",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -68,7 +67,7 @@
           {
             "expr": "vm_memory_total",
             "interval": "",
-            "legendFormat": "vm memoty  total",
+            "legendFormat": "memory: total",
             "refId": "A"
           }
         ],
@@ -76,7 +75,8 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "vm memory total",
+        "description": "Memory allocated by the Erlang VM, as reported by its memory accounting.",
+        "title": "Total VM memory",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -162,13 +162,13 @@
           {
             "expr": "vm_memory_processes",
             "interval": "",
-            "legendFormat": "allocated",
+            "legendFormat": "memory: allocated",
             "refId": "A"
           },
           {
             "expr": "vm_memory_processes_used",
             "interval": "",
-            "legendFormat": "used",
+            "legendFormat": "memory: used",
             "refId": "B"
           }
         ],
@@ -176,7 +176,8 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "memory allocated for processes",
+        "description": "Memory reserved for Erlang processes compared with the amount currently used.",
+        "title": "Process memory: allocated vs used",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -262,19 +263,19 @@
           {
             "expr": "vm_memory_ets",
             "interval": "",
-            "legendFormat": "ets",
+            "legendFormat": "category: ETS",
             "refId": "A"
           },
           {
             "expr": "vm_memory_binary",
             "interval": "",
-            "legendFormat": "binary",
+            "legendFormat": "category: binaries",
             "refId": "B"
           },
           {
             "expr": "vm_memory_processes",
             "interval": "",
-            "legendFormat": "processes",
+            "legendFormat": "category: processes",
             "refId": "C"
           }
         ],
@@ -282,7 +283,8 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "memory allocations",
+        "description": "Memory allocated for processes, binaries, and ETS tables. These categories do not cover all VM memory.",
+        "title": "Memory by category",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -325,7 +327,6 @@
         "dashLength": 10,
         "dashes": false,
         "datasource": null,
-        "description": "",
         "fieldConfig": {
           "defaults": {
             "custom": {}
@@ -369,7 +370,7 @@
           {
             "expr": "vm_system_counts_process_count",
             "interval": "",
-            "legendFormat": "process count",
+            "legendFormat": "processes",
             "refId": "A"
           }
         ],
@@ -377,7 +378,8 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "process count",
+        "description": "Number of existing Erlang processes.",
+        "title": "Erlang process count",
         "tooltip": {
           "shared": true,
           "sort": 0,
@@ -463,13 +465,13 @@
           {
             "expr": "vm_total_run_queue_lengths_total",
             "interval": "",
-            "legendFormat": "total",
+            "legendFormat": "schedulers: all",
             "refId": "A"
           },
           {
             "expr": "vm_total_run_queue_lengths_cpu",
             "interval": "",
-            "legendFormat": "CPU schedulers",
+            "legendFormat": "schedulers: CPU",
             "refId": "B"
           }
         ],
@@ -477,7 +479,8 @@
         "timeFrom": null,
         "timeRegions": [],
         "timeShift": null,
-        "title": "run queue length",
+        "description": "Processes and ports waiting to run. Total includes CPU and dirty I/O queues; CPU excludes dirty I/O.",
+        "title": "Scheduler run queue length",
         "tooltip": {
           "shared": true,
           "sort": 0,
