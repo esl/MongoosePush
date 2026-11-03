@@ -89,6 +89,10 @@ defmodule MongoosePush.Mixfile do
         "guides/migrations/2.1.1_2.1.2.md": [
           file: "guides/migrationts/2.1.1_2.1.2",
           title: "2.1.1 to 2.1.2"
+        ],
+        "guides/migrations/2.3.x_2.4.0.md": [
+          file: "guides/migrations/2.3.x_2.4.0",
+          title: "2.3.x to 2.4.0"
         ]
       ],
       groups_for_extras: [
