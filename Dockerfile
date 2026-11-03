@@ -50,6 +50,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install --no-install-recomme
     curl \
     dnsutils \
     libssl3 \
+    libsctp1 \
     vim && \
     apt-get clean
 
